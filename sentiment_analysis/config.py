@@ -8,21 +8,16 @@ import os
 from dataclasses import dataclass, field
 from typing import Dict, List
 
+from pathlib import Path
+
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path(__file__).parent / ".env")
 
 
 @dataclass
 class Settings:
     """Application settings resolved from the process environment."""
-
-    # ------------------------------------------------------------------ #
-    # Twitter / X API                                                      #
-    # ------------------------------------------------------------------ #
-    twitter_bearer_token: str = field(
-        default_factory=lambda: os.getenv("TWITTER_BEARER_TOKEN", "")
-    )
 
     # ------------------------------------------------------------------ #
     # Database                                                             #
@@ -42,6 +37,13 @@ class Settings:
     )
 
     # ------------------------------------------------------------------ #
+    # Google Gemini (Phase 4 sentiment analysis)                           #
+    # ------------------------------------------------------------------ #
+    gemini_api_key: str = field(
+        default_factory=lambda: os.getenv("GEMINI_API_KEY", "")
+    )
+
+    # ------------------------------------------------------------------ #
     # Ticker watchlist                                                     #
     # ------------------------------------------------------------------ #
     ticker_watchlist: List[str] = field(
@@ -58,11 +60,6 @@ class Settings:
     # ------------------------------------------------------------------ #
     # Scheduler intervals (minutes)                                        #
     # ------------------------------------------------------------------ #
-    twitter_poll_interval: int = field(
-        default_factory=lambda: int(
-            os.getenv("TWITTER_POLL_INTERVAL_MINUTES", "2")
-        )
-    )
     rss_poll_interval: int = field(
         default_factory=lambda: int(
             os.getenv("RSS_POLL_INTERVAL_MINUTES", "5")
@@ -70,33 +67,40 @@ class Settings:
     )
 
     # ------------------------------------------------------------------ #
-    # Financial keywords for Twitter search queries                        #
-    # ------------------------------------------------------------------ #
-    financial_keywords: List[str] = field(
-        default_factory=lambda: [
-            "earnings",
-            "revenue",
-            "guidance",
-            "upgrade",
-            "downgrade",
-            "beat",
-            "miss",
-            "short",
-            "squeeze",
-        ]
-    )
-
-    # ------------------------------------------------------------------ #
     # RSS feed definitions: internal_name -> URL                           #
     # ------------------------------------------------------------------ #
     rss_feeds: Dict[str, str] = field(
         default_factory=lambda: {
-            "investing_com": "https://www.investing.com/rss/news.rss",
-            "cnbc_top_news": "https://www.cnbc.com/id/100003114/device/rss/rss.html",
-            "marketwatch": "http://feeds.marketwatch.com/marketwatch/topstories",
-            "yahoo_finance": "https://finance.yahoo.com/news/rssindex",
-            "seeking_alpha": "https://seekingalpha.com/feed.xml",
-            "benzinga": "https://www.benzinga.com/feed",
+            # Newswires
+            "pr_newswire":            "https://www.prnewswire.com/rss/news-releases-list.rss",
+            "globe_newswire_finance": "https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services",
+            "globe_newswire_ma":      "https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions",
+            # SEC EDGAR
+            "sec_edgar": (
+                "https://www.sec.gov/cgi-bin/browse-edgar"
+                "?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom"
+            ),
+            "sec_form4": (
+                "https://www.sec.gov/cgi-bin/browse-edgar"
+                "?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom"
+            ),
+            "sec_10q": (
+                "https://www.sec.gov/cgi-bin/browse-edgar"
+                "?action=getcurrent&type=10-Q&dateb=&owner=include&count=40&output=atom"
+            ),
+            "sec_s1": (
+                "https://www.sec.gov/cgi-bin/browse-edgar"
+                "?action=getcurrent&type=S-1&dateb=&owner=include&count=40&output=atom"
+            ),
+            "sec_sc13g": (
+                "https://www.sec.gov/cgi-bin/browse-edgar"
+                "?action=getcurrent&type=SC+13G&dateb=&owner=include&count=40&output=atom"
+            ),
+            # Regulatory
+            "fda": (
+                "https://www.fda.gov/about-fda/contact-fda/stay-informed"
+                "/rss-feeds/press-releases/rss.xml"
+            ),
         }
     )
 

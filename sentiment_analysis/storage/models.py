@@ -11,6 +11,8 @@ from sqlalchemy import (
     ARRAY,
     Column,
     DateTime,
+    Float,
+    ForeignKey,
     Index,
     Integer,
     String,
@@ -69,11 +71,17 @@ class RSSArticle(Base):
     tickers = Column(ARRAY(String), default=list)
     raw_json = Column(JSONB)
     ingested_at = Column(DateTime(timezone=True), server_default=func.now())
+    cleaned_text = Column(Text, nullable=True)
+    sentiment_label = Column(Text, nullable=True)
+    sentiment_score = Column(Float, nullable=True)
+    sentiment_confidence = Column(Float, nullable=True)
+    sentiment_analyzed_at = Column(DateTime(timezone=True), nullable=True)
 
     __table_args__ = (
         Index("ix_rss_articles_tickers", "tickers", postgresql_using="gin"),
         Index("ix_rss_articles_ingested_at", "ingested_at"),
         Index("ix_rss_articles_source_name", "source_name"),
+        Index("ix_rss_articles_sentiment_analyzed_at", "sentiment_analyzed_at"),
     )
 
     def __repr__(self) -> str:
@@ -108,3 +116,115 @@ class IngestionLog(Base):
             f"<IngestionLog source={self.source} "
             f"stored={self.records_stored} at={self.run_at}>"
         )
+
+
+class ExtractedEntity(Base):
+    """Named entity extracted by spaCy NER that was resolved to a ticker."""
+
+    __tablename__ = "extracted_entities"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    article_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("rss_articles.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    entity_text = Column(Text, nullable=False)
+    entity_type = Column(String(50))      # ORG | PERSON | GPE
+    ticker = Column(String(20))
+    confidence = Column(Float)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index("ix_extracted_entities_article_id", "article_id"),
+        Index("ix_extracted_entities_ticker", "ticker"),
+    )
+
+    def __repr__(self) -> str:
+        return f"<ExtractedEntity {self.entity_text!r} → {self.ticker}>"
+
+
+class UnresolvedEntity(Base):
+    """
+    Entity that could not be mapped to a ticker — queued for manual review.
+
+    Duplicate entity_text values (when status='pending') increment frequency
+    rather than inserting a new row so the most-mentioned unknowns float up.
+    """
+
+    __tablename__ = "unresolved_entities"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    entity_text = Column(Text, nullable=False)
+    entity_type = Column(String(50))
+    article_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("rss_articles.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    frequency = Column(Integer, default=1)
+    status = Column(String(20), default="pending")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    resolved_at = Column(DateTime(timezone=True), nullable=True)
+    resolved_ticker = Column(String(20), nullable=True)
+
+    __table_args__ = (
+        Index("ix_unresolved_entities_status", "status"),
+        Index("ix_unresolved_entities_entity_text", "entity_text"),
+    )
+
+    def __repr__(self) -> str:
+        return (
+            f"<UnresolvedEntity {self.entity_text!r} "
+            f"freq={self.frequency} status={self.status}>"
+        )
+
+
+class TickerSentimentSummary(Base):
+    """Per-ticker aggregated sentiment for a rolling time window."""
+
+    __tablename__ = "ticker_sentiment_summary"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ticker = Column(Text, nullable=False)
+    window = Column(String(10), nullable=False)       # '1hr' | '4hr' | '24hr'
+    window_start = Column(DateTime(timezone=True), nullable=False)
+    avg_sentiment = Column(Float, nullable=True)
+    article_count = Column(Integer, nullable=False, default=0)
+    bullish_count = Column(Integer, nullable=False, default=0)
+    bearish_count = Column(Integer, nullable=False, default=0)
+    neutral_count = Column(Integer, nullable=False, default=0)
+    momentum = Column(String(20), nullable=True)      # 'improving' | 'declining' | 'stable'
+    calculated_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    __table_args__ = (
+        Index("ix_tss_ticker_window", "ticker", "window"),
+        Index("ix_tss_calculated_at", "calculated_at"),
+    )
+
+    def __repr__(self) -> str:
+        return (
+            f"<TickerSentimentSummary {self.ticker} {self.window} "
+            f"avg={self.avg_sentiment:.3f}>"
+        )
+
+
+class SentimentSpike(Base):
+    """Recorded when a ticker's 15-min article volume exceeds 2× its rolling avg."""
+
+    __tablename__ = "sentiment_spikes"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ticker = Column(Text, nullable=False)
+    detected_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    article_count = Column(Integer, nullable=False)
+    rolling_avg = Column(Float, nullable=False)
+    spike_ratio = Column(Float, nullable=False)
+
+    __table_args__ = (
+        Index("ix_sentiment_spikes_ticker", "ticker"),
+        Index("ix_sentiment_spikes_detected_at", "detected_at"),
+    )
+
+    def __repr__(self) -> str:
+        return f"<SentimentSpike {self.ticker} ratio={self.spike_ratio:.1f}×>"

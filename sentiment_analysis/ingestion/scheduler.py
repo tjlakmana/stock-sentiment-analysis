@@ -1,13 +1,11 @@
 """
 APScheduler setup for the ingestion pipeline.
 
-Two recurring jobs:
-  - Twitter poll  — every ``settings.twitter_poll_interval`` minutes (default 2)
-  - RSS poll      — every ``settings.rss_poll_interval`` minutes (default 5)
+One recurring job:
+  - RSS poll — every ``settings.rss_poll_interval`` min (default 5)
 
-Module-level singletons for the ingestors preserve the in-memory dedup sets
-across scheduler invocations, so we never store the same tweet or article twice
-even if the scheduler fires slightly early or late.
+The module-level singleton preserves in-memory dedup state across scheduler
+invocations so the same article is never stored twice.
 """
 from __future__ import annotations
 
@@ -19,18 +17,10 @@ from loguru import logger
 
 from sentiment_analysis.config import settings
 from sentiment_analysis.ingestion.rss_ingestor import RSSIngestor
-from sentiment_analysis.ingestion.twitter_ingestor import TwitterIngestor
+from sentiment_analysis.nlp.pipeline import run_nlp_pipeline
+from sentiment_analysis.sentiment.pipeline import run_sentiment_pipeline
 
-# Module-level singletons — created once and reused by every job invocation
-_twitter_ingestor: Optional[TwitterIngestor] = None
 _rss_ingestor: Optional[RSSIngestor] = None
-
-
-def _get_twitter() -> TwitterIngestor:
-    global _twitter_ingestor
-    if _twitter_ingestor is None:
-        _twitter_ingestor = TwitterIngestor()
-    return _twitter_ingestor
 
 
 def _get_rss() -> RSSIngestor:
@@ -40,37 +30,28 @@ def _get_rss() -> RSSIngestor:
     return _rss_ingestor
 
 
-async def _job_twitter() -> None:
-    """Scheduled job wrapper for the Twitter ingestor."""
-    await _get_twitter().run()
-
-
 async def _job_rss() -> None:
-    """Scheduled job wrapper for the RSS ingestor."""
+    """Scheduled job: poll all configured RSS feeds."""
     await _get_rss().run()
+
+
+async def _job_nlp() -> None:
+    """Scheduled job: run NLP preprocessing on unprocessed articles."""
+    await run_nlp_pipeline()
+
+
+async def _job_sentiment() -> None:
+    """Scheduled job: run Gemini sentiment analysis on NLP-processed articles."""
+    await run_sentiment_pipeline()
 
 
 def build_scheduler() -> AsyncIOScheduler:
     """
-    Construct an ``AsyncIOScheduler`` with both ingestion jobs registered.
+    Construct an ``AsyncIOScheduler`` with the RSS ingestion job registered.
 
-    The scheduler is *not* started here; call ``scheduler.start()`` when the
-    asyncio event loop is running.
-
-    Returns:
-        A fully configured but not-yet-started ``AsyncIOScheduler``.
+    Not started here — call ``scheduler.start()`` once the event loop is running.
     """
     scheduler = AsyncIOScheduler()
-
-    scheduler.add_job(
-        _job_twitter,
-        trigger=IntervalTrigger(minutes=settings.twitter_poll_interval),
-        id="twitter_ingestor",
-        name="Twitter/X Ingestion",
-        replace_existing=True,
-        max_instances=1,       # prevent overlapping runs
-        misfire_grace_time=30, # seconds; skip if missed by more than this
-    )
 
     scheduler.add_job(
         _job_rss,
@@ -82,30 +63,41 @@ def build_scheduler() -> AsyncIOScheduler:
         misfire_grace_time=60,
     )
 
+    scheduler.add_job(
+        _job_nlp,
+        trigger=IntervalTrigger(minutes=10),
+        id="nlp_pipeline",
+        name="NLP Preprocessing Pipeline",
+        replace_existing=True,
+        max_instances=1,
+        misfire_grace_time=120,
+    )
+
+    scheduler.add_job(
+        _job_sentiment,
+        trigger=IntervalTrigger(minutes=15),
+        id="sentiment_pipeline",
+        name="Gemini Sentiment Analysis Pipeline",
+        replace_existing=True,
+        max_instances=1,
+        misfire_grace_time=180,
+    )
+
     logger.info(
-        f"Scheduler configured — "
-        f"Twitter every {settings.twitter_poll_interval}m, "
-        f"RSS every {settings.rss_poll_interval}m"
+        f"Scheduler configured — RSS every {settings.rss_poll_interval}m, "
+        "NLP every 10m, Sentiment every 15m"
     )
     return scheduler
 
 
 async def start_scheduler() -> AsyncIOScheduler:
-    """
-    Build and start the scheduler, then immediately fire both jobs once.
-
-    The immediate first run ensures data starts flowing without waiting for
-    the first interval to elapse after process start.
-
-    Returns:
-        The running ``AsyncIOScheduler`` instance.
-    """
+    """Build, start, and immediately fire both jobs once."""
     scheduler = build_scheduler()
     scheduler.start()
     logger.info("Scheduler started — running initial ingestion pass.")
 
-    # Fire immediately (don't await — let them run concurrently)
-    await _job_twitter()
     await _job_rss()
+    await _job_nlp()
+    await _job_sentiment()
 
     return scheduler

@@ -77,28 +77,14 @@ async def _run_pipeline() -> None:
 # ---------------------------------------------------------------------------
 
 def _launch_dashboard() -> subprocess.Popen:
-    """
-    Start the Streamlit dashboard as a child process.
-
-    Stdout is piped back so the parent can see Streamlit's startup message.
-    """
-    dashboard_path = Path(__file__).parent / "dashboard" / "dashboard.py"
+    """Start the Plotly Dash dashboard as a child process on port 8050."""
     proc = subprocess.Popen(
-        [
-            sys.executable,
-            "-m", "streamlit",
-            "run", str(dashboard_path),
-            "--server.port", "8501",
-            "--server.headless", "true",
-            "--browser.gatherUsageStats", "false",
-        ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
+        [sys.executable, "-m", "sentiment_analysis.dashboard.dash_app"],
+        # Inherit parent's stdout/stderr so any startup crash prints to the terminal
+        stdout=None,
+        stderr=None,
     )
-    logger.info(
-        f"Dashboard started (PID {proc.pid})  →  http://localhost:8501"
-    )
+    logger.info(f"Dashboard started (PID {proc.pid})  →  http://localhost:8050")
     return proc
 
 
