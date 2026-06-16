@@ -40,7 +40,7 @@ nltk>=3.8
 rapidfuzz>=3.0
 
 # Sentiment analysis — Phase 4
-groq>=0.9.0
+google-genai>=1.0.0
 pysentiment2>=0.1.1
 
 # Timezone handling

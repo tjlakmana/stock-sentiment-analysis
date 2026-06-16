@@ -37,10 +37,10 @@ class Settings:
     )
 
     # ------------------------------------------------------------------ #
-    # Groq (Phase 4 sentiment analysis)                                    #
+    # Gemini (sentiment analysis)                                          #
     # ------------------------------------------------------------------ #
-    groq_api_key: str = field(
-        default_factory=lambda: os.getenv("GROQ_API_KEY", "")
+    gemini_api_key: str = field(
+        default_factory=lambda: os.getenv("GEMINI_API_KEY", "")
     )
 
     # ------------------------------------------------------------------ #

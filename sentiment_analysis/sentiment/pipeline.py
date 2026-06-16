@@ -8,9 +8,9 @@ aggregation and spike detection.
 
 Routing:
   SEC filings (sec_edgar, sec_form4, sec_10q, sec_s1, sec_sc13g)
-      → SECAnalyzer (rule-based + LM dictionary, local, instant, no threshold)
+      → SECAnalyzer (rule-based, local, instant, no threshold)
   All other articles
-      → GroqAnalyzer (llama-3.3-70b-versatile, batched API, confidence ≥ 0.1)
+      → GeminiAnalyzer (gemini-2.5-flash, structured output, batched, confidence ≥ 0.1)
 """
 from __future__ import annotations
 
@@ -27,25 +27,25 @@ from sentiment_analysis.sentiment.aggregator import (
     aggregate_ticker_sentiment,
     detect_spikes,
 )
-from sentiment_analysis.sentiment.groq_analyzer import GroqAnalyzer, score_to_label
+from sentiment_analysis.sentiment.gemini_analyzer import GeminiAnalyzer, score_to_label
 from sentiment_analysis.sentiment.sec_analyzer import SECAnalyzer
 from sentiment_analysis.storage.database import get_async_session
 from sentiment_analysis.storage.models import RSSArticle
 
 _SEC_SOURCES = frozenset({"sec_edgar", "sec_form4", "sec_10q", "sec_s1", "sec_sc13g"})
 
-# Confidence threshold applied only to Groq results; SEC results are always stored
-_GROQ_CONFIDENCE_MIN = 0.1
+# Confidence threshold applied only to Gemini results; SEC results are always stored
+_GEMINI_CONFIDENCE_MIN = 0.1
 
-_groq_analyzer: Optional[GroqAnalyzer] = None
-_sec_analyzer:  Optional[SECAnalyzer]  = None
+_gemini_analyzer: Optional[GeminiAnalyzer] = None
+_sec_analyzer:    Optional[SECAnalyzer]     = None
 
 
-def _get_groq_analyzer() -> GroqAnalyzer:
-    global _groq_analyzer
-    if _groq_analyzer is None:
-        _groq_analyzer = GroqAnalyzer()
-    return _groq_analyzer
+def _get_gemini_analyzer() -> GeminiAnalyzer:
+    global _gemini_analyzer
+    if _gemini_analyzer is None:
+        _gemini_analyzer = GeminiAnalyzer()
+    return _gemini_analyzer
 
 
 def _get_sec_analyzer() -> SECAnalyzer:
@@ -121,10 +121,10 @@ async def run_sentiment_pipeline(batch_size: int = 100) -> None:
             f"{counts.get('sec_sc13g', 0)} SC13G scored."
         )
 
-    # 3b. Groq for non-SEC articles (batched API call, confidence ≥ 0.1)
+    # 3b. Gemini for non-SEC articles (batched API call, confidence ≥ 0.1)
     if other_articles:
-        logger.info(f"[sentiment] Analyzing {len(other_articles)} articles via Groq.")
-        groq_batch = [
+        logger.info(f"[sentiment] Analyzing {len(other_articles)} articles via Gemini.")
+        gemini_batch = [
             {
                 "article_id":   article.id,
                 "ticker":       ", ".join(article.tickers or []),
@@ -133,11 +133,11 @@ async def run_sentiment_pipeline(batch_size: int = 100) -> None:
             }
             for article in other_articles
         ]
-        groq_raw = await asyncio.to_thread(
-            _get_groq_analyzer().analyze_batch, groq_batch
+        gemini_raw = await asyncio.to_thread(
+            _get_gemini_analyzer().analyze_batch, gemini_batch
         )
-        for r in groq_raw:
-            if r["sentiment_confidence"] >= _GROQ_CONFIDENCE_MIN:
+        for r in gemini_raw:
+            if r["sentiment_confidence"] >= _GEMINI_CONFIDENCE_MIN:
                 results.append(r)
 
     now = datetime.now(timezone.utc)
