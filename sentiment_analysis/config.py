@@ -25,11 +25,9 @@ class Settings:
     """Application settings resolved from the process environment."""
 
     # ------------------------------------------------------------------ #
-    # Database                                                             #
+    # Database  (resolved in __post_init__)                               #
     # ------------------------------------------------------------------ #
-    database_url: str = field(
-        default_factory=lambda: os.environ.get("DATABASE_URL", "")
-    )
+    database_url: str = field(default="")
 
     # ------------------------------------------------------------------ #
     # Logging                                                              #
@@ -96,13 +94,25 @@ class Settings:
     )
 
     def __post_init__(self) -> None:
-        if not self.database_url.strip():
+        url = (
+            os.environ.get("DATABASE_URL") or
+            os.environ.get("POSTGRES_URL") or
+            os.environ.get("POSTGRESQL_URL") or
+            ""
+        )
+        if url.startswith("postgres://"):
+            url = url.replace("postgres://", "postgresql+asyncpg://", 1)
+        elif url.startswith("postgresql://") and "+asyncpg" not in url:
+            url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        if not url:
             raise RuntimeError(
-                "DATABASE_URL environment variable is not set.\n"
-                "Set it to your PostgreSQL async connection string, e.g.:\n"
-                "  DATABASE_URL=postgresql+asyncpg://user:password@host:5432/dbname\n"
+                "No database URL found in environment variables.\n"
+                "Set DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL to your\n"
+                "PostgreSQL connection string:\n"
+                "  postgresql+asyncpg://user:password@host:5432/dbname\n"
                 "On Railway: add it in your service's Variables tab."
             )
+        self.database_url = url
 
     @property
     def sync_database_url(self) -> str:
