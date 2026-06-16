@@ -28,10 +28,7 @@ class Settings:
     # Database                                                             #
     # ------------------------------------------------------------------ #
     database_url: str = field(
-        default_factory=lambda: os.getenv(
-            "DATABASE_URL",
-            "postgresql+asyncpg://postgres:postgres@localhost:5432/sentiment_db",
-        )
+        default_factory=lambda: os.environ.get("DATABASE_URL", "")
     )
 
     # ------------------------------------------------------------------ #
@@ -97,6 +94,15 @@ class Settings:
             ),
         }
     )
+
+    def __post_init__(self) -> None:
+        if not self.database_url.strip():
+            raise RuntimeError(
+                "DATABASE_URL environment variable is not set.\n"
+                "Set it to your PostgreSQL async connection string, e.g.:\n"
+                "  DATABASE_URL=postgresql+asyncpg://user:password@host:5432/dbname\n"
+                "On Railway: add it in your service's Variables tab."
+            )
 
     @property
     def sync_database_url(self) -> str:
