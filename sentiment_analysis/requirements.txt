@@ -50,3 +50,6 @@ pysentiment2>=0.1.1
 
 # Timezone handling
 pytz>=2024.1
+
+# WSGI server (Railway / production)
+gunicorn>=21.0.0
