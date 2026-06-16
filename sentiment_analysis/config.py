@@ -14,6 +14,11 @@ from dotenv import load_dotenv
 
 load_dotenv(Path(__file__).parent / ".env")
 
+# Imported here so the default watchlist covers the full S&P 500 without
+# requiring a massive env-var string.  ticker_list.py has no project imports,
+# so there is no circular dependency.
+from sentiment_analysis.ingestion.ticker_list import SP500_TICKERS as _SP500_TICKERS
+
 
 @dataclass
 class Settings:
@@ -37,21 +42,22 @@ class Settings:
     )
 
     # ------------------------------------------------------------------ #
-    # Google Gemini (Phase 4 sentiment analysis)                           #
+    # Groq (Phase 4 sentiment analysis)                                    #
     # ------------------------------------------------------------------ #
-    gemini_api_key: str = field(
-        default_factory=lambda: os.getenv("GEMINI_API_KEY", "")
+    groq_api_key: str = field(
+        default_factory=lambda: os.getenv("GROQ_API_KEY", "")
     )
 
     # ------------------------------------------------------------------ #
-    # Ticker watchlist                                                     #
+    # Ticker watchlist — defaults to the full S&P 500 + ETF universe     #
+    # Override via TICKER_WATCHLIST env var (comma-separated)             #
     # ------------------------------------------------------------------ #
     ticker_watchlist: List[str] = field(
         default_factory=lambda: [
             t.strip().upper()
             for t in os.getenv(
                 "TICKER_WATCHLIST",
-                "AAPL,TSLA,NVDA,MSFT,AMZN,GOOGL,META,SPY,QQQ",
+                ",".join(_SP500_TICKERS),
             ).split(",")
             if t.strip()
         ]
@@ -83,18 +89,6 @@ class Settings:
             "sec_form4": (
                 "https://www.sec.gov/cgi-bin/browse-edgar"
                 "?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom"
-            ),
-            "sec_10q": (
-                "https://www.sec.gov/cgi-bin/browse-edgar"
-                "?action=getcurrent&type=10-Q&dateb=&owner=include&count=40&output=atom"
-            ),
-            "sec_s1": (
-                "https://www.sec.gov/cgi-bin/browse-edgar"
-                "?action=getcurrent&type=S-1&dateb=&owner=include&count=40&output=atom"
-            ),
-            "sec_sc13g": (
-                "https://www.sec.gov/cgi-bin/browse-edgar"
-                "?action=getcurrent&type=SC+13G&dateb=&owner=include&count=40&output=atom"
             ),
             # Regulatory
             "fda": (

@@ -33,7 +33,20 @@ body {
 
 .sidebar-divider { margin: 0 0 8px; border-color: #1c1c1c; opacity: 1; }
 
-.nav-menu { display: flex; flex-direction: column; gap: 2px; padding: 0; }
+.nav-menu { display: flex; flex-direction: column; gap: 2px; padding: 0; flex: 1; }
+
+.sidebar-footer {
+    padding: 14px 20px;
+    border-top: 1px solid #1c1c1c;
+    display: flex; flex-direction: column; gap: 2px;
+}
+.watchlist-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+    color: #00d4ff; text-transform: uppercase;
+}
+.watchlist-count {
+    font-size: 11px; color: #555555;
+}
 
 .nav-link {
     display: flex !important; align-items: center; gap: 10px;
@@ -297,3 +310,48 @@ body {
     background: #252525 !important; color: #e0e0e0 !important;
 }
 .modal-backdrop { background: rgba(0,0,0,0.72) !important; }
+
+/* ── Fetch notification banner ─────────────────────────────────────────── */
+@keyframes bannerFadeOut {
+    0%, 70% { opacity: 1; }
+    100%    { opacity: 0; }
+}
+
+/* ── Pagination ────────────────────────────────────────────────────────── */
+.pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 14px 0 6px;
+}
+.page-btn {
+    background:    #1a1a1a;
+    color:         #888888;
+    border:        1px solid #2a2a2a;
+    border-radius: 4px;
+    padding:       5px 11px;
+    font-size:     12px;
+    font-family:   inherit;
+    cursor:        pointer;
+    min-width:     36px;
+    transition:    border-color 0.15s, color 0.15s;
+}
+.page-btn:hover:not(:disabled) {
+    border-color: #00d4ff;
+    color:        #cccccc;
+}
+.page-btn:disabled {
+    opacity: 0.3;
+    cursor:  not-allowed;
+}
+.page-btn-active {
+    background:   #00d4ff;
+    color:        #000000 !important;
+    border-color: #00d4ff;
+    font-weight:  700;
+}
+.page-btn-active:hover {
+    border-color: #00d4ff;
+    color:        #000000 !important;
+}

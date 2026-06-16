@@ -13,6 +13,8 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import Dash, Input, Output, callback, dcc, html
 
+from sentiment_analysis.ingestion.ticker_list import SP500_TICKERS
+
 # ── App instance ──────────────────────────────────────────────────────────
 
 app = Dash(
@@ -60,6 +62,17 @@ def _nav_id(label: str) -> str:
     return f"nav-{label.lower().replace(' ', '-')}"
 
 
+_SP500_COUNT = len([t for t in SP500_TICKERS if not any(
+    t in etf for etf in ("SPY", "QQQ", "IWM", "DIA", "GLD", "SLV", "TLT",
+                          "HYG", "LQD", "VTI", "VOO", "VEA", "VWO", "EFA",
+                          "EEM", "XLF", "XLK", "XLE", "XLV", "XLI", "XLY",
+                          "XLP", "XLU", "XLB", "XLRE", "PLTR", "RIVN", "LCID",
+                          "SOFI", "GME", "AMC", "BB", "NOK", "COIN", "HOOD",
+                          "ROKU", "SNAP", "UBER", "LYFT", "ABNB", "DASH",
+                          "PINS", "TWTR", "SHOP", "SQ", "PYPL", "AFRM", "UPST")
+)])
+
+
 def _sidebar() -> html.Div:
     return html.Div(
         className="sidebar",
@@ -77,6 +90,16 @@ def _sidebar() -> html.Div:
                         ],
                     )
                     for icon, label, path in _NAV
+                ],
+            ),
+            html.Div(
+                className="sidebar-footer",
+                children=[
+                    html.Span("S&P 500", className="watchlist-label"),
+                    html.Span(
+                        f"{len(SP500_TICKERS)} tickers",
+                        className="watchlist-count",
+                    ),
                 ],
             ),
         ],

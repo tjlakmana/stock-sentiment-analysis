@@ -41,7 +41,7 @@ async def _job_nlp() -> None:
 
 
 async def _job_sentiment() -> None:
-    """Scheduled job: run Gemini sentiment analysis on NLP-processed articles."""
+    """Scheduled job: run Groq sentiment analysis on NLP-processed articles."""
     await run_sentiment_pipeline()
 
 
@@ -75,9 +75,9 @@ def build_scheduler() -> AsyncIOScheduler:
 
     scheduler.add_job(
         _job_sentiment,
-        trigger=IntervalTrigger(minutes=15),
+        trigger=IntervalTrigger(minutes=5),
         id="sentiment_pipeline",
-        name="Gemini Sentiment Analysis Pipeline",
+        name="Groq Sentiment Analysis Pipeline",
         replace_existing=True,
         max_instances=1,
         misfire_grace_time=180,
@@ -85,7 +85,7 @@ def build_scheduler() -> AsyncIOScheduler:
 
     logger.info(
         f"Scheduler configured — RSS every {settings.rss_poll_interval}m, "
-        "NLP every 10m, Sentiment every 15m"
+        "NLP every 10m, Sentiment every 5m"
     )
     return scheduler
 

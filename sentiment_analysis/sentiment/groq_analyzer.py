@@ -1,12 +1,14 @@
 """
-Gemini-based sentiment analysis engine.
+Groq-based sentiment analysis engine.
 
-Professor's batching method: all articles in ONE API request, structured
-output via response_schema=list[ArticleSentiment]. Model: gemini-2.5-flash.
+Uses llama-3.3-70b-versatile with JSON mode to analyze batches of up to 50
+financial news articles in a single API request. Retries up to 3 times on
+error with a 10-second delay between attempts.
 """
 from __future__ import annotations
 
 import json
+import time
 from typing import Literal
 from uuid import UUID
 
@@ -17,7 +19,7 @@ from sentiment_analysis.config import settings
 
 
 class ArticleSentiment(BaseModel):
-    """Pydantic schema passed to Gemini as response_schema."""
+    """Pydantic schema for a single article sentiment result."""
     id: int
     label: Literal["positive", "negative", "neutral", "mixed"]
     score: float  # -1.0 (bearish) → +1.0 (bullish)
@@ -41,9 +43,9 @@ def score_to_label(score: float) -> str:
         return "Bearish"
 
 
-class GeminiAnalyzer:
+class GroqAnalyzer:
     """
-    Wraps the google-genai sync client.
+    Wraps the Groq sync client.
     Instantiate once as a module-level singleton; client is lazy-loaded.
     """
 
@@ -52,37 +54,29 @@ class GeminiAnalyzer:
 
     def _get_client(self):
         if self._client is None:
-            import httpx
-            from google import genai
-            # bypass corporate/intermediate SSL cert issues (same env as RSS feeds)
-            http_client = httpx.Client(verify=False)
-            self._client = genai.Client(
-                api_key=settings.gemini_api_key,
-                http_options=genai.types.HttpOptions(httpx_client=http_client),
-            )
+            from groq import Groq
+            self._client = Groq(api_key=settings.groq_api_key)
         return self._client
-
-    # ── Public API ──────────────────────────────────────────────────────────
 
     def analyze_batch(self, articles: list[dict]) -> list[dict]:
         """
-        Send up to 50 articles in a single Gemini request.
+        Send up to 100 articles in a single Groq request.
 
         Each dict in ``articles`` must contain:
             article_id (UUID), ticker (str), headline (str), cleaned_text (str).
 
-        Returns a list of result dicts (one per confident article):
+        Returns a list of result dicts (one per article):
             article_id, sentiment_label, sentiment_score, sentiment_confidence.
-        Articles with confidence < 0.3 (|score| < 0.15) are omitted.
+        All articles with a valid score are returned regardless of confidence.
         """
         if not articles:
             return []
 
-        if not settings.gemini_api_key:
-            logger.warning("[gemini] GEMINI_API_KEY not configured — skipping batch.")
+        if not settings.groq_api_key:
+            logger.warning("[groq] GROQ_API_KEY not configured — skipping batch.")
             return []
 
-        # Sequential index → UUID (Gemini schema uses int ids)
+        # Sequential index → UUID (model uses int ids to keep JSON compact)
         id_to_uuid: dict[int, UUID] = {
             i: art["article_id"] for i, art in enumerate(articles)
         }
@@ -99,30 +93,36 @@ class GeminiAnalyzer:
 
         prompt = self._build_prompt(batch_input)
 
-        try:
-            from google import genai as genai_module
-            response = self._get_client().models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt,
-                config=genai_module.types.GenerateContentConfig(
-                    response_mime_type="application/json",
-                    response_schema=list[ArticleSentiment],
-                ),
-            )
-            return self._parse_response(response, id_to_uuid)
-
-        except Exception as exc:
-            logger.exception(f"[gemini] API error: {exc}")
-            return []
-
-    # ── Private helpers ─────────────────────────────────────────────────────
+        for attempt in range(3):
+            try:
+                response = self._get_client().chat.completions.create(
+                    model="llama-3.3-70b-versatile",
+                    messages=[{"role": "user", "content": prompt}],
+                    response_format={"type": "json_object"},
+                    temperature=0.1,
+                    max_tokens=4096,
+                )
+                return self._parse_response(response, id_to_uuid)
+            except Exception as exc:
+                if attempt < 2:
+                    logger.warning(
+                        f"[groq] Attempt {attempt + 1}/3 failed: {exc}. Retrying in 10s..."
+                    )
+                    time.sleep(10)
+                else:
+                    logger.warning(
+                        f"[groq] All 3 attempts failed for batch of {len(articles)} articles. "
+                        "Skipping batch."
+                    )
+        return []
 
     def _build_prompt(self, batch_input: list[dict]) -> str:
         articles_json = json.dumps(batch_input, ensure_ascii=False, indent=2)
         return (
             "You are a financial news sentiment analyzer. For each article "
             "assess the likely market impact from an equity investor's perspective.\n\n"
-            "Return a JSON array — one element per article — with:\n"
+            "Return a JSON object with a single key \"results\" containing an array — "
+            "one element per article — with:\n"
             "  id: echo back the article's id field exactly\n"
             "  label: one of \"positive\", \"negative\", \"neutral\", \"mixed\"\n"
             "  score: float from -1.0 (extremely bearish) to +1.0 (extremely bullish)\n\n"
@@ -131,22 +131,23 @@ class GeminiAnalyzer:
             f"Articles:\n{articles_json}"
         )
 
-    def _parse_response(
-        self,
-        response,
-        id_to_uuid: dict[int, UUID],
-    ) -> list[dict]:
-        # Try .parsed (pydantic objects) then fall back to raw JSON text
+    def _parse_response(self, response, id_to_uuid: dict[int, UUID]) -> list[dict]:
         try:
-            raw = getattr(response, "parsed", None)
-            if raw is None:
-                raw = json.loads(response.text)
-            items: list[dict] = [
-                item if isinstance(item, dict) else item.model_dump()
-                for item in raw
-            ]
+            content = response.choices[0].message.content
+            data = json.loads(content)
+            if isinstance(data, list):
+                items = data
+            elif isinstance(data, dict):
+                for key in ("results", "articles", "sentiments"):
+                    if key in data and isinstance(data[key], list):
+                        items = data[key]
+                        break
+                else:
+                    items = next((v for v in data.values() if isinstance(v, list)), [])
+            else:
+                items = []
         except Exception as exc:
-            logger.warning(f"[gemini] Response parse failed: {exc}")
+            logger.warning(f"[groq] Response parse failed: {exc}")
             return []
 
         results: list[dict] = []
@@ -158,11 +159,8 @@ class GeminiAnalyzer:
                     continue
 
                 score = float(item.get("score", 0.0))
-                score = max(-1.0, min(1.0, score))  # clamp to valid range
+                score = max(-1.0, min(1.0, score))
                 confidence = compute_confidence(score)
-
-                if confidence < 0.3:
-                    continue  # near-neutral — not worth storing
 
                 results.append({
                     "article_id": article_id,
@@ -171,6 +169,6 @@ class GeminiAnalyzer:
                     "sentiment_confidence": confidence,
                 })
             except (ValueError, KeyError, TypeError) as exc:
-                logger.debug(f"[gemini] Skipping malformed item: {exc}")
+                logger.debug(f"[groq] Skipping malformed item: {exc}")
 
         return results

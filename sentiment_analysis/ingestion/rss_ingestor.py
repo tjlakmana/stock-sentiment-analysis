@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import re
 import ssl
+import time
 import urllib.request
 from datetime import datetime, timezone
 from typing import List, Optional, Set
@@ -61,24 +62,42 @@ def _parse_published(entry: feedparser.FeedParserDict) -> Optional[datetime]:
 
 # ── SEC EDGAR enrichment ──────────────────────────────────────────────────────
 
-_SEC_SOURCES = frozenset({"sec_edgar", "sec_form4", "sec_10q", "sec_s1", "sec_sc13g"})
+_SEC_SOURCES = frozenset({"sec_edgar", "sec_form4"})
 
-_SEC_TITLE_RE = re.compile(
-    r'^(?P<form>[^\-]+?)\s*-\s*(?P<company>.+?)\s+\((?P<cik>\d+)\)',
-    re.IGNORECASE,
-)
-_FILED_RE    = re.compile(r'Filed:\s*(\d{4}-\d{2}-\d{2})')
-_HTML_TAGS   = re.compile(r'<[^>]+>')
-_ARCHIVE_RE  = re.compile(r'href="(/Archives/edgar/data/[^"]+)"', re.IGNORECASE)
+_FILED_RE   = re.compile(r'Filed:\s*(\d{4}-\d{2}-\d{2})')
+_HTML_TAGS  = re.compile(r'<[^>]+>')
+_ARCHIVE_RE = re.compile(r'href="(/Archives/edgar/data/[^"]+)"', re.IGNORECASE)
+
+# Display label and optional suffix for each SEC source
+_FORM_DISPLAY_MAP: dict[str, tuple[str, str]] = {
+    'sec_edgar':  ('8-K',    ''),
+    'sec_form4':  ('Form 4', ' (Insider Trading)'),
+}
 
 
-def _parse_sec_title(raw: str) -> tuple[str, str, str]:
-    """Return (form_type, company_name, cik) from an EDGAR RSS title."""
-    clean = _HTML_TAGS.sub('', raw).strip()
-    m = _SEC_TITLE_RE.match(clean)
-    if m:
-        return m.group('form').strip(), m.group('company').strip(), m.group('cik')
-    return '', clean, ''
+def _sec_company_name(raw_title: str) -> str:
+    """Extract company name from an EDGAR RSS title, stripping form type and CIK.
+
+    Handles all form types including those with hyphens (8-K) or spaces (SC 13G).
+    """
+    clean = _HTML_TAGS.sub('', raw_title).strip()
+    # Remove trailing role qualifiers like (Filer), (Issuer) and CIK like (0000789019)
+    clean = re.sub(r'(\s*\(\d+\)|\s*\([A-Za-z]+\))+\s*$', '', clean).strip()
+    # Everything after the first " - " separator is the company name
+    parts = re.split(r'\s+-\s+', clean, maxsplit=1)
+    return parts[1].strip() if len(parts) == 2 else clean
+
+
+def _clean_sec_title(raw_title: str, source_name: str) -> str:
+    """Format an EDGAR RSS title cleanly, removing CIK numbers and role suffixes.
+
+    Examples:
+      "4 - Microsoft Corp (0000789019) (Issuer)"  → "Form 4 — Microsoft Corp (Insider Trading)"
+      "8-K - Apple Inc (0000320193) (Filer)"      → "8-K — Apple Inc"
+    """
+    company = _sec_company_name(raw_title)
+    form_str, suffix = _FORM_DISPLAY_MAP.get(source_name, ('SEC Filing', ''))
+    return f'{form_str} — {company}{suffix}'
 
 
 def _sec_fetch(url: str, max_kb: int = 64) -> str:
@@ -125,8 +144,11 @@ def _items_from_8k(doc_html: str) -> list[str]:
     return items
 
 
-def _form4_summary(xml: str, fallback_company: str, date_str: str) -> str:
-    """Build a readable one-liner from Form 4 XML text."""
+def _form4_summary(xml: str, fallback_company: str) -> str:
+    """Build a human-readable summary from Form 4 XML.
+
+    Output: "Insider [name] bought/sold [X] shares of [company] at $[price] per share."
+    """
     def _v(tag: str) -> str:
         for pat in (
             fr'<{tag}[^>]*>\s*<value>\s*([^<]+?)\s*</value>',
@@ -139,92 +161,100 @@ def _form4_summary(xml: str, fallback_company: str, date_str: str) -> str:
 
     issuer  = _v('issuerName') or fallback_company
     ticker  = _v('issuerTradingSymbol')
-    owner   = _v('rptOwnerName')
-    role    = ('officer'  if re.search(r'<isOfficer>\s*1',  xml) else
-               'director' if re.search(r'<isDirector>\s*1', xml) else 'insider')
-    o_title = _v('officerTitle')
+    owner   = _v('rptOwnerName') or 'An insider'
     shares  = _v('transactionShares')
     price   = _v('transactionPricePerShare')
-    code    = _v('transactionAcquiredDisposedCode')
+    tx_code = _v('transactionCode')           # P=Purchase, S=Sale (open-market)
+    ad_code = _v('transactionAcquiredDisposedCode')  # A=Acquired, D=Disposed
 
-    action = 'purchased' if code == 'A' else 'sold' if code == 'D' else 'transacted in'
-    who    = owner or 'An insider'
-    if o_title:
-        who += f' ({o_title})'
+    if tx_code == 'P':
+        action = 'bought'
+    elif tx_code == 'S':
+        action = 'sold'
+    elif ad_code == 'A':
+        action = 'bought'
+    elif ad_code == 'D':
+        action = 'sold'
+    else:
+        action = 'transacted in'
 
-    parts = [f'{who} {action}']
+    company = issuer + (f' [{ticker}]' if ticker else '')
+    parts = [f'Insider {owner} {action}']
     if shares:
         try:
             parts.append(f'{float(shares):,.0f} shares')
         except ValueError:
             parts.append(f'{shares} shares')
-    parts.append(f'of {issuer}' + (f' [{ticker}]' if ticker else ''))
+    parts.append(f'of {company}')
     if price:
         try:
-            parts.append(f'at ${float(price):.2f}')
+            parts.append(f'at ${float(price):.2f} per share')
         except ValueError:
             pass
-    if date_str:
-        parts.append(date_str)
     return ' '.join(parts) + '.'
 
 
-def _build_sec_summary(source_name: str, entry) -> str:
-    """
-    Return an enriched natural-language summary for an SEC EDGAR RSS entry.
+def _extract_text(html: str, max_chars: int = 1000) -> str:
+    """Strip HTML tags and return the first max_chars of meaningful text."""
+    text = _HTML_TAGS.sub(' ', html)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text[:max_chars]
 
-    Makes up to 2 additional HTTP requests (index page + main document) only
-    for 8-K and Form 4 entries.  All other SEC types use title+date only.
-    """
+
+def _build_sec_summary(source_name: str, entry) -> str:
+    """Return an enriched summary for an SEC EDGAR RSS entry."""
     url         = (_HTML_TAGS.sub('', entry.get('link') or '')).strip()
     raw_summary = _HTML_TAGS.sub(' ', entry.get('summary', '')).strip()
-    form_type, company, _ = _parse_sec_title(entry.get('title', ''))
+    company     = _sec_company_name(entry.get('title', ''))
 
-    date_m   = _FILED_RE.search(raw_summary)
-    filed    = date_m.group(1) if date_m else ''
-    date_str = f'on {filed}' if filed else ''
+    date_m    = _FILED_RE.search(raw_summary)
+    date_part = f' on {date_m.group(1)}' if date_m else ''
 
-    # Fast path — filing index adds little value for these types
+    # ── 10-Q / S-1 / SC 13G: metadata-only summaries, no document fetch ──
     if source_name == 'sec_10q':
-        return f'{company} filed a quarterly report (10-Q) {date_str}'.strip() + '.'
+        return f'{company} filed quarterly report (10-Q){date_part}.'
     if source_name == 'sec_s1':
-        return f'{company} filed an S-1 registration statement (IPO filing) {date_str}'.strip() + '.'
+        return f'{company} filed IPO registration (S-1){date_part}.'
     if source_name == 'sec_sc13g':
-        return f'{company} filed an SC 13G large-investor position disclosure {date_str}'.strip() + '.'
+        return f'Large investor position filing for {company}{date_part}.'
 
+    # ── Form 4 and 8-K: fetch filing index to extract content ────────────
     if not url:
-        return f'{company} filed {form_type or "an SEC document"} {date_str}'.strip() + '.'
+        return f'{company} filed an SEC document{date_part}.'
 
+    time.sleep(0.5)
     index_html = _sec_fetch(url)
     if not index_html:
-        return f'{company} filed {form_type or "an SEC document"} {date_str}'.strip() + '.'
+        return f'{company} filed an SEC document{date_part}.'
 
-    # 8-K: fetch main document and extract Items
-    if source_name == 'sec_edgar':
-        main_url = _main_doc_url(index_html, '8-K')
-        items: list[str] = []
-        if main_url:
-            doc = _sec_fetch(main_url, max_kb=16)
-            if doc:
-                items = _items_from_8k(doc)
-        base = f'{company} filed an 8-K report {date_str}'.strip()
-        if items:
-            return base + ' reporting ' + '; '.join(items) + '.'
-        return base + '.'
-
-    # Form 4: parse XML document for insider transaction details
+    # ── Form 4: extract insider transaction from XML ───────────────────────
     if source_name == 'sec_form4':
         xml_m = re.search(
             r'href="(/Archives/edgar/data/[^"]+\.xml)"',
             index_html, re.IGNORECASE,
         )
         if xml_m:
+            time.sleep(0.5)
             xml = _sec_fetch(f'https://www.sec.gov{xml_m.group(1)}', max_kb=32)
             if xml:
-                return _form4_summary(xml, company, date_str)
-        return f'Insider filing (Form 4) for {company} {date_str}'.strip() + '.'
+                return _form4_summary(xml, company)
+        return f'Insider filing (Form 4) for {company}{date_part}.'
 
-    return f'{company} filed {form_type or "an SEC document"} {date_str}'.strip() + '.'
+    # ── 8-K: extract filing items ──────────────────────────────────────────
+    if source_name == 'sec_edgar':
+        main_url = _main_doc_url(index_html, '8-K')
+        items: list[str] = []
+        if main_url:
+            time.sleep(0.5)
+            doc = _sec_fetch(main_url, max_kb=64)
+            if doc:
+                items = _items_from_8k(doc)
+        base = f'{company} filed 8-K{date_part}'
+        if items:
+            return base + ' reporting ' + '; '.join(items) + '.'
+        return base + '.'
+
+    return f'{company} filed an SEC document{date_part}.'
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -322,11 +352,16 @@ class RSSIngestor:
                         published_at = _parse_published(entry)
 
                         if not _is_english(title):
-                            logger.debug(f"[{log_source}] Skipping non-English: {title[:60]!r}")
+                            logger.info(f"[{log_source}] Skipped non-English article: {title[:50]}")
                             continue
 
+                        # Clean SEC titles: remove CIK numbers, role suffixes,
+                        # and format consistently ("Form 4 — Microsoft Corp (Insider Trading)").
+                        if source_name in _SEC_SOURCES:
+                            title = _clean_sec_title(title, source_name)
+
                         # For SEC feeds replace the sparse RSS summary with enriched content
-                        # so Gemini has meaningful text to score.
+                        # so the sentiment model has meaningful text to score.
                         if source_name in _SEC_SOURCES:
                             try:
                                 summary = _build_sec_summary(source_name, entry)

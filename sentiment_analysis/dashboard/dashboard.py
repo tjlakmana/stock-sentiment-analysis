@@ -37,7 +37,7 @@ from streamlit_autorefresh import st_autorefresh
 # that stale rows from removed ingestors are never surfaced in the dashboard.
 _ACTIVE_SOURCES_SQL = (
     "'rss:pr_newswire','rss:globe_newswire_finance','rss:globe_newswire_ma',"
-    "'rss:sec_edgar','rss:fda'"
+    "'rss:sec_edgar','rss:sec_form4','rss:fda'"
 )
 
 # ---------------------------------------------------------------------------
@@ -447,6 +447,7 @@ def render_raw_explorer() -> None:
         "rss:globe_newswire_finance",
         "rss:globe_newswire_ma",
         "rss:sec_edgar",
+        "rss:sec_form4",
         "rss:fda",
     ]
 

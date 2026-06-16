@@ -45,7 +45,8 @@ rapidfuzz>=3.0
 # After install: python -m spacy download en_core_web_sm
 
 # Sentiment analysis — Phase 4
-google-genai>=1.0
+groq>=0.9.0
+pysentiment2>=0.1.1
 
 # Timezone handling
 pytz>=2024.1
