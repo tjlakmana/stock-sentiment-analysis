@@ -66,7 +66,7 @@ TIME_WINDOW_OPTIONS = [
 ]
 
 MIN_ARTICLES_OPTIONS = [
-    {"label": "Min 1 article",   "value": 1},
+    {"label": "Any articles",    "value": 0},
     {"label": "Min 5 articles",  "value": 5},
     {"label": "Min 10 articles", "value": 10},
     {"label": "Min 25 articles", "value": 25},
@@ -518,7 +518,7 @@ layout = html.Div(
                                                     dbc.Select(
                                                         id="screener-min-articles",
                                                         options=MIN_ARTICLES_OPTIONS,
-                                                        value=1,
+                                                        value=0,
                                                         className="filter-select",
                                                         style={"minWidth": "140px", **_SH},
                                                     ),
@@ -652,18 +652,20 @@ def _update_screener(n, refresh_clicks, signal, order, sort_dir, search,
     signal       = signal       or "all"
     order        = order        or "avg_sentiment"
     sort_dir     = sort_dir     or "desc"
-    min_articles = int(min_articles or 1)
+    min_articles = int(min_articles or 0)
     window       = window       or "4hr"
     sent_range   = sent_range   or [-1.0, 1.0]
 
     df = _fetch_data(window, min_articles)
 
     if df.empty:
-        empty_msg = [html.Div("No sentiment data yet — run the pipeline first.",
-                              className="no-results",
-                              style={"padding": "32px", "textAlign": "center",
-                                     "color": "#555", "fontSize": "14px"})]
-        return empty_msg, empty_msg, "0 tickers", "· No data", []
+        empty_msg = [html.Div(
+            "No data yet — articles are being collected. Check back in a few minutes.",
+            className="no-results",
+            style={"padding": "32px", "textAlign": "center",
+                   "color": "#555", "fontSize": "14px"},
+        )]
+        return empty_msg, empty_msg, "0 tickers", "· No data"
 
     # ── Apply filters ──────────────────────────────────────────────────────
     df = _apply_signal(df, signal)
