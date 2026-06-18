@@ -22,7 +22,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from loguru import logger
 
 from sentiment_analysis.config import settings
-from sentiment_analysis.ingestion.price_ingestor import PriceIngestor, is_market_hours
+from sentiment_analysis.ingestion.finviz_ingestor import FinvizIngestor, is_market_hours
 from sentiment_analysis.ingestion.rss_ingestor import RSSIngestor
 from sentiment_analysis.nlp.pipeline import run_nlp_pipeline
 from sentiment_analysis.sentiment.pipeline import run_sentiment_pipeline
@@ -55,8 +55,12 @@ async def _job_sentiment() -> None:
 
 
 async def _job_prices() -> None:
-    """Scheduled job: fetch price data for tickers with recent sentiment activity."""
+    """Scheduled job: fetch price data for tickers mentioned in recent articles."""
     global _last_price_fetch
+
+    if not settings.finviz_token:
+        logger.warning("[finviz] FINVIZ_TOKEN not set — skipping price fetch.")
+        return
 
     now = datetime.now(timezone.utc)
 
@@ -66,24 +70,26 @@ async def _job_prices() -> None:
             if (now - _last_price_fetch).total_seconds() < 300:
                 return
 
-    # Fetch active tickers from the last 7 days of sentiment summaries
+    # Fetch tickers that appeared in articles over the last 24 hours
     from sentiment_analysis.storage.database import get_async_session
     from sqlalchemy import text as _text
 
     async with get_async_session() as session:
         result = await session.execute(_text(
-            "SELECT DISTINCT ticker FROM ticker_sentiment_summary "
-            "WHERE calculated_at > NOW() - INTERVAL '7 days' "
+            "SELECT DISTINCT unnest(tickers) AS ticker "
+            "FROM rss_articles "
+            "WHERE ingested_at > NOW() - INTERVAL '24 hours' "
+            "  AND tickers IS NOT NULL AND array_length(tickers, 1) > 0 "
             "ORDER BY ticker LIMIT 200"
         ))
-        tickers = [row[0] for row in result.fetchall()]
+        tickers = [row[0] for row in result.fetchall() if row[0]]
 
     if not tickers:
-        logger.debug("[price] No active tickers found — skipping price fetch.")
+        logger.debug("[finviz] No active tickers in last 24h — skipping price fetch.")
         return
 
     price_data = await asyncio.to_thread(
-        PriceIngestor().get_current_prices, tickers
+        FinvizIngestor(settings.finviz_token).get_quotes_batch, tickers
     )
 
     if price_data:
@@ -164,7 +170,7 @@ def build_scheduler() -> AsyncIOScheduler:
 
     logger.info(
         f"Scheduler configured — RSS every {settings.rss_poll_interval}m, "
-        "NLP every 10m, Sentiment every 5m, Prices every 1m"
+        "NLP every 10m, Sentiment every 5m, Finviz prices every 1m"
     )
     return scheduler
 

@@ -44,6 +44,13 @@ class Settings:
     )
 
     # ------------------------------------------------------------------ #
+    # Finviz Elite (real-time price data)                                  #
+    # ------------------------------------------------------------------ #
+    finviz_token: str = field(
+        default_factory=lambda: os.getenv("FINVIZ_TOKEN", "")
+    )
+
+    # ------------------------------------------------------------------ #
     # Ticker watchlist — defaults to the full S&P 500 + ETF universe     #
     # Override via TICKER_WATCHLIST env var (comma-separated)             #
     # ------------------------------------------------------------------ #

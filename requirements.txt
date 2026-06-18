@@ -48,8 +48,5 @@ pysentiment2>=0.1.1
 # Timezone handling
 pytz>=2024.1
 
-# Price data — Phase 5B (Screener)
-yfinance>=0.2.40
-
 # WSGI server (Railway / production)
 gunicorn>=21.0.0
