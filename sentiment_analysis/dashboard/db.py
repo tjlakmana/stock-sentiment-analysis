@@ -10,6 +10,7 @@ from typing import Optional
 
 import pytz
 import pandas as pd
+from loguru import logger
 from sqlalchemy import create_engine, text
 from sqlalchemy.pool import NullPool
 
@@ -55,7 +56,7 @@ def query_df(sql: str, params: Optional[dict] = None) -> pd.DataFrame:
             cols = list(result.keys())
             return pd.DataFrame(rows, columns=cols)
     except Exception as exc:
-        print(f"[db] query error: {exc}")
+        logger.error(f"[db] query error: {exc}\nparams={params}\nSQL={sql.strip()[:400]}")
         return pd.DataFrame()
 
 

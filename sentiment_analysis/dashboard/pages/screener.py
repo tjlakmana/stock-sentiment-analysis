@@ -12,8 +12,10 @@ import pandas as pd
 from dash import Input, Output, State, callback, ctx, dcc, html
 from dash.exceptions import PreventUpdate
 
+from loguru import logger
+
 from sentiment_analysis.dashboard.db import now_et, query_df
-from sentiment_analysis.ingestion.price_ingestor import is_market_hours
+from sentiment_analysis.ingestion.finviz_ingestor import is_market_hours
 
 dash.register_page(__name__, path="/screener", name="Screener", title="Screener")
 
@@ -118,7 +120,32 @@ _SCREENER_SQL = """
 
 
 def _fetch_data(window: str, min_articles: int) -> pd.DataFrame:
-    return query_df(_SCREENER_SQL, {"window": window, "min_articles": min_articles})
+    # ── Diagnostics: log intermediate counts so Railway logs show where data stops ──
+    diag = query_df("""
+        SELECT
+            (SELECT COUNT(*) FROM ticker_sentiment_summary)              AS tss_total,
+            (SELECT COUNT(DISTINCT window) FROM ticker_sentiment_summary) AS tss_windows,
+            (SELECT string_agg(DISTINCT window, ', ' ORDER BY window)
+               FROM ticker_sentiment_summary)                            AS tss_window_values,
+            (SELECT COUNT(*) FROM ticker_sentiment_summary
+               WHERE window = :window)                                   AS tss_for_window,
+            (SELECT COUNT(*) FROM ticker_prices)                         AS price_rows
+    """, {"window": window})
+    if not diag.empty:
+        r = diag.iloc[0]
+        logger.info(
+            f"[screener] DB snapshot — tss_total={r.tss_total}, "
+            f"windows={r.tss_window_values!r}, "
+            f"tss_for_window({window!r})={r.tss_for_window}, "
+            f"price_rows={r.price_rows}"
+        )
+
+    df = query_df(_SCREENER_SQL, {"window": window, "min_articles": min_articles})
+    logger.info(
+        f"[screener] _fetch_data(window={window!r}, min_articles={min_articles}) "
+        f"→ {len(df)} rows"
+    )
+    return df
 
 
 # ── Render helpers ────────────────────────────────────────────────────────
