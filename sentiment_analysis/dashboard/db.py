@@ -49,9 +49,11 @@ def _get_engine():
 def query_df(sql: str, params: Optional[dict] = None) -> pd.DataFrame:
     """Execute a read-only query and return a DataFrame; returns empty DF on error."""
     try:
-        with _get_engine().begin() as conn:
-            stmt = text(sql).bindparams(**(params or {}))
-            return pd.read_sql(stmt, conn)
+        with _get_engine().connect() as conn:
+            result = conn.execute(text(sql).bindparams(**(params or {})))
+            rows = result.fetchall()
+            cols = list(result.keys())
+            return pd.DataFrame(rows, columns=cols)
     except Exception as exc:
         print(f"[db] query error: {exc}")
         return pd.DataFrame()
