@@ -5,29 +5,22 @@ Jobs:
   - RSS poll         — every settings.rss_poll_interval min (default 5)
   - NLP pipeline     — every 10 min
   - Sentiment        — every 5 min
-  - Price ingestor   — every 1 min (market hours) / 5 min throttle (off-hours)
-
-The module-level singletons preserve in-memory state across scheduler
-invocations so the same article is never stored twice.
+  - Price ingestor   — every 1 min, 24/7 (Finviz returns last close outside hours)
 """
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime, timezone
 from typing import Optional
 
-import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from loguru import logger
 
 from sentiment_analysis.config import settings
-from sentiment_analysis.ingestion.finviz_ingestor import FinvizIngestor, is_market_hours
+from sentiment_analysis.ingestion.finviz_ingestor import FinvizIngestor
 from sentiment_analysis.ingestion.rss_ingestor import RSSIngestor
 from sentiment_analysis.nlp.pipeline import run_nlp_pipeline
 from sentiment_analysis.sentiment.pipeline import run_sentiment_pipeline
-
-_last_price_fetch: Optional[datetime] = None
 
 _rss_ingestor: Optional[RSSIngestor] = None
 
@@ -56,19 +49,9 @@ async def _job_sentiment() -> None:
 
 async def _job_prices() -> None:
     """Scheduled job: fetch price data for tickers mentioned in recent articles."""
-    global _last_price_fetch
-
     if not settings.finviz_token:
         logger.warning("[finviz] FINVIZ_TOKEN not set — skipping price fetch.")
         return
-
-    now = datetime.now(timezone.utc)
-
-    # Outside market hours: throttle to once every 5 minutes
-    if not is_market_hours():
-        if _last_price_fetch is not None:
-            if (now - _last_price_fetch).total_seconds() < 300:
-                return
 
     # Fetch tickers that appeared in articles over the last 24 hours
     from sentiment_analysis.storage.database import get_async_session
@@ -94,8 +77,6 @@ async def _job_prices() -> None:
 
     if price_data:
         await _store_prices(price_data)
-
-    _last_price_fetch = now
 
 
 async def _store_prices(price_data: list[dict]) -> None:
