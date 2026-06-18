@@ -50,7 +50,8 @@ def query_df(sql: str, params: Optional[dict] = None) -> pd.DataFrame:
     """Execute a read-only query and return a DataFrame; returns empty DF on error."""
     try:
         with _get_engine().begin() as conn:
-            return pd.read_sql(text(sql), conn, params=params or {})
+            stmt = text(sql).bindparams(**(params or {}))
+            return pd.read_sql(stmt, conn)
     except Exception as exc:
         print(f"[db] query error: {exc}")
         return pd.DataFrame()
