@@ -17,6 +17,24 @@ from loguru import logger
 _ET       = pytz.timezone("America/New_York")
 _WORKERS  = 12
 
+# Single-letter tickers and SEC filing artifacts that are not tradeable equities.
+# Single letters appear when the NLP pipeline extracts "K" from "8-K", "D" from
+# "Form D", etc.  The explicit set covers the few single-letter NYSE/NASDAQ tickers
+# that are real but almost never mentioned in SEC filings as companies.
+_INVALID_TICKERS: frozenset[str] = frozenset({
+    # Single-letter SEC form artifacts
+    "K", "C", "A", "T", "F", "M", "R", "L", "V", "D", "W", "N", "X", "S",
+    "O", "E", "H", "G", "B", "P", "I", "J", "Q", "U", "Y", "Z",
+})
+
+# Runtime skip list — populated when yfinance returns no usable data for a
+# ticker across multiple calls.  Persists for the lifetime of the process so
+# the same bad ticker is not retried every minute.
+_SKIP_TICKERS: set[str] = set()
+# Track consecutive failures per ticker before adding to the skip list.
+_FAIL_COUNTS:  dict[str, int] = {}
+_SKIP_AFTER_FAILURES = 3
+
 
 def is_market_hours() -> bool:
     """Return True during NYSE regular trading hours (Mon–Fri 09:30–16:00 ET)."""
@@ -43,15 +61,25 @@ class PriceIngestor:
         if not tickers:
             return []
 
+        filtered = [
+            t for t in tickers
+            if len(t) >= 2
+            and t not in _INVALID_TICKERS
+            and t not in _SKIP_TICKERS
+        ]
+        skipped = len(tickers) - len(filtered)
+        if skipped:
+            logger.debug(f"[price] Skipped {skipped} invalid/blocked tickers.")
+
         results: list[dict] = []
         with ThreadPoolExecutor(max_workers=_WORKERS) as pool:
-            futures = {pool.submit(self._fetch_one, t): t for t in tickers}
+            futures = {pool.submit(self._fetch_one, t): t for t in filtered}
             for future in as_completed(futures):
                 row = future.result()
                 if row:
                     results.append(row)
 
-        logger.info(f"[price] Fetched {len(results)}/{len(tickers)} tickers.")
+        logger.info(f"[price] Fetched {len(results)}/{len(filtered)} tickers.")
         return results
 
     def _fetch_one(self, ticker: str) -> dict | None:
@@ -61,6 +89,10 @@ class PriceIngestor:
 
             price = getattr(fi, "last_price", None)
             if price is None or math.isnan(float(price)):
+                _FAIL_COUNTS[ticker] = _FAIL_COUNTS.get(ticker, 0) + 1
+                if _FAIL_COUNTS[ticker] >= _SKIP_AFTER_FAILURES:
+                    _SKIP_TICKERS.add(ticker)
+                    logger.debug(f"[price] {ticker}: added to skip list after {_SKIP_AFTER_FAILURES} failures.")
                 return None
 
             price = float(price)
@@ -83,6 +115,13 @@ class PriceIngestor:
                 "post_market_price": _flt(getattr(fi, "post_market_price", None)),
                 "updated_at":        datetime.now(_ET),
             }
+            # Reset fail count on success
+            _FAIL_COUNTS.pop(ticker, None)
         except Exception as exc:
-            logger.debug(f"[price] {ticker}: {exc}")
+            _FAIL_COUNTS[ticker] = _FAIL_COUNTS.get(ticker, 0) + 1
+            if _FAIL_COUNTS[ticker] >= _SKIP_AFTER_FAILURES:
+                _SKIP_TICKERS.add(ticker)
+                logger.debug(f"[price] {ticker}: added to skip list after {_SKIP_AFTER_FAILURES} failures.")
+            else:
+                logger.debug(f"[price] {ticker}: {exc}")
             return None

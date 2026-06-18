@@ -36,7 +36,8 @@ _ENTITY_BLOCKLIST: frozenset[str] = frozenset({
     "us", "usa", "uk", "eu", "china", "russia", "india",
     "new york", "washington", "california", "texas",
     "wall street", "main street",
-    # SEC EDGAR 8-K boilerplate — appear as NER entities but are filing metadata
+    # SEC EDGAR form type tokens — appear as NER entities when spaCy parses
+    # titles like "Current Report (8-K)", "Form 4", "Form S-1", etc.
     "filer", "exhibits", "exhibit", "item", "registrant",
     "election of directors", "certain officers",
     "material modifications to rights of security holders",
@@ -48,6 +49,17 @@ _ENTITY_BLOCKLIST: frozenset[str] = frozenset({
     "kb", "annual report", "press release",
     "globe newswire", "pr newswire", "business wire",
     "pacific time", "eastern time", "central time",
+    # SEC filing form names / numbers that look like tickers
+    "8-k", "10-k", "10-q", "s-1", "s-3", "s-4", "s-11",
+    "4", "13f", "13g", "13d", "sc 13g", "sc 13d",
+    "form 4", "form 8-k", "form 10-k", "form 10-q",
+    "form s-1", "form s-3", "form sc 13g",
+    "def 14a", "proxy", "prospectus",
+    # Common false-positive single tokens from SEC boilerplate
+    "section", "rule", "act", "exchange", "commission",
+    "company", "corporation", "limited", "shares", "common stock",
+    "class a", "class b", "class c", "series a", "series b",
+    "amendment", "agreement", "indenture", "note", "notes",
 })
 
 
@@ -83,7 +95,9 @@ class EntityExtractor:
             return [], [], []
 
         # Passes 1 & 2: cashtag + exact SP500 match (existing logic)
-        p1_p2_tickers = extract_tickers(full_text)
+        # Drop single-char results — these are almost always SEC form artifacts
+        # (e.g. "K" extracted from "8-K", "D" from "Form D").
+        p1_p2_tickers = [t for t in extract_tickers(full_text) if len(t) >= 2]
 
         # Pass 3: spaCy NER → TickerMapper
         resolved: list[dict] = []
@@ -100,7 +114,9 @@ class EntityExtractor:
                     continue
 
                 entity_text = ent.text.strip()
-                if not entity_text or entity_text.lower() in _ENTITY_BLOCKLIST:
+                if not entity_text or len(entity_text) <= 1:
+                    continue
+                if entity_text.lower() in _ENTITY_BLOCKLIST:
                     continue
                 if entity_text in seen_entities:
                     continue
