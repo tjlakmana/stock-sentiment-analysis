@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from sqlalchemy import (
     ARRAY,
+    BigInteger,
     Column,
     DateTime,
     Float,
@@ -207,6 +208,24 @@ class TickerSentimentSummary(Base):
             f"<TickerSentimentSummary {self.ticker} {self.window} "
             f"avg={self.avg_sentiment:.3f}>"
         )
+
+
+class TickerPrice(Base):
+    """Latest price snapshot per ticker, refreshed by the price ingestor."""
+
+    __tablename__ = "ticker_prices"
+
+    ticker            = Column(Text,                  primary_key=True)
+    price             = Column(Float,                 nullable=True)
+    change_pct        = Column(Float,                 nullable=True)
+    volume            = Column(BigInteger,            nullable=True)
+    market_cap        = Column(BigInteger,            nullable=True)
+    pre_market_price  = Column(Float,                 nullable=True)
+    post_market_price = Column(Float,                 nullable=True)
+    updated_at        = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    def __repr__(self) -> str:
+        return f"<TickerPrice {self.ticker} ${self.price}>"
 
 
 class SentimentSpike(Base):

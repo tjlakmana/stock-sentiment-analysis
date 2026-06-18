@@ -355,3 +355,57 @@ body {
     border-color: #00d4ff;
     color:        #000000 !important;
 }
+
+/* ── Screener ──────────────────────────────────────────────────────────── */
+.screener-header,
+.screener-row {
+    display:     flex;
+    align-items: center;
+    gap:         0;
+    padding:     8px 14px;
+    border-bottom: 1px solid #161616;
+}
+.screener-header {
+    font-size:     11px;
+    color:         #555555;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid #202020;
+    padding-bottom: 6px;
+}
+.screener-row:hover {
+    background: #111111;
+}
+
+/* Column widths — keep these in sync across header and row renders */
+.screener-col-ticker   { flex: 0 0 80px;  font-weight: 700; font-size: 13px; color: #e0e0e0; }
+.screener-col-price    { flex: 0 0 100px; font-size: 13px; color: #e0e0e0; }
+.screener-col-chg      { flex: 0 0 80px;  font-size: 12px; }
+.screener-col-vol      { flex: 0 0 90px;  font-size: 12px; color: #aaaaaa; }
+.screener-col-mktcap   { flex: 0 0 100px; font-size: 12px; color: #aaaaaa; }
+.screener-col-articles { flex: 0 0 70px;  font-size: 12px; color: #888888; text-align: right; }
+.screener-col-trend    { flex: 0 0 50px;  font-size: 16px; text-align: center; }
+.screener-col-bull     { flex: 0 0 70px;  font-size: 12px; color: #00e676; }
+.screener-col-bear     { flex: 0 0 70px;  font-size: 12px; color: #ff5252; }
+.screener-col-neut     { flex: 0 0 80px;  font-size: 12px; color: #888888; }
+.screener-col-lastupd  { flex: 0 0 90px;  font-size: 11px; color: #666666; }
+
+.screener-ticker-link {
+    color:           #00d4ff !important;
+    text-decoration: none;
+    font-weight:     700;
+    font-size:       13px;
+}
+.screener-ticker-link:hover {
+    text-decoration: underline;
+    color:           #33ddff !important;
+}
+
+.filter-label {
+    font-size:     11px;
+    color:         #555555;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+    display:       block;
+}

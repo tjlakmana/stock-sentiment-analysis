@@ -1,24 +1,33 @@
 """
 APScheduler setup for the ingestion pipeline.
 
-One recurring job:
-  - RSS poll — every ``settings.rss_poll_interval`` min (default 5)
+Jobs:
+  - RSS poll         — every settings.rss_poll_interval min (default 5)
+  - NLP pipeline     — every 10 min
+  - Sentiment        — every 5 min
+  - Price ingestor   — every 1 min (market hours) / 5 min throttle (off-hours)
 
-The module-level singleton preserves in-memory dedup state across scheduler
+The module-level singletons preserve in-memory state across scheduler
 invocations so the same article is never stored twice.
 """
 from __future__ import annotations
 
+import asyncio
+from datetime import datetime, timezone
 from typing import Optional
 
+import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from loguru import logger
 
 from sentiment_analysis.config import settings
+from sentiment_analysis.ingestion.price_ingestor import PriceIngestor, is_market_hours
 from sentiment_analysis.ingestion.rss_ingestor import RSSIngestor
 from sentiment_analysis.nlp.pipeline import run_nlp_pipeline
 from sentiment_analysis.sentiment.pipeline import run_sentiment_pipeline
+
+_last_price_fetch: Optional[datetime] = None
 
 _rss_ingestor: Optional[RSSIngestor] = None
 
@@ -41,8 +50,68 @@ async def _job_nlp() -> None:
 
 
 async def _job_sentiment() -> None:
-    """Scheduled job: run Groq sentiment analysis on NLP-processed articles."""
+    """Scheduled job: run Gemini sentiment analysis on NLP-processed articles."""
     await run_sentiment_pipeline()
+
+
+async def _job_prices() -> None:
+    """Scheduled job: fetch price data for tickers with recent sentiment activity."""
+    global _last_price_fetch
+
+    now = datetime.now(timezone.utc)
+
+    # Outside market hours: throttle to once every 5 minutes
+    if not is_market_hours():
+        if _last_price_fetch is not None:
+            if (now - _last_price_fetch).total_seconds() < 300:
+                return
+
+    # Fetch active tickers from the last 7 days of sentiment summaries
+    from sentiment_analysis.storage.database import get_async_session
+    from sqlalchemy import text as _text
+
+    async with get_async_session() as session:
+        result = await session.execute(_text(
+            "SELECT DISTINCT ticker FROM ticker_sentiment_summary "
+            "WHERE calculated_at > NOW() - INTERVAL '7 days' "
+            "ORDER BY ticker LIMIT 200"
+        ))
+        tickers = [row[0] for row in result.fetchall()]
+
+    if not tickers:
+        logger.debug("[price] No active tickers found — skipping price fetch.")
+        return
+
+    price_data = await asyncio.to_thread(
+        PriceIngestor().get_current_prices, tickers
+    )
+
+    if price_data:
+        await _store_prices(price_data)
+
+    _last_price_fetch = now
+
+
+async def _store_prices(price_data: list[dict]) -> None:
+    """Upsert price rows into ticker_prices (one row per ticker, updated in place)."""
+    from sqlalchemy.dialects.postgresql import insert as pg_insert
+
+    from sentiment_analysis.storage.database import get_async_session
+    from sentiment_analysis.storage.models import TickerPrice
+
+    async with get_async_session() as session:
+        for row in price_data:
+            stmt = (
+                pg_insert(TickerPrice)
+                .values(**row)
+                .on_conflict_do_update(
+                    index_elements=["ticker"],
+                    set_={k: v for k, v in row.items() if k != "ticker"},
+                )
+            )
+            await session.execute(stmt)
+
+    logger.debug(f"[price] Upserted {len(price_data)} price records.")
 
 
 def build_scheduler() -> AsyncIOScheduler:
@@ -77,15 +146,25 @@ def build_scheduler() -> AsyncIOScheduler:
         _job_sentiment,
         trigger=IntervalTrigger(minutes=5),
         id="sentiment_pipeline",
-        name="Groq Sentiment Analysis Pipeline",
+        name="Gemini Sentiment Analysis Pipeline",
         replace_existing=True,
         max_instances=1,
         misfire_grace_time=180,
     )
 
+    scheduler.add_job(
+        _job_prices,
+        trigger=IntervalTrigger(minutes=1),
+        id="price_ingestor",
+        name="Price Data Fetcher",
+        replace_existing=True,
+        max_instances=1,
+        misfire_grace_time=30,
+    )
+
     logger.info(
         f"Scheduler configured — RSS every {settings.rss_poll_interval}m, "
-        "NLP every 10m, Sentiment every 5m"
+        "NLP every 10m, Sentiment every 5m, Prices every 1m"
     )
     return scheduler
 
@@ -99,5 +178,6 @@ async def start_scheduler() -> AsyncIOScheduler:
     await _job_rss()
     await _job_nlp()
     await _job_sentiment()
+    await _job_prices()
 
     return scheduler
