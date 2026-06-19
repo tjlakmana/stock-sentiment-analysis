@@ -42,12 +42,9 @@ SENTIMENT_OPTIONS = [
 ]
 
 TIME_OPTIONS = [
-    {"label": "Last 30 Minutes", "value": "30m"},
-    {"label": "Last 1 Hour",     "value": "1h"},
-    {"label": "Last 4 Hours",    "value": "4h"},
-    {"label": "Last 24 Hours",   "value": "24h"},
-    {"label": "Last 7 Days",     "value": "7d"},
-    {"label": "All Time",        "value": "all"},
+    {"label": "Last 1 Hour",  "value": "1h"},
+    {"label": "Last 4 Hours", "value": "4h"},
+    {"label": "Last 24 Hours","value": "24h"},
 ]
 
 REFRESH_OPTIONS = [
@@ -84,16 +81,14 @@ _SENT_BORDER: dict[str, str] = {
 }
 
 _TIME_CLAUSE: dict[str, str] = {
-    "30m": "ingested_at > NOW() - INTERVAL '30 minutes'",
     "1h":  "ingested_at > NOW() - INTERVAL '1 hour'",
     "4h":  "ingested_at > NOW() - INTERVAL '4 hours'",
     "24h": "ingested_at > NOW() - INTERVAL '24 hours'",
-    "7d":  "ingested_at > NOW() - INTERVAL '7 days'",
 }
 
 # Fixed time windows for category badge counts — never affected by user filter
 _CAT_COUNT_CLAUSE: dict[str, str] = {
-    "🔥 Breaking":       "ingested_at > NOW() - INTERVAL '24 hours'",
+    "🔥 Breaking":       "ingested_at > NOW() - INTERVAL '2 hours'",
     "📰 Press Releases":  "ingested_at > NOW() - INTERVAL '24 hours'",
     "🏛️ SEC Filings":    "ingested_at > NOW() - INTERVAL '7 days'",
     "👤 Insider Trading": "ingested_at > NOW() - INTERVAL '7 days'",
@@ -555,7 +550,7 @@ layout = html.Div(
     prevent_initial_call=True,
 )
 def _set_time_default(category: str):
-    return "4h" if category == "🔥 Breaking" else "24h"
+    return "1h" if category == "🔥 Breaking" else "4h"
 
 
 @callback(

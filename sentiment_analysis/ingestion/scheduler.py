@@ -6,6 +6,7 @@ Jobs:
   - NLP pipeline     — every 10 min
   - Sentiment        — every 5 min
   - Price ingestor   — every 1 min, 24/7 (Finviz returns last close outside hours)
+  - Cleanup          — daily at midnight ET, deletes rows older than 7 days
 """
 from __future__ import annotations
 
@@ -13,6 +14,7 @@ import asyncio
 from typing import Optional
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 from loguru import logger
 
@@ -101,6 +103,31 @@ async def _store_prices(price_data: list[dict]) -> None:
     logger.debug(f"[price] Upserted {len(price_data)} price records.")
 
 
+async def _job_cleanup() -> None:
+    """Delete rows older than 7 days from all pipeline tables."""
+    from sentiment_analysis.storage.database import get_async_session
+    from sqlalchemy import text as _text
+
+    _TABLES = [
+        ("rss_articles",            "ingested_at"),
+        ("extracted_entities",      "created_at"),
+        ("ticker_sentiment_summary","calculated_at"),
+        ("sentiment_spikes",        "detected_at"),
+        ("ingestion_log",           "run_at"),
+    ]
+
+    async with get_async_session() as session:
+        total_deleted = 0
+        for table, col in _TABLES:
+            result = await session.execute(_text(
+                f"DELETE FROM {table} WHERE {col} < NOW() - INTERVAL '7 days'"
+            ))
+            total_deleted += result.rowcount
+        await session.commit()
+
+    logger.info(f"[cleanup] Deleted {total_deleted} rows older than 7 days.")
+
+
 def build_scheduler() -> AsyncIOScheduler:
     """
     Construct an ``AsyncIOScheduler`` with the RSS ingestion job registered.
@@ -149,9 +176,20 @@ def build_scheduler() -> AsyncIOScheduler:
         misfire_grace_time=30,
     )
 
+    scheduler.add_job(
+        _job_cleanup,
+        trigger=CronTrigger(hour=0, minute=0, timezone="America/New_York"),
+        id="cleanup",
+        name="Daily Data Cleanup (7-day retention)",
+        replace_existing=True,
+        max_instances=1,
+        misfire_grace_time=3600,
+    )
+
     logger.info(
         f"Scheduler configured — RSS every {settings.rss_poll_interval}m, "
-        "NLP every 10m, Sentiment every 5m, Finviz prices every 1m"
+        "NLP every 10m, Sentiment every 5m, Finviz prices every 1m, "
+        "Cleanup daily at midnight ET"
     )
     return scheduler
 
