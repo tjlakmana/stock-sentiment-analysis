@@ -501,7 +501,7 @@ layout = html.Div(
                 dbc.Select(
                     id="news-time",
                     options=TIME_OPTIONS,
-                    value="4h",
+                    value="24h",
                     className="filter-select",
                     style={**_SELECT_H},
                 ),
@@ -562,8 +562,8 @@ layout = html.Div(
     Input("news-category", "value"),
     prevent_initial_call=True,
 )
-def _set_time_default(category: str):
-    return "1h" if category == "🔥 Breaking" else "4h"
+def _set_time_default(_):
+    return "24h"
 
 
 @callback(
