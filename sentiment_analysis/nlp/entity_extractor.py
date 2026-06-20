@@ -146,17 +146,33 @@ class EntityExtractor:
     # ── Private helpers ─────────────────────────────────────────────────────
 
     def _get_nlp(self):
-        """Lazy-load en_core_web_sm; returns None if unavailable."""
+        """
+        Lazy-load en_core_web_sm; returns None if unavailable.
+        Catches ImportError (missing shared libs like libz.so.1), OSError
+        (model not installed), and any other failure so the pipeline
+        degrades gracefully to Pass 1+2 (cashtag + exact ticker scan).
+        """
         if self._nlp is None:
             try:
-                import spacy
+                import spacy  # may raise ImportError if libz.so.1 missing
                 self._nlp = spacy.load("en_core_web_sm")
-                logger.debug("[entity_extractor] en_core_web_sm loaded.")
-            except OSError:
+                logger.info("[entity_extractor] en_core_web_sm loaded successfully.")
+            except ImportError as exc:
                 logger.warning(
-                    "[entity_extractor] en_core_web_sm not found. "
-                    "Run: python -m spacy download en_core_web_sm"
+                    f"[entity_extractor] spaCy import failed (missing shared lib?): {exc}. "
+                    "NER disabled — falling back to cashtag/ticker-list extraction only."
                 )
+                self._nlp = False  # sentinel: don't retry
+            except OSError as exc:
+                logger.warning(
+                    f"[entity_extractor] en_core_web_sm not found: {exc}. "
+                    "NER disabled — falling back to cashtag/ticker-list extraction only."
+                )
+                self._nlp = False
             except Exception as exc:
-                logger.warning(f"[entity_extractor] Failed to load spaCy model: {exc}")
-        return self._nlp
+                logger.warning(
+                    f"[entity_extractor] Failed to load spaCy model: {exc}. "
+                    "NER disabled — falling back to cashtag/ticker-list extraction only."
+                )
+                self._nlp = False
+        return self._nlp if self._nlp is not False else None

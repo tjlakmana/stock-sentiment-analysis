@@ -1,1 +1,1 @@
-web: python -m sentiment_analysis.main
+web: ldconfig && python -m sentiment_analysis.main
