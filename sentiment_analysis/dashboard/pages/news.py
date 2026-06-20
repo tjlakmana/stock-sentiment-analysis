@@ -44,9 +44,10 @@ SENTIMENT_OPTIONS = [
 ]
 
 TIME_OPTIONS = [
-    {"label": "Last 1 Hour",  "value": "1h"},
-    {"label": "Last 4 Hours", "value": "4h"},
-    {"label": "Last 24 Hours","value": "24h"},
+    {"label": "Last 30 Minutes", "value": "30m"},
+    {"label": "Last 1 Hour",     "value": "1h"},
+    {"label": "Last 4 Hours",    "value": "4h"},
+    {"label": "Last 24 Hours",   "value": "24h"},
 ]
 
 REFRESH_OPTIONS = [
@@ -83,6 +84,7 @@ _SENT_BORDER: dict[str, str] = {
 }
 
 _TIME_CLAUSE: dict[str, str] = {
+    "30m": "ingested_at > NOW() - INTERVAL '30 minutes'",
     "1h":  "ingested_at > NOW() - INTERVAL '1 hour'",
     "4h":  "ingested_at > NOW() - INTERVAL '4 hours'",
     "24h": "ingested_at > NOW() - INTERVAL '24 hours'",
@@ -94,17 +96,17 @@ _TIME_CLAUSE: dict[str, str] = {
 # Breaking defaults to 1h, SEC/Insider use 24h (filings arrive in batches),
 # all others use 4h to match the global feed default.
 _CAT_COUNT_CLAUSE: dict[str, str] = {
-    "🔥 Breaking":       "ingested_at > NOW() - INTERVAL '1 hour'",
-    "📈 Earnings":        "ingested_at > NOW() - INTERVAL '4 hours'",
+    "🔥 Breaking":       "ingested_at > NOW() - INTERVAL '24 hours'",
+    "📈 Earnings":        "ingested_at > NOW() - INTERVAL '24 hours'",
     "🏛️ SEC Filings":    "ingested_at > NOW() - INTERVAL '24 hours'",
-    "📰 Press Releases":  "ingested_at > NOW() - INTERVAL '4 hours'",
-    "💊 Biotech/FDA":     "ingested_at > NOW() - INTERVAL '4 hours'",
-    "🏦 M&A":             "ingested_at > NOW() - INTERVAL '4 hours'",
+    "📰 Press Releases":  "ingested_at > NOW() - INTERVAL '24 hours'",
+    "💊 Biotech/FDA":     "ingested_at > NOW() - INTERVAL '24 hours'",
+    "🏦 M&A":             "ingested_at > NOW() - INTERVAL '24 hours'",
     "👤 Insider Trading": "ingested_at > NOW() - INTERVAL '24 hours'",
-    "🚀 IPO":             "ingested_at > NOW() - INTERVAL '4 hours'",
-    "₿ Crypto":           "ingested_at > NOW() - INTERVAL '4 hours'",
+    "🚀 IPO":             "ingested_at > NOW() - INTERVAL '24 hours'",
+    "₿ Crypto":           "ingested_at > NOW() - INTERVAL '24 hours'",
 }
-_CAT_COUNT_CLAUSE_DEFAULT = "ingested_at > NOW() - INTERVAL '4 hours'"
+_CAT_COUNT_CLAUSE_DEFAULT = "ingested_at > NOW() - INTERVAL '24 hours'"
 
 # ── Categories ────────────────────────────────────────────────────────────
 
