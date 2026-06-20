@@ -7,6 +7,8 @@ import math
 import threading
 from datetime import datetime
 
+from loguru import logger
+
 import dash
 import dash_bootstrap_components as dbc
 from dash import ALL, Input, Output, State, callback, ctx, dcc, html
@@ -86,14 +88,23 @@ _TIME_CLAUSE: dict[str, str] = {
     "24h": "ingested_at > NOW() - INTERVAL '24 hours'",
 }
 
-# Fixed time windows for category badge counts — never affected by user filter
+# Fixed time windows for category badge counts.
+# These match the feed's default time filter so the count reflects what
+# the user will actually see when they click the category button.
+# Breaking defaults to 1h, SEC/Insider use 24h (filings arrive in batches),
+# all others use 4h to match the global feed default.
 _CAT_COUNT_CLAUSE: dict[str, str] = {
-    "🔥 Breaking":       "ingested_at > NOW() - INTERVAL '2 hours'",
-    "📰 Press Releases":  "ingested_at > NOW() - INTERVAL '24 hours'",
-    "🏛️ SEC Filings":    "ingested_at > NOW() - INTERVAL '7 days'",
-    "👤 Insider Trading": "ingested_at > NOW() - INTERVAL '7 days'",
+    "🔥 Breaking":       "ingested_at > NOW() - INTERVAL '1 hour'",
+    "📈 Earnings":        "ingested_at > NOW() - INTERVAL '4 hours'",
+    "🏛️ SEC Filings":    "ingested_at > NOW() - INTERVAL '24 hours'",
+    "📰 Press Releases":  "ingested_at > NOW() - INTERVAL '4 hours'",
+    "💊 Biotech/FDA":     "ingested_at > NOW() - INTERVAL '4 hours'",
+    "🏦 M&A":             "ingested_at > NOW() - INTERVAL '4 hours'",
+    "👤 Insider Trading": "ingested_at > NOW() - INTERVAL '24 hours'",
+    "🚀 IPO":             "ingested_at > NOW() - INTERVAL '4 hours'",
+    "₿ Crypto":           "ingested_at > NOW() - INTERVAL '4 hours'",
 }
-_CAT_COUNT_CLAUSE_DEFAULT = "ingested_at > NOW() - INTERVAL '7 days'"
+_CAT_COUNT_CLAUSE_DEFAULT = "ingested_at > NOW() - INTERVAL '4 hours'"
 
 # ── Categories ────────────────────────────────────────────────────────────
 
@@ -711,8 +722,15 @@ def _update_feed(n, category, keyword, source, sentiment, time_range, page,
     current_page  = max(1, int(page or 1))
     where, params = _build_where(keyword, source, sentiment, time_range, category=active_cat)
 
+    logger.debug(
+        f"[news] feed query — cat={active_cat!r} time={time_range!r} "
+        f"WHERE={where!r} params={params}"
+    )
+
     count_df = query_df(f"SELECT COUNT(*) AS total FROM rss_articles WHERE {where}", params)
     total    = int(count_df["total"].iloc[0]) if not count_df.empty else 0
+
+    logger.debug(f"[news] feed count={total} for cat={active_cat!r}")
 
     total_pages  = max(1, math.ceil(total / PAGE_SIZE))
     current_page = max(1, min(current_page, total_pages))
