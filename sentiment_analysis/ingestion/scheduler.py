@@ -64,10 +64,12 @@ async def _job_prices() -> None:
             "SELECT DISTINCT unnest(tickers) AS ticker "
             "FROM rss_articles "
             "WHERE ingested_at > NOW() - INTERVAL '24 hours' "
-            "  AND tickers IS NOT NULL AND array_length(tickers, 1) > 0 "
-            "ORDER BY ticker LIMIT 200"
+            "  AND tickers IS NOT NULL "
+            "  AND array_length(tickers, 1) > 0"
         ))
-        tickers = [row[0] for row in result.fetchall() if row[0]]
+        tickers = [row[0] for row in result.fetchall() if row[0]][:200]
+
+    logger.info(f"[finviz] Found {len(tickers)} tickers to fetch from last 24h articles.")
 
     if not tickers:
         logger.debug("[finviz] No active tickers in last 24h — skipping price fetch.")
