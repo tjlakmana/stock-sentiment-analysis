@@ -286,7 +286,7 @@ def _render_overview_rows(df: pd.DataFrame) -> list:
                 html.Span(_fmt_volume(r.get("volume")),   className="screener-col-vol"),
                 html.Span(_fmt_mktcap(r.get("market_cap")), className="screener-col-mktcap"),
                 html.Span(str(int(r.get("article_count", 0))), className="screener-col-articles"),
-                _badge(r.get("avg_sentiment")),
+                html.Div(_badge(r.get("avg_sentiment")), className="screener-col-sentiment"),
                 html.Div(_trend_icon(r.get("momentum")), className="screener-col-trend"),
             ],
         ))
@@ -316,7 +316,7 @@ def _render_sentiment_rows(df: pd.DataFrame) -> list:
                     href=f"/?keyword={r['ticker']}",
                     className="screener-col-ticker screener-ticker-link",
                 ),
-                _badge(r.get("avg_sentiment")),
+                html.Div(_badge(r.get("avg_sentiment")), className="screener-col-sentiment"),
                 html.Span(_pct(r.get("bullish_count"),  cnt), className="screener-col-bull"),
                 html.Span(_pct(r.get("bearish_count"),  cnt), className="screener-col-bear"),
                 html.Span(_pct(r.get("neutral_count"),  cnt), className="screener-col-neut"),
@@ -407,13 +407,13 @@ _OVERVIEW_HEADER = html.Div(className="screener-header", children=[
     html.Span("Volume",     className="screener-col-vol"),
     html.Span("Mkt Cap",    className="screener-col-mktcap"),
     html.Span("Articles",   className="screener-col-articles"),
-    html.Span("Sentiment",  style={"flex": "0 0 145px"}),
+    html.Span("Sentiment",  className="screener-col-sentiment"),
     html.Span("Trend",      className="screener-col-trend"),
 ])
 
 _SENTIMENT_HEADER = html.Div(className="screener-header", children=[
     html.Span("Ticker",     className="screener-col-ticker"),
-    html.Span("Sentiment",  style={"flex": "0 0 145px"}),
+    html.Span("Sentiment",  className="screener-col-sentiment"),
     html.Span("Bull %",     className="screener-col-bull"),
     html.Span("Bear %",     className="screener-col-bear"),
     html.Span("Neutral %",  className="screener-col-neut"),

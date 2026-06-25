@@ -378,17 +378,18 @@ body {
 }
 
 /* Column widths — keep these in sync across header and row renders */
-.screener-col-ticker   { flex: 0 0 80px;  font-weight: 700; font-size: 13px; color: #e0e0e0; }
-.screener-col-price    { flex: 0 0 100px; font-size: 13px; color: #e0e0e0; }
-.screener-col-chg      { flex: 0 0 80px;  font-size: 12px; }
-.screener-col-vol      { flex: 0 0 90px;  font-size: 12px; color: #aaaaaa; }
-.screener-col-mktcap   { flex: 0 0 100px; font-size: 12px; color: #aaaaaa; }
-.screener-col-articles { flex: 0 0 70px;  font-size: 12px; color: #888888; text-align: right; }
-.screener-col-trend    { flex: 0 0 50px;  font-size: 16px; text-align: center; }
-.screener-col-bull     { flex: 0 0 70px;  font-size: 12px; color: #00e676; }
-.screener-col-bear     { flex: 0 0 70px;  font-size: 12px; color: #ff5252; }
-.screener-col-neut     { flex: 0 0 80px;  font-size: 12px; color: #888888; }
-.screener-col-lastupd  { flex: 0 0 90px;  font-size: 11px; color: #666666; }
+.screener-col-ticker    { flex: 0 0 80px;  font-weight: 700; font-size: 13px; color: #e0e0e0; text-align: left; }
+.screener-col-sentiment { flex: 0 0 160px; text-align: left; }
+.screener-col-price     { flex: 0 0 100px; font-size: 13px; color: #e0e0e0; }
+.screener-col-chg       { flex: 0 0 80px;  font-size: 12px; }
+.screener-col-vol       { flex: 0 0 90px;  font-size: 12px; color: #aaaaaa; }
+.screener-col-mktcap    { flex: 0 0 100px; font-size: 12px; color: #aaaaaa; }
+.screener-col-articles  { flex: 0 0 70px;  font-size: 12px; color: #888888; text-align: right; }
+.screener-col-trend     { flex: 0 0 80px;  font-size: 16px; text-align: center; }
+.screener-col-bull      { flex: 0 0 70px;  font-size: 12px; color: #00e676;  text-align: right; }
+.screener-col-bear      { flex: 0 0 70px;  font-size: 12px; color: #ff5252;  text-align: right; }
+.screener-col-neut      { flex: 0 0 80px;  font-size: 12px; color: #888888;  text-align: right; }
+.screener-col-lastupd   { flex: 0 0 120px; font-size: 11px; color: #666666;  text-align: center; }
 
 .screener-ticker-link {
     color:           #00d4ff !important;
