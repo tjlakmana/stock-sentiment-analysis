@@ -194,8 +194,11 @@ def _build_gauge(score: float) -> go.Figure:
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
         value=score,
+        # domain pushes the gauge arc into the top 90% of the figure so the
+        # number lands below the arc instead of overlapping it.
+        domain={"x": [0, 1], "y": [0.1, 1.0]},
         number={
-            "font":        {"size": 30, "color": color, "family": "Inter, sans-serif"},
+            "font":        {"size": 20, "color": color, "family": "Inter, sans-serif"},
             "valueformat": "+.2f",
         },
         gauge={
@@ -224,8 +227,8 @@ def _build_gauge(score: float) -> go.Figure:
     ))
     fig.update_layout(
         **_PLOTLY_BASE,
-        height=190,
-        margin=dict(l=24, r=24, t=28, b=0),
+        height=220,
+        margin=dict(l=24, r=24, t=20, b=20),
     )
     return fig
 
@@ -332,7 +335,7 @@ def _gauge_card(avg_score: float | None) -> html.Div:
         dcc.Graph(
             figure=_build_gauge(score),
             config={"displayModeBar": False},
-            style={"height": "190px"},
+            style={"height": "220px"},
         ),
         html.Div(
             style={"textAlign": "center", "marginTop": "6px"},
