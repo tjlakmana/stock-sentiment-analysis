@@ -13,7 +13,7 @@ from __future__ import annotations
 import os
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from io import StringIO
 from pathlib import Path
 
@@ -132,7 +132,7 @@ def _get_quote(session: requests.Session, ticker: str) -> dict | None:
             "market_cap":         None,
             "pre_market_price":   None,
             "post_market_price":  None,
-            "updated_at":         datetime.utcnow(),
+            "updated_at":         datetime.now(timezone.utc),
         }
 
     except requests.HTTPError as exc:
@@ -163,7 +163,7 @@ def _run_once(
         row = _get_quote(session, ticker)
         if row:
             results.append(row)
-        time.sleep(0.5)
+        time.sleep(1.5)
 
     if results:
         _upsert_prices(conn, results)
