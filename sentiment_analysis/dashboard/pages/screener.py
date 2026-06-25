@@ -88,7 +88,7 @@ _SCREENER_SQL = """
             momentum,
             calculated_at
         FROM ticker_sentiment_summary
-        WHERE window = :window
+        WHERE "window" = :window
         ORDER BY ticker, calculated_at DESC
     ),
     recent_spikes AS (
@@ -124,11 +124,11 @@ def _fetch_data(window: str, min_articles: int) -> pd.DataFrame:
     diag = query_df("""
         SELECT
             (SELECT COUNT(*) FROM ticker_sentiment_summary)              AS tss_total,
-            (SELECT COUNT(DISTINCT window) FROM ticker_sentiment_summary) AS tss_windows,
-            (SELECT string_agg(DISTINCT window, ', ' ORDER BY window)
-               FROM ticker_sentiment_summary)                            AS tss_window_values,
+            (SELECT COUNT(DISTINCT "window") FROM ticker_sentiment_summary) AS tss_windows,
+            (SELECT string_agg(DISTINCT "window", ', ' ORDER BY "window")
+               FROM ticker_sentiment_summary)                              AS tss_window_values,
             (SELECT COUNT(*) FROM ticker_sentiment_summary
-               WHERE window = :window)                                   AS tss_for_window,
+               WHERE "window" = :window)                                   AS tss_for_window,
             (SELECT COUNT(*) FROM ticker_prices)                         AS price_rows
     """, {"window": window})
     if not diag.empty:

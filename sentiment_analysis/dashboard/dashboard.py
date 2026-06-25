@@ -415,7 +415,7 @@ def render_ticker_coverage() -> None:
             neutral_count,
             momentum
         FROM   ticker_sentiment_summary
-        WHERE  window = '24hr'
+        WHERE  "window" = '24hr'
           AND  calculated_at > NOW() - INTERVAL '2 hours'
         ORDER  BY ticker, calculated_at DESC
     """)
