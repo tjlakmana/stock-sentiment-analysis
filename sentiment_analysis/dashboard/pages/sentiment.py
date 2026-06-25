@@ -63,7 +63,7 @@ _TICKER_SENTIMENT_SQL = """
 """
 
 _SPIKES_SQL = """
-    SELECT ticker, spike_intensity, detected_at
+    SELECT ticker, article_count, rolling_avg, spike_ratio, detected_at
     FROM sentiment_spikes
     WHERE detected_at > NOW() - INTERVAL '24 hours'
     ORDER BY detected_at DESC
@@ -457,10 +457,10 @@ def _spikes_panel(spikes_df: pd.DataFrame) -> html.Div:
     else:
         items = list(spikes_df.iterrows())
         for idx, (_, r) in enumerate(items):
-            intensity = _safe(r.get("spike_intensity"))
-            intensity_text = f"{intensity:.1f}×" if intensity is not None else "—"
+            ratio = _safe(r.get("spike_ratio"))
+            ratio_text = f"{ratio:.1f}x normal volume" if ratio is not None else "— normal volume"
             try:
-                ts = pd.Timestamp(r.get("detected_at")).strftime("%H:%M")
+                ts = pd.Timestamp(r.get("detected_at")).strftime("%H:%M ET")
             except Exception:
                 ts = "—"
             last = (idx == len(items) - 1)
@@ -470,7 +470,7 @@ def _spikes_panel(spikes_df: pd.DataFrame) -> html.Div:
                     "fontWeight": "700", "fontSize": "13px",
                     "width": "52px", "flexShrink": "0",
                 }),
-                html.Span(f"{intensity_text} normal volume", style={
+                html.Span(ratio_text, style={
                     "fontSize": "12px", "color": "#ff9800", "flex": "1",
                 }),
                 html.Span(ts, style={"fontSize": "10px", "color": "#444", "flexShrink": "0"}),
