@@ -1,15 +1,14 @@
 """
-Screener page — ranked ticker list with real-time price and sentiment data.
+Screener page — Finviz-style dense ticker table with real-time price/sentiment.
 """
 from __future__ import annotations
 
 import math
-from urllib.parse import parse_qs
 
 import dash
 import dash_bootstrap_components as dbc
 import pandas as pd
-from dash import Input, Output, State, callback, ctx, dcc, html
+from dash import ALL, Input, Output, State, callback, ctx, dcc, html
 from dash.exceptions import PreventUpdate
 
 from loguru import logger
@@ -19,7 +18,283 @@ from sentiment_analysis.ingestion.finviz_ingestor import is_market_hours
 
 dash.register_page(__name__, path="/screener", name="Screener", title="Screener")
 
-# ── Options ───────────────────────────────────────────────────────────────
+PAGE_SIZE = 25
+
+# ── Company / sector data ──────────────────────────────────────────────────
+
+COMPANY_NAMES: dict[str, str] = {
+    # Technology
+    "AAPL":  "Apple Inc",               "MSFT":  "Microsoft Corp",
+    "NVDA":  "NVIDIA Corp",             "AVGO":  "Broadcom Inc",
+    "AMD":   "Advanced Micro Devices",  "INTC":  "Intel Corp",
+    "QCOM":  "Qualcomm Inc",            "CSCO":  "Cisco Systems",
+    "TXN":   "Texas Instruments",       "ADBE":  "Adobe Inc",
+    "CRM":   "Salesforce Inc",          "NOW":   "ServiceNow Inc",
+    "AMAT":  "Applied Materials",       "LRCX":  "Lam Research",
+    "MU":    "Micron Technology",       "ADI":   "Analog Devices",
+    "KLAC":  "KLA Corp",                "PANW":  "Palo Alto Networks",
+    "SNPS":  "Synopsys Inc",            "CDNS":  "Cadence Design",
+    "FTNT":  "Fortinet Inc",            "IBM":   "IBM Corp",
+    "ACN":   "Accenture PLC",           "FICO":  "Fair Isaac Corp",
+    "ANSS":  "ANSYS Inc",               "IT":    "Gartner Inc",
+    "LDOS":  "Leidos Holdings",         "SAIC":  "SAIC Inc",
+    "BAH":   "Booz Allen Hamilton",     "CACI":  "CACI International",
+    "DXC":   "DXC Technology",          "WEX":   "WEX Inc",
+    "FIS":   "Fidelity Natl Info",      "FISV":  "Fiserv Inc",
+    "GPN":   "Global Payments",         "INTU":  "Intuit Inc",
+    "MSCI":  "MSCI Inc",                "EPAM":  "EPAM Systems",
+    "CTSH":  "Cognizant Tech",          "PLTR":  "Palantir Technologies",
+    "CRWD":  "CrowdStrike Holdings",    "SNOW":  "Snowflake Inc",
+    "MDB":   "MongoDB Inc",             "DDOG":  "Datadog Inc",
+    "ZS":    "Zscaler Inc",             "NET":   "Cloudflare Inc",
+    "HUBS":  "HubSpot Inc",             "TEAM":  "Atlassian Corp",
+    "WDAY":  "Workday Inc",             "VEEV":  "Veeva Systems",
+    "TTD":   "Trade Desk Inc",          "RBLX":  "Roblox Corp",
+    "U":     "Unity Software",          "HOOD":  "Robinhood Markets",
+    # Communication
+    "GOOGL": "Alphabet Inc",            "META":  "Meta Platforms",
+    "NFLX":  "Netflix Inc",             "T":     "AT&T Inc",
+    "VZ":    "Verizon Communications",  "CMCSA": "Comcast Corp",
+    "CHTR":  "Charter Communications",  "TMUS":  "T-Mobile US",
+    "PARA":  "Paramount Global",        "WBD":   "Warner Bros Discovery",
+    "FOX":   "Fox Corp",                "DIS":   "Walt Disney Co",
+    "ROKU":  "Roku Inc",                "SNAP":  "Snap Inc",
+    "PINS":  "Pinterest Inc",           "SPOT":  "Spotify Technology",
+    # Healthcare
+    "UNH":   "UnitedHealth Group",      "JNJ":   "Johnson & Johnson",
+    "LLY":   "Eli Lilly & Co",          "MRK":   "Merck & Co",
+    "ABBV":  "AbbVie Inc",              "TMO":   "Thermo Fisher",
+    "ABT":   "Abbott Laboratories",     "DHR":   "Danaher Corp",
+    "BSX":   "Boston Scientific",       "ELV":   "Elevance Health",
+    "CI":    "Cigna Group",             "HUM":   "Humana Inc",
+    "MCK":   "McKesson Corp",           "CVS":   "CVS Health",
+    "VRTX":  "Vertex Pharmaceuticals",  "REGN":  "Regeneron Pharma",
+    "GILD":  "Gilead Sciences",         "AMGN":  "Amgen Inc",
+    "BIIB":  "Biogen Inc",              "MRNA":  "Moderna Inc",
+    "ILMN":  "Illumina Inc",            "IDXX":  "IDEXX Laboratories",
+    "ZTS":   "Zoetis Inc",              "BDX":   "Becton Dickinson",
+    "EW":    "Edwards Lifesciences",    "STE":   "Steris PLC",
+    "RMD":   "ResMed Inc",              "ISRG":  "Intuitive Surgical",
+    "DXCM":  "Dexcom Inc",              "HOLX":  "Hologic Inc",
+    "PODD":  "Insulet Corp",            "A":     "Agilent Technologies",
+    "MTD":   "Mettler-Toledo",          "IQV":   "IQVIA Holdings",
+    "CNC":   "Centene Corp",            "MOH":   "Molina Healthcare",
+    # Finance
+    "JPM":   "JPMorgan Chase",          "BAC":   "Bank of America",
+    "WFC":   "Wells Fargo",             "MS":    "Morgan Stanley",
+    "GS":    "Goldman Sachs",           "C":     "Citigroup Inc",
+    "USB":   "U.S. Bancorp",            "PNC":   "PNC Financial",
+    "TFC":   "Truist Financial",        "COF":   "Capital One Financial",
+    "AIG":   "American Intl Group",     "MMC":   "Marsh McLennan",
+    "AON":   "Aon PLC",                 "CB":    "Chubb Ltd",
+    "V":     "Visa Inc",                "MA":    "Mastercard Inc",
+    "AXP":   "American Express",        "PYPL":  "PayPal Holdings",
+    "SQ":    "Block Inc",               "AFRM":  "Affirm Holdings",
+    "UPST":  "Upstart Holdings",        "SOFI":  "SoFi Technologies",
+    "NU":    "Nu Holdings",             "COIN":  "Coinbase Global",
+    "MSTR":  "MicroStrategy",           "RIOT":  "Riot Platforms",
+    "MARA":  "Marathon Digital",        "HUT":   "Hut 8 Corp",
+    "SPGI":  "S&P Global Inc",          "BLK":   "BlackRock Inc",
+    "MCO":   "Moody's Corp",            "ICE":   "Intercontinental Exchange",
+    "CME":   "CME Group",               "NDAQ":  "Nasdaq Inc",
+    "SCHW":  "Charles Schwab",          "BX":    "Blackstone Inc",
+    "KKR":   "KKR & Co",                "APO":   "Apollo Global Mgmt",
+    # Energy
+    "XOM":   "Exxon Mobil",             "CVX":   "Chevron Corp",
+    "COP":   "ConocoPhillips",          "EOG":   "EOG Resources",
+    "PXD":   "Pioneer Natural Res",     "DVN":   "Devon Energy",
+    "SLB":   "SLB (Schlumberger)",      "HAL":   "Halliburton Co",
+    "BKR":   "Baker Hughes",            "MPC":   "Marathon Petroleum",
+    "PSX":   "Phillips 66",             "VLO":   "Valero Energy",
+    "HES":   "Hess Corp",               "WMB":   "Williams Companies",
+    "KMI":   "Kinder Morgan",           "OKE":   "ONEOK Inc",
+    "SRE":   "Sempra",
+    # Consumer
+    "AMZN":  "Amazon.com Inc",          "TSLA":  "Tesla Inc",
+    "WMT":   "Walmart Inc",             "HD":    "Home Depot",
+    "COST":  "Costco Wholesale",        "LOW":   "Lowe's Companies",
+    "TGT":   "Target Corp",             "NKE":   "Nike Inc",
+    "MCD":   "McDonald's Corp",         "SBUX":  "Starbucks Corp",
+    "YUM":   "Yum! Brands",             "CMG":   "Chipotle Mexican Grill",
+    "DG":    "Dollar General",          "DLTR":  "Dollar Tree",
+    "ROST":  "Ross Stores",             "TJX":   "TJX Companies",
+    "PG":    "Procter & Gamble",        "KO":    "Coca-Cola Co",
+    "PEP":   "PepsiCo Inc",             "MDLZ":  "Mondelez Intl",
+    "CL":    "Colgate-Palmolive",       "GIS":   "General Mills",
+    "HSY":   "Hershey Co",              "KHC":   "Kraft Heinz Co",
+    "MO":    "Altria Group",            "PM":    "Philip Morris Intl",
+    "BABA":  "Alibaba Group",           "EBAY":  "eBay Inc",
+    "ETSY":  "Etsy Inc",                "ABNB":  "Airbnb Inc",
+    "UBER":  "Uber Technologies",       "LYFT":  "Lyft Inc",
+    "DASH":  "DoorDash Inc",            "RIVN":  "Rivian Automotive",
+    "LCID":  "Lucid Group",             "GM":    "General Motors",
+    "F":     "Ford Motor Co",           "STLA":  "Stellantis NV",
+    "DKNG":  "DraftKings Inc",
+    # Industrial
+    "HON":   "Honeywell Intl",          "CAT":   "Caterpillar Inc",
+    "UNP":   "Union Pacific",           "UPS":   "United Parcel Service",
+    "FDX":   "FedEx Corp",              "NSC":   "Norfolk Southern",
+    "RTX":   "RTX Corp",                "LMT":   "Lockheed Martin",
+    "NOC":   "Northrop Grumman",        "GD":    "General Dynamics",
+    "BA":    "Boeing Co",               "GE":    "GE Aerospace",
+    "RSG":   "Republic Services",       "WM":    "Waste Management",
+    "MMM":   "3M Co",                   "EMR":   "Emerson Electric",
+    "ETN":   "Eaton Corp",              "ROP":   "Roper Technologies",
+    "IR":    "Ingersoll Rand",          "CARR":  "Carrier Global",
+    "OTIS":  "Otis Worldwide",          "FAST":  "Fastenal Co",
+    "DE":    "Deere & Co",              "PCAR":  "PACCAR Inc",
+    "ROK":   "Rockwell Automation",     "PH":    "Parker Hannifin",
+    "DOV":   "Dover Corp",              "XYL":   "Xylem Inc",
+    # Materials
+    "LIN":   "Linde PLC",               "APD":   "Air Products",
+    "ECL":   "Ecolab Inc",              "SHW":   "Sherwin-Williams",
+    "PPG":   "PPG Industries",          "DD":    "DuPont de Nemours",
+    "DOW":   "Dow Inc",                 "NEM":   "Newmont Corp",
+    "FCX":   "Freeport-McMoRan",        "VMC":   "Vulcan Materials",
+    "MLM":   "Martin Marietta",         "NUE":   "Nucor Corp",
+    "STLD":  "Steel Dynamics",          "CF":    "CF Industries",
+    "MOS":   "Mosaic Co",               "FMC":   "FMC Corp",
+    # Utilities
+    "NEE":   "NextEra Energy",          "DUK":   "Duke Energy",
+    "SO":    "Southern Co",             "D":     "Dominion Energy",
+    "AEP":   "American Electric Power", "EXC":   "Exelon Corp",
+    "XEL":   "Xcel Energy",             "ES":    "Eversource Energy",
+    "ETR":   "Entergy Corp",            "FE":    "FirstEnergy Corp",
+    "PCG":   "PG&E Corp",               "EIX":   "Edison Intl",
+    "AWK":   "American Water Works",    "PPL":   "PPL Corp",
+    "AES":   "AES Corp",
+    # Real Estate
+    "AMT":   "American Tower",          "CCI":   "Crown Castle",
+    "EQIX":  "Equinix Inc",             "PSA":   "Public Storage",
+    "SPG":   "Simon Property Group",    "O":     "Realty Income",
+    "WELL":  "Welltower Inc",           "DLR":   "Digital Realty",
+    "PLD":   "Prologis Inc",            "VICI":  "VICI Properties",
+    "ARE":   "Alexandria Real Estate",  "EQR":   "Equity Residential",
+    "AVB":   "AvalonBay Communities",   "IRM":   "Iron Mountain",
+    "SBAC":  "SBA Communications",
+    # ETFs / Macro
+    "SPY":   "SPDR S&P 500 ETF",        "QQQ":   "Invesco QQQ ETF",
+    "IWM":   "iShares Russell 2000",    "DIA":   "SPDR Dow Jones ETF",
+    "GLD":   "SPDR Gold Shares",        "TLT":   "iShs 20+ Yr Treasury",
+    "HYG":   "iShs HY Corp Bond",       "VTI":   "Vanguard Total Mkt",
+    "XLF":   "Financial Select SPDR",   "XLK":   "Technology Select SPDR",
+    "XLE":   "Energy Select SPDR",      "XLV":   "Health Care Select SPDR",
+    "XLI":   "Industrial Select SPDR",  "XLY":   "Cons Discr Select SPDR",
+    "XLP":   "Cons Staples Select SPDR","XLU":   "Utilities Select SPDR",
+    "XLB":   "Materials Select SPDR",   "XLRE":  "Real Estate Select SPDR",
+    "XLC":   "Comm Services SPDR",      "GME":   "GameStop Corp",
+    "AMC":   "AMC Entertainment",
+}
+
+_SECTOR_MAP: dict[str, str] = {
+    # Technology
+    "AAPL": "Technology",  "MSFT": "Technology",  "NVDA": "Technology",
+    "AVGO": "Technology",  "AMD":  "Technology",   "INTC": "Technology",
+    "QCOM": "Technology",  "CSCO": "Technology",   "TXN":  "Technology",
+    "ADBE": "Technology",  "CRM":  "Technology",   "NOW":  "Technology",
+    "AMAT": "Technology",  "LRCX": "Technology",   "MU":   "Technology",
+    "ADI":  "Technology",  "KLAC": "Technology",   "PANW": "Technology",
+    "SNPS": "Technology",  "CDNS": "Technology",   "FTNT": "Technology",
+    "IBM":  "Technology",  "ACN":  "Technology",   "FICO": "Technology",
+    "ANSS": "Technology",  "IT":   "Technology",   "LDOS": "Technology",
+    "SAIC": "Technology",  "BAH":  "Technology",   "CACI": "Technology",
+    "DXC":  "Technology",  "WEX":  "Technology",   "FIS":  "Technology",
+    "FISV": "Technology",  "GPN":  "Technology",   "INTU": "Technology",
+    "MSCI": "Technology",  "EPAM": "Technology",   "CTSH": "Technology",
+    "PLTR": "Technology",  "CRWD": "Technology",   "SNOW": "Technology",
+    "MDB":  "Technology",  "DDOG": "Technology",   "ZS":   "Technology",
+    "NET":  "Technology",  "HUBS": "Technology",   "TEAM": "Technology",
+    "WDAY": "Technology",  "VEEV": "Technology",   "TTD":  "Technology",
+    "RBLX": "Technology",  "U":    "Technology",
+    # Communication
+    "GOOGL": "Communication", "META":  "Communication", "NFLX":  "Communication",
+    "T":     "Communication", "VZ":    "Communication", "CMCSA": "Communication",
+    "CHTR":  "Communication", "TMUS":  "Communication", "PARA":  "Communication",
+    "WBD":   "Communication", "FOX":   "Communication", "DIS":   "Communication",
+    "ROKU":  "Communication", "SNAP":  "Communication", "PINS":  "Communication",
+    "SPOT":  "Communication", "HOOD":  "Communication",
+    # Healthcare
+    "UNH":  "Healthcare",  "JNJ":  "Healthcare",   "LLY":  "Healthcare",
+    "MRK":  "Healthcare",  "ABBV": "Healthcare",   "TMO":  "Healthcare",
+    "ABT":  "Healthcare",  "DHR":  "Healthcare",   "BSX":  "Healthcare",
+    "ELV":  "Healthcare",  "CI":   "Healthcare",   "HUM":  "Healthcare",
+    "MCK":  "Healthcare",  "CVS":  "Healthcare",   "VRTX": "Healthcare",
+    "REGN": "Healthcare",  "GILD": "Healthcare",   "AMGN": "Healthcare",
+    "BIIB": "Healthcare",  "MRNA": "Healthcare",   "ILMN": "Healthcare",
+    "IDXX": "Healthcare",  "ZTS":  "Healthcare",   "BDX":  "Healthcare",
+    "EW":   "Healthcare",  "STE":  "Healthcare",   "RMD":  "Healthcare",
+    "ISRG": "Healthcare",  "DXCM": "Healthcare",   "HOLX": "Healthcare",
+    "PODD": "Healthcare",  "A":    "Healthcare",   "MTD":  "Healthcare",
+    "IQV":  "Healthcare",  "CNC":  "Healthcare",   "MOH":  "Healthcare",
+    # Finance
+    "JPM":  "Finance",     "BAC":  "Finance",      "WFC":  "Finance",
+    "MS":   "Finance",     "GS":   "Finance",      "C":    "Finance",
+    "USB":  "Finance",     "PNC":  "Finance",      "TFC":  "Finance",
+    "COF":  "Finance",     "AIG":  "Finance",      "MMC":  "Finance",
+    "AON":  "Finance",     "CB":   "Finance",      "V":    "Finance",
+    "MA":   "Finance",     "AXP":  "Finance",      "PYPL": "Finance",
+    "SQ":   "Finance",     "AFRM": "Finance",      "UPST": "Finance",
+    "SOFI": "Finance",     "NU":   "Finance",      "COIN": "Finance",
+    "MSTR": "Finance",     "RIOT": "Finance",      "MARA": "Finance",
+    "HUT":  "Finance",     "SPGI": "Finance",      "BLK":  "Finance",
+    "MCO":  "Finance",     "ICE":  "Finance",      "CME":  "Finance",
+    "NDAQ": "Finance",     "SCHW": "Finance",      "BX":   "Finance",
+    "KKR":  "Finance",     "APO":  "Finance",
+    # Energy
+    "XOM":  "Energy",      "CVX":  "Energy",       "COP":  "Energy",
+    "EOG":  "Energy",      "PXD":  "Energy",       "DVN":  "Energy",
+    "SLB":  "Energy",      "HAL":  "Energy",       "BKR":  "Energy",
+    "MPC":  "Energy",      "PSX":  "Energy",       "VLO":  "Energy",
+    "HES":  "Energy",      "WMB":  "Energy",       "KMI":  "Energy",
+    "OKE":  "Energy",      "SRE":  "Energy",
+    # Consumer
+    "AMZN": "Consumer",    "TSLA": "Consumer",     "WMT":  "Consumer",
+    "HD":   "Consumer",    "COST": "Consumer",     "LOW":  "Consumer",
+    "TGT":  "Consumer",    "NKE":  "Consumer",     "MCD":  "Consumer",
+    "SBUX": "Consumer",    "YUM":  "Consumer",     "CMG":  "Consumer",
+    "DG":   "Consumer",    "DLTR": "Consumer",     "ROST": "Consumer",
+    "TJX":  "Consumer",    "PG":   "Consumer",     "KO":   "Consumer",
+    "PEP":  "Consumer",    "MDLZ": "Consumer",     "CL":   "Consumer",
+    "GIS":  "Consumer",    "HSY":  "Consumer",     "KHC":  "Consumer",
+    "MO":   "Consumer",    "PM":   "Consumer",     "BABA": "Consumer",
+    "EBAY": "Consumer",    "ETSY": "Consumer",     "ABNB": "Consumer",
+    "UBER": "Consumer",    "LYFT": "Consumer",     "DASH": "Consumer",
+    "RIVN": "Consumer",    "LCID": "Consumer",     "GM":   "Consumer",
+    "F":    "Consumer",    "STLA": "Consumer",     "DKNG": "Consumer",
+    "GME":  "Consumer",    "AMC":  "Consumer",
+    # Industrial
+    "HON":  "Industrial",  "CAT":  "Industrial",   "UNP":  "Industrial",
+    "UPS":  "Industrial",  "FDX":  "Industrial",   "NSC":  "Industrial",
+    "RTX":  "Industrial",  "LMT":  "Industrial",   "NOC":  "Industrial",
+    "GD":   "Industrial",  "BA":   "Industrial",   "GE":   "Industrial",
+    "RSG":  "Industrial",  "WM":   "Industrial",   "MMM":  "Industrial",
+    "EMR":  "Industrial",  "ETN":  "Industrial",   "ROP":  "Industrial",
+    "IR":   "Industrial",  "CARR": "Industrial",   "OTIS": "Industrial",
+    "FAST": "Industrial",  "DE":   "Industrial",   "PCAR": "Industrial",
+    "ROK":  "Industrial",  "PH":   "Industrial",   "DOV":  "Industrial",
+    "XYL":  "Industrial",
+    # Materials
+    "LIN":  "Materials",   "APD":  "Materials",    "ECL":  "Materials",
+    "SHW":  "Materials",   "PPG":  "Materials",    "DD":   "Materials",
+    "DOW":  "Materials",   "NEM":  "Materials",    "FCX":  "Materials",
+    "VMC":  "Materials",   "MLM":  "Materials",    "NUE":  "Materials",
+    "STLD": "Materials",   "CF":   "Materials",    "MOS":  "Materials",
+    "FMC":  "Materials",
+    # Utilities
+    "NEE":  "Utilities",   "DUK":  "Utilities",    "SO":   "Utilities",
+    "D":    "Utilities",   "AEP":  "Utilities",    "EXC":  "Utilities",
+    "XEL":  "Utilities",   "ES":   "Utilities",    "ETR":  "Utilities",
+    "FE":   "Utilities",   "PCG":  "Utilities",    "EIX":  "Utilities",
+    "AWK":  "Utilities",   "PPL":  "Utilities",    "AES":  "Utilities",
+    # Real Estate
+    "AMT":  "Real Estate", "CCI":  "Real Estate",  "EQIX": "Real Estate",
+    "PSA":  "Real Estate", "SPG":  "Real Estate",  "O":    "Real Estate",
+    "WELL": "Real Estate", "DLR":  "Real Estate",  "PLD":  "Real Estate",
+    "VICI": "Real Estate", "ARE":  "Real Estate",  "EQR":  "Real Estate",
+    "AVB":  "Real Estate", "IRM":  "Real Estate",  "SBAC": "Real Estate",
+}
+
+# ── Options ────────────────────────────────────────────────────────────────
 
 SIGNAL_OPTIONS = [
     {"label": "All",               "value": "all"},
@@ -40,31 +315,30 @@ ORDER_OPTIONS = [
 ]
 
 SECTOR_OPTIONS = [
-    {"label": "All Sectors",         "value": "all"},
-    {"label": "Technology",          "value": "Technology"},
-    {"label": "Healthcare",          "value": "Healthcare"},
-    {"label": "Financials",          "value": "Financials"},
-    {"label": "Consumer Discretionary", "value": "Consumer Discretionary"},
-    {"label": "Consumer Staples",    "value": "Consumer Staples"},
-    {"label": "Communication Services", "value": "Communication Services"},
-    {"label": "Industrials",         "value": "Industrials"},
-    {"label": "Energy",              "value": "Energy"},
-    {"label": "Materials",           "value": "Materials"},
-    {"label": "Real Estate",         "value": "Real Estate"},
-    {"label": "Utilities",           "value": "Utilities"},
+    {"label": "Any Sector",    "value": "all"},
+    {"label": "Technology",    "value": "Technology"},
+    {"label": "Healthcare",    "value": "Healthcare"},
+    {"label": "Finance",       "value": "Finance"},
+    {"label": "Energy",        "value": "Energy"},
+    {"label": "Consumer",      "value": "Consumer"},
+    {"label": "Industrial",    "value": "Industrial"},
+    {"label": "Materials",     "value": "Materials"},
+    {"label": "Utilities",     "value": "Utilities"},
+    {"label": "Real Estate",   "value": "Real Estate"},
+    {"label": "Communication", "value": "Communication"},
 ]
 
 MKTCAP_OPTIONS = [
-    {"label": "All",                "value": "all"},
-    {"label": "Large  (>$10B)",     "value": "large"},
-    {"label": "Mid  ($2B–$10B)",    "value": "mid"},
-    {"label": "Small  (<$2B)",      "value": "small"},
+    {"label": "All",              "value": "all"},
+    {"label": "Large  (>$10B)",   "value": "large"},
+    {"label": "Mid  ($2B–$10B)",  "value": "mid"},
+    {"label": "Small  (<$2B)",    "value": "small"},
 ]
 
 TIME_WINDOW_OPTIONS = [
-    {"label": "1 Hour",  "value": "1hr"},
-    {"label": "4 Hours", "value": "4hr"},
-    {"label": "24 Hours","value": "24hr"},
+    {"label": "1 Hour",   "value": "1hr"},
+    {"label": "4 Hours",  "value": "4hr"},
+    {"label": "24 Hours", "value": "24hr"},
 ]
 
 MIN_ARTICLES_OPTIONS = [
@@ -120,16 +394,15 @@ _SCREENER_SQL = """
 
 
 def _fetch_data(window: str, min_articles: int) -> pd.DataFrame:
-    # ── Diagnostics: log intermediate counts so Railway logs show where data stops ──
     diag = query_df("""
         SELECT
-            (SELECT COUNT(*) FROM ticker_sentiment_summary)              AS tss_total,
+            (SELECT COUNT(*) FROM ticker_sentiment_summary)                 AS tss_total,
             (SELECT COUNT(DISTINCT "window") FROM ticker_sentiment_summary) AS tss_windows,
             (SELECT string_agg(DISTINCT "window", ', ' ORDER BY "window")
-               FROM ticker_sentiment_summary)                              AS tss_window_values,
+               FROM ticker_sentiment_summary)                               AS tss_window_values,
             (SELECT COUNT(*) FROM ticker_sentiment_summary
-               WHERE "window" = :window)                                   AS tss_for_window,
-            (SELECT COUNT(*) FROM ticker_prices)                         AS price_rows
+               WHERE "window" = :window)                                    AS tss_for_window,
+            (SELECT COUNT(*) FROM ticker_prices)                            AS price_rows
     """, {"window": window})
     if not diag.empty:
         r = diag.iloc[0]
@@ -163,11 +436,16 @@ def _score_to_label(score: float | None) -> str:
     if score is None or math.isnan(float(score)):
         return "Neutral"
     s = float(score)
-    if s >= 0.35:   return "Bullish"
-    elif s >= 0.15: return "Somewhat Bullish"
-    elif s > -0.15: return "Neutral"
-    elif s > -0.35: return "Somewhat Bearish"
+    if s >= 0.35:    return "Bullish"
+    elif s >= 0.15:  return "Somewhat Bullish"
+    elif s > -0.15:  return "Neutral"
+    elif s > -0.35:  return "Somewhat Bearish"
     return "Bearish"
+
+
+def _score_color(score: float | None) -> str:
+    label = _score_to_label(score)
+    return _SENT_STYLE.get(label, {}).get("color", "#888888")
 
 
 def _badge(score) -> html.Span:
@@ -180,7 +458,7 @@ def _badge(score) -> html.Span:
             "color":        s.get("color", "#444"),
             "border":       f"1px solid {s.get('bd', '#282828')}",
             "borderRadius": "12px",
-            "padding":      "3px 9px",
+            "padding":      "2px 8px",
             "fontSize":     "11px",
             "fontWeight":   "600",
             "whiteSpace":   "nowrap",
@@ -245,61 +523,109 @@ def _pct(num, denom) -> str:
         return "—"
 
 
+# ── Grid layout constants ─────────────────────────────────────────────────
+#   No.  Ticker  Company  MktCap  Price  Chg%   Vol    Art    Sentiment  Score
+_OV_GRID   = "36px 68px 1fr 88px 78px 70px 88px 62px 128px 56px"
+#   No.  Ticker  Sentiment  Score  Bull%  Bear%  Neut%  Art    LastUpd    Trend
+_SENT_GRID = "36px 68px 128px 56px 62px 62px 76px 62px 106px 54px"
+
+_OV_HDR_CELLS   = ["#", "Ticker", "Company", "Mkt Cap", "Price",
+                    "Chg %", "Volume", "Articles", "Sentiment", "Score"]
+_SENT_HDR_CELLS = ["#", "Ticker", "Sentiment", "Score",
+                    "Bull %", "Bear %", "Neutral %", "Articles", "Last Upd", "Trend"]
+
+_OVERVIEW_HEADER = html.Div(
+    className="scr-header",
+    style={"gridTemplateColumns": _OV_GRID},
+    children=[html.Span(c) for c in _OV_HDR_CELLS],
+)
+
+_SENTIMENT_HEADER = html.Div(
+    className="scr-header",
+    style={"gridTemplateColumns": _SENT_GRID},
+    children=[html.Span(c) for c in _SENT_HDR_CELLS],
+)
+
 # ── Table renderers ───────────────────────────────────────────────────────
 
-def _render_overview_rows(df: pd.DataFrame) -> list:
+_NO_RESULTS = [html.Div(
+    "No tickers match current filters.",
+    style={"padding": "32px", "textAlign": "center", "color": "#555", "fontSize": "14px"},
+)]
+
+
+def _render_overview_rows(df: pd.DataFrame, page: int) -> list:
     if df.empty:
-        return [html.Div("No tickers match current filters.", className="no-results",
-                         style={"padding": "24px", "textAlign": "center", "color": "#555"})]
-    rows = []
-    for _, r in df.iterrows():
+        return _NO_RESULTS
+
+    offset  = (page - 1) * PAGE_SIZE
+    page_df = df.iloc[offset : offset + PAGE_SIZE]
+    rows: list = []
+
+    for local_i, (_, r) in enumerate(page_df.iterrows()):
+        global_i = offset + local_i
+        ticker   = r["ticker"]
+        company  = COMPANY_NAMES.get(ticker, "")
+        score    = _safe(r.get("avg_sentiment"))
+        color    = _score_color(score)
         chg_text, chg_color = _fmt_chg(r.get("change_pct"))
 
-        price_cell = html.Div([
-            html.Span(_fmt_price(r.get("price")), style={"fontSize": "13px", "fontWeight": "600"}),
-        ], style={"lineHeight": "1.2"})
-
-        # Pre/post market shown when outside market hours
+        price_children: list = [
+            html.Span(_fmt_price(r.get("price")),
+                      style={"fontSize": "12px", "fontWeight": "600", "color": "#e0e0e0"}),
+        ]
         if not is_market_hours():
             pre  = _safe(r.get("pre_market_price"))
             post = _safe(r.get("post_market_price"))
-            ext_price = pre or post
-            ext_label = "Pre" if pre else ("Post" if post else None)
-            if ext_price and ext_label:
-                price_cell = html.Div([
-                    html.Span(_fmt_price(r.get("price")), style={"fontSize": "13px", "fontWeight": "600"}),
-                    html.Span(f"{ext_label}: {_fmt_price(ext_price)}",
-                              style={"fontSize": "10px", "color": "#888", "display": "block"}),
-                ], style={"lineHeight": "1.3"})
+            ext  = pre or post
+            lbl  = "Pre" if pre else ("Post" if post else None)
+            if ext and lbl:
+                price_children.append(
+                    html.Span(f"{lbl}: {_fmt_price(ext)}",
+                              style={"fontSize": "10px", "color": "#666", "display": "block",
+                                     "lineHeight": "1.1"}),
+                )
 
+        cls = "scr-row scr-alt" if global_i % 2 else "scr-row"
         rows.append(html.Div(
-            className="screener-row",
+            className=cls,
+            style={"gridTemplateColumns": _OV_GRID},
             children=[
-                html.A(
-                    r["ticker"],
-                    href=f"/?keyword={r['ticker']}",
-                    className="screener-col-ticker screener-ticker-link",
+                html.Span(str(global_i + 1),
+                          style={"color": "#444", "fontSize": "11px", "textAlign": "right"}),
+                html.A(ticker, href=f"/?keyword={ticker}", className="scr-ticker"),
+                html.Span(company, className="scr-company"),
+                html.Span(_fmt_mktcap(r.get("market_cap")), className="scr-num"),
+                html.Div(price_children),
+                html.Span(chg_text, className="scr-num", style={"color": chg_color}),
+                html.Span(_fmt_volume(r.get("volume")), className="scr-num"),
+                html.Span(str(int(r.get("article_count", 0))), className="scr-num"),
+                _badge(score),
+                html.Span(
+                    f"{score:+.2f}" if score is not None else "—",
+                    className="scr-num",
+                    style={"color": color, "fontFamily": "monospace"},
                 ),
-                html.Div(price_cell,     className="screener-col-price"),
-                html.Span(chg_text,      className="screener-col-chg",
-                          style={"color": chg_color}),
-                html.Span(_fmt_volume(r.get("volume")),   className="screener-col-vol"),
-                html.Span(_fmt_mktcap(r.get("market_cap")), className="screener-col-mktcap"),
-                html.Span(str(int(r.get("article_count", 0))), className="screener-col-articles"),
-                html.Div(_badge(r.get("avg_sentiment")), className="screener-col-sentiment"),
-                html.Div(_trend_icon(r.get("momentum")), className="screener-col-trend"),
             ],
         ))
     return rows
 
 
-def _render_sentiment_rows(df: pd.DataFrame) -> list:
+def _render_sentiment_rows(df: pd.DataFrame, page: int) -> list:
     if df.empty:
-        return [html.Div("No tickers match current filters.", className="no-results",
-                         style={"padding": "24px", "textAlign": "center", "color": "#555"})]
-    rows = []
-    for _, r in df.iterrows():
-        cnt = int(r.get("article_count", 0))
+        return _NO_RESULTS
+
+    offset  = (page - 1) * PAGE_SIZE
+    page_df = df.iloc[offset : offset + PAGE_SIZE]
+    rows: list = []
+
+    for local_i, (_, r) in enumerate(page_df.iterrows()):
+        global_i = offset + local_i
+        cnt      = int(r.get("article_count", 0))
+        score    = _safe(r.get("avg_sentiment"))
+        color    = _score_color(score)
+        ticker   = r["ticker"]
+
         last_upd = ""
         try:
             ts = pd.Timestamp(r.get("calculated_at"))
@@ -308,24 +634,78 @@ def _render_sentiment_rows(df: pd.DataFrame) -> list:
         except Exception:
             pass
 
+        cls = "scr-row scr-alt" if global_i % 2 else "scr-row"
         rows.append(html.Div(
-            className="screener-row",
+            className=cls,
+            style={"gridTemplateColumns": _SENT_GRID},
             children=[
-                html.A(
-                    r["ticker"],
-                    href=f"/?keyword={r['ticker']}",
-                    className="screener-col-ticker screener-ticker-link",
+                html.Span(str(global_i + 1),
+                          style={"color": "#444", "fontSize": "11px", "textAlign": "right"}),
+                html.A(ticker, href=f"/?keyword={ticker}", className="scr-ticker"),
+                _badge(score),
+                html.Span(
+                    f"{score:+.2f}" if score is not None else "—",
+                    className="scr-num",
+                    style={"color": color, "fontFamily": "monospace"},
                 ),
-                html.Div(_badge(r.get("avg_sentiment")), className="screener-col-sentiment"),
-                html.Span(_pct(r.get("bullish_count"),  cnt), className="screener-col-bull"),
-                html.Span(_pct(r.get("bearish_count"),  cnt), className="screener-col-bear"),
-                html.Span(_pct(r.get("neutral_count"),  cnt), className="screener-col-neut"),
-                html.Span(str(cnt),                           className="screener-col-articles"),
-                html.Span(last_upd,                           className="screener-col-lastupd"),
-                html.Div(_trend_icon(r.get("momentum")),      className="screener-col-trend"),
+                html.Span(_pct(r.get("bullish_count"),  cnt),
+                          className="scr-num", style={"color": "#00e676"}),
+                html.Span(_pct(r.get("bearish_count"),  cnt),
+                          className="scr-num", style={"color": "#ff5252"}),
+                html.Span(_pct(r.get("neutral_count"),  cnt),
+                          className="scr-num", style={"color": "#888888"}),
+                html.Span(str(cnt), className="scr-num"),
+                html.Span(last_upd,
+                          style={"fontSize": "11px", "color": "#666", "textAlign": "center"}),
+                html.Div(_trend_icon(r.get("momentum")),
+                         style={"fontSize": "15px", "textAlign": "center"}),
             ],
         ))
     return rows
+
+
+# ── Pagination ────────────────────────────────────────────────────────────
+
+def _render_pagination(current_page: int, total_pages: int) -> list:
+    if total_pages <= 1:
+        return []
+
+    items: list = [
+        html.Span(
+            f"Page {current_page} of {total_pages}",
+            style={"fontSize": "11px", "color": "#555", "marginRight": "4px",
+                   "whiteSpace": "nowrap"},
+        ),
+        html.Button(
+            "← Prev",
+            id={"type": "scr-pgbtn", "page": "prev"},
+            className="page-btn",
+            disabled=current_page <= 1,
+            n_clicks=0,
+        ),
+    ]
+
+    # Sliding window: up to 5 numbered buttons
+    n       = total_pages
+    start_p = max(1, min(current_page - 2, n - 4))
+    end_p   = min(n, start_p + 4)
+
+    for p in range(start_p, end_p + 1):
+        items.append(html.Button(
+            str(p),
+            id={"type": "scr-pgbtn", "page": p},
+            className="page-btn page-btn-active" if p == current_page else "page-btn",
+            n_clicks=0,
+        ))
+
+    items.append(html.Button(
+        "Next →",
+        id={"type": "scr-pgbtn", "page": "next"},
+        className="page-btn",
+        disabled=current_page >= total_pages,
+        n_clicks=0,
+    ))
+    return items
 
 
 # ── Filter / sort helpers ─────────────────────────────────────────────────
@@ -342,7 +722,14 @@ def _apply_signal(df: pd.DataFrame, signal: str) -> pd.DataFrame:
         return df[df["volume"].fillna(0) > median_v * 2] if median_v else df
     if signal == "spike":
         return df[df["has_spike"] == True]
-    return df  # "all" or "most_articles" (sorting handled separately)
+    return df
+
+
+def _apply_sector_filter(df: pd.DataFrame, sector: str) -> pd.DataFrame:
+    if not sector or sector == "all":
+        return df
+    mapped = df["ticker"].map(_SECTOR_MAP).fillna("")
+    return df[mapped == sector]
 
 
 def _apply_mktcap_filter(df: pd.DataFrame, mktcap: str) -> pd.DataFrame:
@@ -396,31 +783,9 @@ _SORT_BTN_STYLE = {
 
 _REFRESH_BTN_STYLE = {
     **_SORT_BTN_STYLE,
-    "width":     "40px",
-    "color":     "#00d4ff",
+    "width": "40px",
+    "color": "#00d4ff",
 }
-
-_OVERVIEW_HEADER = html.Div(className="screener-header", children=[
-    html.Span("Ticker",     className="screener-col-ticker"),
-    html.Span("Price",      className="screener-col-price"),
-    html.Span("Chg %",      className="screener-col-chg"),
-    html.Span("Volume",     className="screener-col-vol"),
-    html.Span("Mkt Cap",    className="screener-col-mktcap"),
-    html.Span("Articles",   className="screener-col-articles"),
-    html.Span("Sentiment",  className="screener-col-sentiment"),
-    html.Span("Trend",      className="screener-col-trend"),
-])
-
-_SENTIMENT_HEADER = html.Div(className="screener-header", children=[
-    html.Span("Ticker",     className="screener-col-ticker"),
-    html.Span("Sentiment",  className="screener-col-sentiment"),
-    html.Span("Bull %",     className="screener-col-bull"),
-    html.Span("Bear %",     className="screener-col-bear"),
-    html.Span("Neutral %",  className="screener-col-neut"),
-    html.Span("Articles",   className="screener-col-articles"),
-    html.Span("Last Upd",   className="screener-col-lastupd"),
-    html.Span("Trend",      className="screener-col-trend"),
-])
 
 # ── Layout ────────────────────────────────────────────────────────────────
 
@@ -430,6 +795,7 @@ layout = html.Div(
         # ── Intervals & stores ─────────────────────────────────────────────
         dcc.Interval(id="screener-interval", interval=60_000, n_intervals=0),
         dcc.Store(id="screener-sort-dir", data="desc"),
+        dcc.Store(id="screener-page",     data=1),
 
         # ── Top filter bar ─────────────────────────────────────────────────
         html.Div(
@@ -483,13 +849,13 @@ layout = html.Div(
                     id="screener-filter-btn",
                     n_clicks=0,
                     style={
-                        "background":   "transparent",
-                        "border":       "none",
-                        "color":        "#888888",
-                        "fontSize":     "12px",
-                        "cursor":       "pointer",
-                        "fontFamily":   "inherit",
-                        "padding":      "4px 0",
+                        "background":  "transparent",
+                        "border":      "none",
+                        "color":       "#888888",
+                        "fontSize":    "12px",
+                        "cursor":      "pointer",
+                        "fontFamily":  "inherit",
+                        "padding":     "4px 0",
                     },
                 ),
             ],
@@ -516,7 +882,7 @@ layout = html.Div(
                                                 options=SECTOR_OPTIONS,
                                                 value="all",
                                                 className="filter-select",
-                                                style={"minWidth": "200px", **_SH},
+                                                style={"minWidth": "180px", **_SH},
                                             ),
                                         ]),
                                         html.Div([
@@ -541,7 +907,8 @@ layout = html.Div(
                                                    "flexWrap": "wrap", "marginBottom": "14px"},
                                             children=[
                                                 html.Div([
-                                                    html.Label("Min Articles", className="filter-label"),
+                                                    html.Label("Min Articles",
+                                                               className="filter-label"),
                                                     dbc.Select(
                                                         id="screener-min-articles",
                                                         options=MIN_ARTICLES_OPTIONS,
@@ -551,7 +918,8 @@ layout = html.Div(
                                                     ),
                                                 ]),
                                                 html.Div([
-                                                    html.Label("Time Window", className="filter-label"),
+                                                    html.Label("Time Window",
+                                                               className="filter-label"),
                                                     dbc.Select(
                                                         id="screener-window",
                                                         options=TIME_WINDOW_OPTIONS,
@@ -590,11 +958,16 @@ layout = html.Div(
 
         html.Hr(style={"borderColor": "#1c1c1c", "margin": "0 0 10px", "opacity": "1"}),
 
-        # ── Count bar ──────────────────────────────────────────────────────
-        html.Div(className="count-bar", children=[
-            html.Span(id="screener-count",   className="count-label"),
-            html.Span(id="screener-updated", className="last-refresh"),
-        ]),
+        # ── Info bar: count (left) + pagination (right) ────────────────────
+        html.Div(
+            style={"display": "flex", "justifyContent": "space-between",
+                   "alignItems": "center", "marginBottom": "10px", "padding": "0 2px"},
+            children=[
+                html.Span(id="screener-count", className="count-label"),
+                html.Div(id="screener-pagination", className="pagination-bar",
+                         style={"padding": "0", "justifyContent": "flex-end"}),
+            ],
+        ),
 
         # ── Results tabs ───────────────────────────────────────────────────
         dbc.Tabs(
@@ -622,7 +995,7 @@ layout = html.Div(
 
 @callback(
     Output("screener-interval", "interval"),
-    Input("screener-interval", "n_intervals"),
+    Input("screener-interval",  "n_intervals"),
 )
 def _update_interval(_):
     return 60_000 if is_market_hours() else 300_000
@@ -655,10 +1028,48 @@ def _toggle_filter_panel(_, is_open):
 
 
 @callback(
+    Output("screener-page", "data"),
+    Input("screener-signal",          "value"),
+    Input("screener-order",           "value"),
+    Input("screener-sort-dir",        "data"),
+    Input("screener-search",          "value"),
+    Input("screener-mktcap",          "value"),
+    Input("screener-sentiment-range", "value"),
+    Input("screener-min-articles",    "value"),
+    Input("screener-window",          "value"),
+    Input("screener-sector",          "value"),
+    prevent_initial_call=True,
+)
+def _reset_screener_page(*_):
+    return 1
+
+
+@callback(
+    Output("screener-page", "data", allow_duplicate=True),
+    Input({"type": "scr-pgbtn", "page": ALL}, "n_clicks"),
+    State("screener-page", "data"),
+    prevent_initial_call=True,
+)
+def _handle_screener_page_click(n_clicks_list, current_page):
+    if not any(n for n in (n_clicks_list or [])):
+        raise PreventUpdate
+    triggered = ctx.triggered_id
+    if triggered is None:
+        raise PreventUpdate
+    page_val = triggered["page"]
+    cur = int(current_page or 1)
+    if page_val == "prev":
+        return max(1, cur - 1)
+    if page_val == "next":
+        return cur + 1
+    return int(page_val)
+
+
+@callback(
     Output("screener-overview-rows",  "children"),
     Output("screener-sentiment-rows", "children"),
     Output("screener-count",          "children"),
-    Output("screener-updated",        "children"),
+    Output("screener-pagination",     "children"),
     Input("screener-interval",        "n_intervals"),
     Input("screener-refresh-btn",     "n_clicks"),
     Input("screener-signal",          "value"),
@@ -669,30 +1080,33 @@ def _toggle_filter_panel(_, is_open):
     Input("screener-sentiment-range", "value"),
     Input("screener-min-articles",    "value"),
     Input("screener-window",          "value"),
+    Input("screener-sector",          "value"),
+    Input("screener-page",            "data"),
     State("url",                      "pathname"),
 )
 def _update_screener(n, refresh_clicks, signal, order, sort_dir, search,
-                     mktcap, sent_range, min_articles, window, pathname):
+                     mktcap, sent_range, min_articles, window, sector, page, pathname):
     if pathname not in (None, "/screener"):
         raise PreventUpdate
 
     signal       = signal       or "all"
     order        = order        or "avg_sentiment"
     sort_dir     = sort_dir     or "desc"
+    sector       = sector       or "all"
     min_articles = int(min_articles or 0)
     window       = window       or "4hr"
     sent_range   = sent_range   or [-1.0, 1.0]
+    page         = max(1, int(page or 1))
 
     df = _fetch_data(window, min_articles)
 
     if df.empty:
         empty_msg = [html.Div(
             "No data yet — articles are being collected. Check back in a few minutes.",
-            className="no-results",
             style={"padding": "32px", "textAlign": "center",
                    "color": "#555", "fontSize": "14px"},
         )]
-        return empty_msg, empty_msg, "0 tickers", "· No data"
+        return empty_msg, empty_msg, "0 tickers", []
 
     # ── Apply filters ──────────────────────────────────────────────────────
     df = _apply_signal(df, signal)
@@ -703,17 +1117,34 @@ def _update_screener(n, refresh_clicks, signal, order, sort_dir, search,
     if mktcap and mktcap != "all":
         df = _apply_mktcap_filter(df, mktcap)
 
+    df = _apply_sector_filter(df, sector)
+
     lo, hi = float(sent_range[0]), float(sent_range[1])
     df = df[(df["avg_sentiment"] >= lo) & (df["avg_sentiment"] <= hi)]
 
     # ── Sort ───────────────────────────────────────────────────────────────
     df = _apply_sort(df, signal, order, sort_dir)
+    df = df.reset_index(drop=True)
 
-    total   = len(df)
-    updated = "· " + now_et().strftime("Updated %H:%M ET")
-    count   = f"{total:,} ticker{'s' if total != 1 else ''}"
+    # ── Pagination ─────────────────────────────────────────────────────────
+    total       = len(df)
+    total_pages = max(1, math.ceil(total / PAGE_SIZE))
+    page        = min(page, total_pages)
+    start       = (page - 1) * PAGE_SIZE + 1
+    end         = min(page * PAGE_SIZE, total)
+    time_str    = now_et().strftime("%H:%M ET")
 
-    overview_rows  = _render_overview_rows(df)
-    sentiment_rows = _render_sentiment_rows(df)
+    if total == 0:
+        count_el = html.Span("0 tickers matched", style={"color": "#555"})
+    else:
+        count_el = html.Span([
+            html.Span(f"Showing {start:,}–{end:,} of {total:,} tickers",
+                      style={"color": "#888"}),
+            html.Span(f"  ·  Updated {time_str}", style={"color": "#3a3a3a"}),
+        ])
 
-    return overview_rows, sentiment_rows, count, updated
+    overview_rows  = _render_overview_rows(df, page)
+    sentiment_rows = _render_sentiment_rows(df, page)
+    pagination     = _render_pagination(page, total_pages)
+
+    return overview_rows, sentiment_rows, count_el, pagination
