@@ -51,8 +51,8 @@ app.index_string = """<!DOCTYPE html>
 _NAV = [
     ("📰", "News",         "/"),
     ("🔍", "Screener",    "/screener"),
-    ("📊", "Sentiment",   "/sentiment"),
-    ("📈", "Momentum",    "/momentum"),
+    ("📈", "Charts",      "/charts"),
+    ("⚡", "Momentum",    "/momentum"),
     ("🚨", "Alerts",      "/alerts"),
     ("🧩", "Entity Queue", "/entity-queue"),
 ]
