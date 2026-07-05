@@ -455,6 +455,26 @@ body {
 .scr-row:hover { background: #1e1e1e !important; }
 .scr-alt       { background: #161616; }
 
+/* ── Screener filter tab buttons ────────────────────────────────────────── */
+.scr-ftab {
+    background:    transparent;
+    border:        none;
+    border-bottom: 2px solid transparent;
+    color:         #555555;
+    font-size:     13px;
+    font-weight:   600;
+    font-family:   inherit;
+    padding:       6px 14px 8px;
+    cursor:        pointer;
+    transition:    color 0.12s, border-color 0.12s;
+    margin-bottom: -1px;
+}
+.scr-ftab:hover { color: #aaaaaa; }
+.scr-ftab-active {
+    color:        #e0e0e0 !important;
+    border-bottom-color: #00d4ff !important;
+}
+
 .scr-ticker {
     color:           #00d4ff !important;
     text-decoration: none;

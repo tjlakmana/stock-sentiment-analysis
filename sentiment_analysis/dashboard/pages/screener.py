@@ -1002,8 +1002,9 @@ layout = html.Div(
     children=[
         # ── Intervals & stores ─────────────────────────────────────────────
         dcc.Interval(id="screener-interval", interval=60_000, n_intervals=0),
-        dcc.Store(id="screener-sort-dir", data="desc"),
-        dcc.Store(id="screener-page",     data=1),
+        dcc.Store(id="screener-sort-dir",    data="desc"),
+        dcc.Store(id="screener-page",        data=1),
+        dcc.Store(id="screener-filter-tab",  data="descriptive"),
 
         # ── Top filter bar ─────────────────────────────────────────────────
         html.Div(
@@ -1077,191 +1078,214 @@ layout = html.Div(
                            "borderRadius": "6px", "padding": "14px 18px 10px",
                            "marginBottom": "10px"},
                     children=[
-                        dbc.Tabs([
-                            # ── Descriptive tab ───────────────────────────
-                            dbc.Tab(label="Descriptive", children=[
-                                html.Div(style={"marginTop": "12px"}, children=[
-                                    # Row 1: Sector · Market Cap · Country
-                                    html.Div(
-                                        className="filter-row",
-                                        children=[
-                                            html.Div([
-                                                html.Label("Sector",
-                                                           className="filter-label"),
-                                                dbc.Select(
-                                                    id="screener-sector",
-                                                    options=SECTOR_OPTIONS,
-                                                    value="all",
-                                                    className="filter-select",
-                                                    style={**_SH},
-                                                ),
-                                            ], className="filter-item"),
-                                            html.Div([
-                                                html.Label("Market Cap",
-                                                           className="filter-label"),
-                                                dbc.Select(
-                                                    id="screener-mktcap",
-                                                    options=MKTCAP_OPTIONS,
-                                                    value="all",
-                                                    className="filter-select",
-                                                    style={**_SH},
-                                                ),
-                                            ], className="filter-item"),
-                                            html.Div([
-                                                html.Label("Country",
-                                                           className="filter-label"),
-                                                dbc.Select(
-                                                    id="screener-country",
-                                                    options=COUNTRY_OPTIONS,
-                                                    value="all",
-                                                    className="filter-select",
-                                                    style={**_SH},
-                                                ),
-                                            ], className="filter-item"),
-                                        ],
-                                    ),
-                                    # Row 2: Price · Change% · Volume
-                                    html.Div(
-                                        className="filter-row",
-                                        children=[
-                                            html.Div([
-                                                html.Label("Price ($)",
-                                                           className="filter-label"),
-                                                dbc.Select(
-                                                    id="screener-price",
-                                                    options=PRICE_OPTIONS,
-                                                    value="all",
-                                                    className="filter-select",
-                                                    style={**_SH},
-                                                ),
-                                            ], className="filter-item"),
-                                            html.Div([
-                                                html.Label("Change %",
-                                                           className="filter-label"),
-                                                dbc.Select(
-                                                    id="screener-chg-pct",
-                                                    options=CHG_OPTIONS,
-                                                    value="all",
-                                                    className="filter-select",
-                                                    style={**_SH},
-                                                ),
-                                            ], className="filter-item"),
-                                            html.Div([
-                                                html.Label("Volume",
-                                                           className="filter-label"),
-                                                dbc.Select(
-                                                    id="screener-volume",
-                                                    options=VOLUME_OPTIONS,
-                                                    value="all",
-                                                    className="filter-select",
-                                                    style={**_SH},
-                                                ),
-                                            ], className="filter-item"),
-                                        ],
-                                    ),
-                                    # Row 3: Average Volume
-                                    html.Div(
-                                        className="filter-row",
-                                        children=[
-                                            html.Div([
-                                                html.Label("Average Volume",
-                                                           className="filter-label"),
-                                                dbc.Select(
-                                                    id="screener-avg-volume",
-                                                    options=AVG_VOL_OPTIONS,
-                                                    value="all",
-                                                    className="filter-select",
-                                                    style={**_SH},
-                                                ),
-                                            ], className="filter-item"),
-                                        ],
-                                    ),
-                                ]),
-                            ]),
-                            # ── Sentiment tab ─────────────────────────────
-                            dbc.Tab(label="Sentiment", children=[
-                                html.Div(style={"marginTop": "12px"}, children=[
-                                    # Row 1: Sentiment label · Score · Time Window
-                                    html.Div(
-                                        className="filter-row",
-                                        children=[
-                                            html.Div([
-                                                html.Label("Sentiment",
-                                                           className="filter-label"),
-                                                dbc.Select(
-                                                    id="screener-sent-label",
-                                                    options=SENT_LABEL_OPTIONS,
-                                                    value="all",
-                                                    className="filter-select",
-                                                    style={**_SH},
-                                                ),
-                                            ], className="filter-item"),
-                                            html.Div([
-                                                html.Label("Sentiment Score",
-                                                           className="filter-label"),
-                                                dbc.Select(
-                                                    id="screener-sent-score",
-                                                    options=SENT_SCORE_OPTIONS,
-                                                    value="all",
-                                                    className="filter-select",
-                                                    style={**_SH},
-                                                ),
-                                            ], className="filter-item"),
-                                            html.Div([
-                                                html.Label("Time Window",
-                                                           className="filter-label"),
-                                                dbc.Select(
-                                                    id="screener-window",
-                                                    options=TIME_WINDOW_OPTIONS,
-                                                    value="4hr",
-                                                    className="filter-select",
-                                                    style={**_SH},
-                                                ),
-                                            ], className="filter-item"),
-                                        ],
-                                    ),
-                                    # Row 2: Min Articles · Trend · Spike Alert
-                                    html.Div(
-                                        className="filter-row",
-                                        children=[
-                                            html.Div([
-                                                html.Label("Min Articles",
-                                                           className="filter-label"),
-                                                dbc.Select(
-                                                    id="screener-min-articles",
-                                                    options=MIN_ARTICLES_OPTIONS,
-                                                    value=0,
-                                                    className="filter-select",
-                                                    style={**_SH},
-                                                ),
-                                            ], className="filter-item"),
-                                            html.Div([
-                                                html.Label("Trend",
-                                                           className="filter-label"),
-                                                dbc.Select(
-                                                    id="screener-trend",
-                                                    options=TREND_OPTIONS,
-                                                    value="all",
-                                                    className="filter-select",
-                                                    style={**_SH},
-                                                ),
-                                            ], className="filter-item"),
-                                            html.Div([
-                                                html.Label("Spike Alert",
-                                                           className="filter-label"),
-                                                dbc.Select(
-                                                    id="screener-spike",
-                                                    options=SPIKE_OPTIONS,
-                                                    value="all",
-                                                    className="filter-select",
-                                                    style={**_SH},
-                                                ),
-                                            ], className="filter-item"),
-                                        ],
-                                    ),
-                                ]),
-                            ]),
-                        ], style={"borderBottom": "none"}),
+                        # ── Filter tab buttons ────────────────────────────
+                        html.Div(
+                            style={"display": "flex", "gap": "0",
+                                   "borderBottom": "1px solid #252525",
+                                   "marginBottom": "12px"},
+                            children=[
+                                html.Button(
+                                    "Descriptive",
+                                    id="screener-ftab-desc",
+                                    n_clicks=0,
+                                    className="scr-ftab scr-ftab-active",
+                                ),
+                                html.Button(
+                                    "Sentiment",
+                                    id="screener-ftab-sent",
+                                    n_clicks=0,
+                                    className="scr-ftab",
+                                ),
+                            ],
+                        ),
+
+                        # ── Descriptive panel (always in DOM) ─────────────
+                        html.Div(
+                            id="screener-ftab-desc-panel",
+                            children=[
+                                # Row 1: Sector · Market Cap · Country
+                                html.Div(
+                                    className="filter-row",
+                                    children=[
+                                        html.Div([
+                                            html.Label("Sector",
+                                                       className="filter-label"),
+                                            dbc.Select(
+                                                id="screener-sector",
+                                                options=SECTOR_OPTIONS,
+                                                value="all",
+                                                className="filter-select",
+                                                style={**_SH},
+                                            ),
+                                        ], className="filter-item"),
+                                        html.Div([
+                                            html.Label("Market Cap",
+                                                       className="filter-label"),
+                                            dbc.Select(
+                                                id="screener-mktcap",
+                                                options=MKTCAP_OPTIONS,
+                                                value="all",
+                                                className="filter-select",
+                                                style={**_SH},
+                                            ),
+                                        ], className="filter-item"),
+                                        html.Div([
+                                            html.Label("Country",
+                                                       className="filter-label"),
+                                            dbc.Select(
+                                                id="screener-country",
+                                                options=COUNTRY_OPTIONS,
+                                                value="all",
+                                                className="filter-select",
+                                                style={**_SH},
+                                            ),
+                                        ], className="filter-item"),
+                                    ],
+                                ),
+                                # Row 2: Price · Change% · Volume
+                                html.Div(
+                                    className="filter-row",
+                                    children=[
+                                        html.Div([
+                                            html.Label("Price ($)",
+                                                       className="filter-label"),
+                                            dbc.Select(
+                                                id="screener-price",
+                                                options=PRICE_OPTIONS,
+                                                value="all",
+                                                className="filter-select",
+                                                style={**_SH},
+                                            ),
+                                        ], className="filter-item"),
+                                        html.Div([
+                                            html.Label("Change %",
+                                                       className="filter-label"),
+                                            dbc.Select(
+                                                id="screener-chg-pct",
+                                                options=CHG_OPTIONS,
+                                                value="all",
+                                                className="filter-select",
+                                                style={**_SH},
+                                            ),
+                                        ], className="filter-item"),
+                                        html.Div([
+                                            html.Label("Volume",
+                                                       className="filter-label"),
+                                            dbc.Select(
+                                                id="screener-volume",
+                                                options=VOLUME_OPTIONS,
+                                                value="all",
+                                                className="filter-select",
+                                                style={**_SH},
+                                            ),
+                                        ], className="filter-item"),
+                                    ],
+                                ),
+                                # Row 3: Average Volume
+                                html.Div(
+                                    className="filter-row",
+                                    children=[
+                                        html.Div([
+                                            html.Label("Average Volume",
+                                                       className="filter-label"),
+                                            dbc.Select(
+                                                id="screener-avg-volume",
+                                                options=AVG_VOL_OPTIONS,
+                                                value="all",
+                                                className="filter-select",
+                                                style={**_SH},
+                                            ),
+                                        ], className="filter-item"),
+                                    ],
+                                ),
+                            ],
+                        ),
+
+                        # ── Sentiment panel (always in DOM, hidden by default) ─
+                        html.Div(
+                            id="screener-ftab-sent-panel",
+                            style={"display": "none"},
+                            children=[
+                                # Row 1: Sentiment label · Score · Time Window
+                                html.Div(
+                                    className="filter-row",
+                                    children=[
+                                        html.Div([
+                                            html.Label("Sentiment",
+                                                       className="filter-label"),
+                                            dbc.Select(
+                                                id="screener-sent-label",
+                                                options=SENT_LABEL_OPTIONS,
+                                                value="all",
+                                                className="filter-select",
+                                                style={**_SH},
+                                            ),
+                                        ], className="filter-item"),
+                                        html.Div([
+                                            html.Label("Sentiment Score",
+                                                       className="filter-label"),
+                                            dbc.Select(
+                                                id="screener-sent-score",
+                                                options=SENT_SCORE_OPTIONS,
+                                                value="all",
+                                                className="filter-select",
+                                                style={**_SH},
+                                            ),
+                                        ], className="filter-item"),
+                                        html.Div([
+                                            html.Label("Time Window",
+                                                       className="filter-label"),
+                                            dbc.Select(
+                                                id="screener-window",
+                                                options=TIME_WINDOW_OPTIONS,
+                                                value="4hr",
+                                                className="filter-select",
+                                                style={**_SH},
+                                            ),
+                                        ], className="filter-item"),
+                                    ],
+                                ),
+                                # Row 2: Min Articles · Trend · Spike Alert
+                                html.Div(
+                                    className="filter-row",
+                                    children=[
+                                        html.Div([
+                                            html.Label("Min Articles",
+                                                       className="filter-label"),
+                                            dbc.Select(
+                                                id="screener-min-articles",
+                                                options=MIN_ARTICLES_OPTIONS,
+                                                value=0,
+                                                className="filter-select",
+                                                style={**_SH},
+                                            ),
+                                        ], className="filter-item"),
+                                        html.Div([
+                                            html.Label("Trend",
+                                                       className="filter-label"),
+                                            dbc.Select(
+                                                id="screener-trend",
+                                                options=TREND_OPTIONS,
+                                                value="all",
+                                                className="filter-select",
+                                                style={**_SH},
+                                            ),
+                                        ], className="filter-item"),
+                                        html.Div([
+                                            html.Label("Spike Alert",
+                                                       className="filter-label"),
+                                            dbc.Select(
+                                                id="screener-spike",
+                                                options=SPIKE_OPTIONS,
+                                                value="all",
+                                                className="filter-select",
+                                                style={**_SH},
+                                            ),
+                                        ], className="filter-item"),
+                                    ],
+                                ),
+                            ],
+                        ),
                         # ── Reset button ──────────────────────────────────
                         html.Div(
                             style={"display": "flex", "justifyContent": "flex-end",
@@ -1360,6 +1384,28 @@ def _toggle_filter_panel(_, is_open):
     new_open = not is_open
     label    = "▴ Filters" if new_open else "▾ Filters"
     return new_open, label
+
+
+@callback(
+    Output("screener-ftab-desc-panel", "style"),
+    Output("screener-ftab-sent-panel", "style"),
+    Output("screener-ftab-desc",       "className"),
+    Output("screener-ftab-sent",       "className"),
+    Input("screener-ftab-desc",        "n_clicks"),
+    Input("screener-ftab-sent",        "n_clicks"),
+    prevent_initial_call=True,
+)
+def _switch_filter_tab(_, __):
+    triggered = ctx.triggered_id
+    if triggered == "screener-ftab-sent":
+        return (
+            {"display": "none"}, {"display": "block"},
+            "scr-ftab", "scr-ftab scr-ftab-active",
+        )
+    return (
+        {"display": "block"}, {"display": "none"},
+        "scr-ftab scr-ftab-active", "scr-ftab",
+    )
 
 
 _ALL_FILTER_INPUTS = [
