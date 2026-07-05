@@ -427,33 +427,48 @@ body {
     max-width:      220px;
 }
 
-/* ── Screener dense rows (CSS grid, 32 px height) ─────────────────────── */
-.scr-header {
-    display:         grid;
-    align-items:     center;
-    gap:             0 6px;
-    padding:         0 14px;
-    height:          34px;
-    border-bottom:   1px solid #202020;
+/* ── Screener table ─────────────────────────────────────────────────────── */
+.scr-table {
+    width:           100%;
+    table-layout:    fixed;
+    border-collapse: collapse;
+    font-size:       12px;
+}
+
+.scr-table thead th {
+    padding:         6px 6px 6px 4px;
     font-size:       10px;
+    font-weight:     700;
     color:           #555555;
     text-transform:  uppercase;
     letter-spacing:  0.06em;
-    font-weight:     700;
+    border-bottom:   1px solid #202020;
+    white-space:     nowrap;
+    overflow:        hidden;
+    background:      #0d0d0d;
+    position:        sticky;
+    top:             0;
+    z-index:         1;
+    user-select:     none;
 }
 
-.scr-row {
-    display:        grid;
-    align-items:    center;
-    gap:            0 6px;
-    padding:        0 14px;
-    height:         32px;
-    background:     #111111;
+.scr-tr td { background: #111111; }
+.scr-tr:nth-child(even) td { background: #161616; }
+.scr-tr:hover td { background: #1e1e1e !important; }
+
+.scr-td {
+    padding:        5px 6px 5px 4px;
+    white-space:    nowrap;
+    overflow:       hidden;
+    text-overflow:  ellipsis;
+    vertical-align: middle;
     border-bottom:  1px solid #181818;
-    transition:     background 0.08s;
+    color:          #aaaaaa;
 }
-.scr-row:hover { background: #1e1e1e !important; }
-.scr-alt       { background: #161616; }
+.scr-td-num    { text-align: right; }
+.scr-td-center { text-align: center; }
+.scr-dim       { color: #444444; font-size: 11px; }
+.scr-mono      { font-family: monospace; font-size: 12px; }
 
 /* ── Screener filter tab buttons ────────────────────────────────────────── */
 .scr-ftab {
@@ -488,18 +503,10 @@ body {
 
 .scr-company {
     font-size:     12px;
-    color:         #aaaaaa;
+    color:         #888888;
     overflow:      hidden;
     text-overflow: ellipsis;
     white-space:   nowrap;
-}
-
-.scr-num {
-    display:     block;
-    font-size:   12px;
-    color:       #aaaaaa;
-    text-align:  right;
-    white-space: nowrap;
 }
 
 /* ── Charts page dropdown (dark theme) ──────────────────────────────────── */

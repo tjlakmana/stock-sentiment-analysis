@@ -639,40 +639,49 @@ def _pct(num, denom) -> str:
         return "—"
 
 
-# ── Grid layout constants ─────────────────────────────────────────────────
-#   No.  Ticker  Company  Country  MktCap  Price  Chg%  Vol   Art   Sentiment  Score
-_OV_GRID   = "35px 70px 160px 70px 90px 80px 75px 90px 75px 140px 70px"
-#   No.  Ticker  Sentiment  Score  Bull%  Bear%  Neut%  Art    LastUpd    Trend
-_SENT_GRID = "36px 68px 128px 56px 62px 62px 76px 62px 106px 54px"
+# ── Table column definitions ──────────────────────────────────────────────
+# (label, width, text-align)
+_OV_COLS = [
+    ("#",         "35px",  "right"),
+    ("Ticker",    "70px",  "left"),
+    ("Company",   "160px", "left"),
+    ("Country",   "62px",  "center"),
+    ("Mkt Cap",   "88px",  "right"),
+    ("Price",     "80px",  "right"),
+    ("Chg %",     "72px",  "right"),
+    ("Volume",    "88px",  "right"),
+    ("Articles",  "70px",  "right"),
+    ("Sentiment", "136px", "left"),
+    ("Score",     "66px",  "right"),
+]
 
-_OV_HDR_CELLS   = ["#", "Ticker", "Company", "Country", "Mkt Cap", "Price",
-                    "Chg %", "Volume", "Articles", "Sentiment", "Score"]
-_SENT_HDR_CELLS = ["#", "Ticker", "Sentiment", "Score",
-                    "Bull %", "Bear %", "Neutral %", "Articles", "Last Upd", "Trend"]
-
-_OVERVIEW_HEADER = html.Div(
-    className="scr-header",
-    style={"gridTemplateColumns": _OV_GRID},
-    children=[html.Span(c) for c in _OV_HDR_CELLS],
-)
-
-_SENTIMENT_HEADER = html.Div(
-    className="scr-header",
-    style={"gridTemplateColumns": _SENT_GRID},
-    children=[html.Span(c) for c in _SENT_HDR_CELLS],
-)
+_SENT_COLS = [
+    ("#",          "36px",  "right"),
+    ("Ticker",     "70px",  "left"),
+    ("Sentiment",  "130px", "left"),
+    ("Score",      "60px",  "right"),
+    ("Bull %",     "64px",  "right"),
+    ("Bear %",     "64px",  "right"),
+    ("Neutral %",  "78px",  "right"),
+    ("Articles",   "66px",  "right"),
+    ("Last Upd",   "108px", "center"),
+    ("Trend",      "56px",  "center"),
+]
 
 # ── Table renderers ───────────────────────────────────────────────────────
 
-_NO_RESULTS = [html.Div(
-    "No tickers match current filters.",
-    style={"padding": "32px", "textAlign": "center", "color": "#555", "fontSize": "14px"},
-)]
+def _no_results(colspan: int) -> list:
+    return [html.Tr([html.Td(
+        "No tickers match current filters.",
+        colSpan=colspan,
+        style={"padding": "32px", "textAlign": "center",
+               "color": "#555", "fontSize": "14px"},
+    )])]
 
 
 def _render_overview_rows(df: pd.DataFrame, page: int) -> list:
     if df.empty:
-        return _NO_RESULTS
+        return _no_results(len(_OV_COLS))
 
     offset  = (page - 1) * PAGE_SIZE
     page_df = df.iloc[offset : offset + PAGE_SIZE]
@@ -704,38 +713,31 @@ def _render_overview_rows(df: pd.DataFrame, page: int) -> list:
                                      "lineHeight": "1.1"}),
                 )
 
-        cls = "scr-row scr-alt" if global_i % 2 else "scr-row"
-        rows.append(html.Div(
-            className=cls,
-            style={"gridTemplateColumns": _OV_GRID},
-            children=[
-                html.Span(str(global_i + 1),
-                          style={"color": "#444", "fontSize": "11px", "textAlign": "right"}),
-                html.A(ticker, href=f"/?keyword={ticker}", className="scr-ticker"),
-                html.Span(company, className="scr-company"),
-                html.Span(country,
-                          style={"fontSize": "11px", "color": "#555",
-                                 "textAlign": "center", "fontVariant": "all-small-caps",
-                                 "letterSpacing": "0.04em"}),
-                html.Span(_fmt_mktcap(r.get("market_cap")), className="scr-num"),
-                html.Div(price_children),
-                html.Span(chg_text, className="scr-num", style={"color": chg_color}),
-                html.Span(_fmt_volume(r.get("volume")), className="scr-num"),
-                html.Span(str(int(r.get("article_count", 0))), className="scr-num"),
-                _badge(score),
-                html.Span(
-                    f"{score:+.2f}" if score is not None else "—",
-                    className="scr-num",
-                    style={"color": color, "fontFamily": "monospace"},
-                ),
-            ],
-        ))
+        rows.append(html.Tr([
+            html.Td(str(global_i + 1), className="scr-td scr-td-num scr-dim"),
+            html.Td(html.A(ticker, href=f"/?keyword={ticker}", className="scr-ticker"),
+                    className="scr-td"),
+            html.Td(company, className="scr-td scr-company"),
+            html.Td(country, className="scr-td scr-td-country"),
+            html.Td(_fmt_mktcap(r.get("market_cap")), className="scr-td scr-td-num"),
+            html.Td(price_children, className="scr-td scr-td-num"),
+            html.Td(chg_text, className="scr-td scr-td-num",
+                    style={"color": chg_color}),
+            html.Td(_fmt_volume(r.get("volume")), className="scr-td scr-td-num"),
+            html.Td(str(int(r.get("article_count", 0))), className="scr-td scr-td-num"),
+            html.Td(_badge(score), className="scr-td"),
+            html.Td(
+                f"{score:+.2f}" if score is not None else "—",
+                className="scr-td scr-td-num scr-mono",
+                style={"color": color},
+            ),
+        ], className="scr-tr"))
     return rows
 
 
 def _render_sentiment_rows(df: pd.DataFrame, page: int) -> list:
     if df.empty:
-        return _NO_RESULTS
+        return _no_results(len(_SENT_COLS))
 
     offset  = (page - 1) * PAGE_SIZE
     page_df = df.iloc[offset : offset + PAGE_SIZE]
@@ -756,33 +758,28 @@ def _render_sentiment_rows(df: pd.DataFrame, page: int) -> list:
         except Exception:
             pass
 
-        cls = "scr-row scr-alt" if global_i % 2 else "scr-row"
-        rows.append(html.Div(
-            className=cls,
-            style={"gridTemplateColumns": _SENT_GRID},
-            children=[
-                html.Span(str(global_i + 1),
-                          style={"color": "#444", "fontSize": "11px", "textAlign": "right"}),
-                html.A(ticker, href=f"/?keyword={ticker}", className="scr-ticker"),
-                _badge(score),
-                html.Span(
-                    f"{score:+.2f}" if score is not None else "—",
-                    className="scr-num",
-                    style={"color": color, "fontFamily": "monospace"},
-                ),
-                html.Span(_pct(r.get("bullish_count"),  cnt),
-                          className="scr-num", style={"color": "#00e676"}),
-                html.Span(_pct(r.get("bearish_count"),  cnt),
-                          className="scr-num", style={"color": "#ff5252"}),
-                html.Span(_pct(r.get("neutral_count"),  cnt),
-                          className="scr-num", style={"color": "#888888"}),
-                html.Span(str(cnt), className="scr-num"),
-                html.Span(last_upd,
-                          style={"fontSize": "11px", "color": "#666", "textAlign": "center"}),
-                html.Div(_trend_icon(r.get("momentum")),
-                         style={"fontSize": "15px", "textAlign": "center"}),
-            ],
-        ))
+        rows.append(html.Tr([
+            html.Td(str(global_i + 1), className="scr-td scr-td-num scr-dim"),
+            html.Td(html.A(ticker, href=f"/?keyword={ticker}", className="scr-ticker"),
+                    className="scr-td"),
+            html.Td(_badge(score), className="scr-td"),
+            html.Td(
+                f"{score:+.2f}" if score is not None else "—",
+                className="scr-td scr-td-num scr-mono",
+                style={"color": color},
+            ),
+            html.Td(_pct(r.get("bullish_count"), cnt),
+                    className="scr-td scr-td-num", style={"color": "#00e676"}),
+            html.Td(_pct(r.get("bearish_count"), cnt),
+                    className="scr-td scr-td-num", style={"color": "#ff5252"}),
+            html.Td(_pct(r.get("neutral_count"), cnt),
+                    className="scr-td scr-td-num", style={"color": "#888888"}),
+            html.Td(str(cnt), className="scr-td scr-td-num"),
+            html.Td(last_upd, className="scr-td scr-td-center scr-dim"),
+            html.Td(_trend_icon(r.get("momentum")),
+                    className="scr-td scr-td-center",
+                    style={"fontSize": "15px"}),
+        ], className="scr-tr"))
     return rows
 
 
@@ -1360,16 +1357,36 @@ layout = html.Div(
             active_tab="tab-overview",
             children=[
                 dbc.Tab(label="Overview", tab_id="tab-overview", children=[
-                    html.Div(className="articles-table", children=[
-                        _OVERVIEW_HEADER,
-                        html.Div(id="screener-overview-rows"),
-                    ]),
+                    html.Div(
+                        className="articles-table",
+                        style={"overflowX": "auto", "padding": "0"},
+                        children=[html.Table(
+                            className="scr-table",
+                            children=[
+                                html.Thead(html.Tr([
+                                    html.Th(lbl, style={"width": w, "textAlign": a})
+                                    for lbl, w, a in _OV_COLS
+                                ])),
+                                html.Tbody(id="screener-overview-rows"),
+                            ],
+                        )],
+                    ),
                 ]),
                 dbc.Tab(label="Sentiment Detail", tab_id="tab-sentiment", children=[
-                    html.Div(className="articles-table", children=[
-                        _SENTIMENT_HEADER,
-                        html.Div(id="screener-sentiment-rows"),
-                    ]),
+                    html.Div(
+                        className="articles-table",
+                        style={"overflowX": "auto", "padding": "0"},
+                        children=[html.Table(
+                            className="scr-table",
+                            children=[
+                                html.Thead(html.Tr([
+                                    html.Th(lbl, style={"width": w, "textAlign": a})
+                                    for lbl, w, a in _SENT_COLS
+                                ])),
+                                html.Tbody(id="screener-sentiment-rows"),
+                            ],
+                        )],
+                    ),
                 ]),
             ],
         ),
