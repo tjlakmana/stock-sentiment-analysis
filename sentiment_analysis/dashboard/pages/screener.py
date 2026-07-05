@@ -1306,14 +1306,15 @@ layout = html.Div(
         # ── Results tabs ───────────────────────────────────────────────────
         dbc.Tabs(
             id="screener-result-tabs",
+            active_tab="tab-overview",
             children=[
-                dbc.Tab(label="Overview", children=[
+                dbc.Tab(label="Overview", tab_id="tab-overview", children=[
                     html.Div(className="articles-table", children=[
                         _OVERVIEW_HEADER,
                         html.Div(id="screener-overview-rows"),
                     ]),
                 ]),
-                dbc.Tab(label="Sentiment Detail", children=[
+                dbc.Tab(label="Sentiment Detail", tab_id="tab-sentiment", children=[
                     html.Div(className="articles-table", children=[
                         _SENTIMENT_HEADER,
                         html.Div(id="screener-sentiment-rows"),
@@ -1447,7 +1448,7 @@ def _handle_screener_page_click(n_clicks_list, current_page):
     Input("screener-refresh-btn",     "n_clicks"),
     *_ALL_FILTER_INPUTS,
     Input("screener-page",            "data"),
-    State("url",                      "pathname"),
+    Input("url",                      "pathname"),
 )
 def _update_screener(n, refresh_clicks,
                      signal, order, sort_dir, search,
