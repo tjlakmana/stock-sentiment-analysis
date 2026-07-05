@@ -163,15 +163,29 @@ def _pct(num, denom) -> str:
 
 # ── Chart builders ────────────────────────────────────────────────────────
 
+def _empty_fig(title: str, height: int = 270) -> go.Figure:
+    fig = go.Figure()
+    fig.update_layout(
+        **_PLOTLY_BASE,
+        height=height,
+        title=dict(text=title, font={"size": 12, "color": "#555"},
+                   x=0.01, xanchor="left"),
+    )
+    fig.add_annotation(
+        text="No data available for this ticker<br>in the selected time range",
+        x=0.5, y=0.5,
+        xref="paper", yref="paper",
+        showarrow=False,
+        font={"size": 12, "color": "#3a3a3a"},
+        align="center",
+    )
+    return fig
+
+
 def _sentiment_history_fig(df: pd.DataFrame, ticker: str) -> go.Figure:
     fig = go.Figure()
     if df.empty:
-        fig.update_layout(
-            **_PLOTLY_BASE, height=270,
-            title=dict(text=f"Sentiment Score — {ticker}",
-                       font={"size": 12, "color": "#555"}, x=0.01, xanchor="left"),
-        )
-        return fig
+        return _empty_fig(f"Sentiment Score — {ticker}")
 
     x = df["hour"].tolist()
     y = [_safe(v) or 0.0 for v in df["avg_sentiment"].tolist()]
@@ -213,12 +227,7 @@ def _sentiment_history_fig(df: pd.DataFrame, ticker: str) -> go.Figure:
 def _article_volume_fig(df: pd.DataFrame, ticker: str) -> go.Figure:
     fig = go.Figure()
     if df.empty:
-        fig.update_layout(
-            **_PLOTLY_BASE, height=270,
-            title=dict(text=f"Article Volume — {ticker}",
-                       font={"size": 12, "color": "#555"}, x=0.01, xanchor="left"),
-        )
-        return fig
+        return _empty_fig(f"Article Volume — {ticker}")
 
     fig.add_trace(go.Bar(
         x=df["hour"].tolist(),
@@ -354,13 +363,14 @@ layout = html.Div(
 
         # Sentiment panel controls
         html.Div(
-            style={"display": "flex", "alignItems": "center", "gap": "10px",
-                   "marginBottom": "14px"},
+            style={"display": "flex", "alignItems": "center", "gap": "12px",
+                   "marginBottom": "14px",
+                   "borderTop": "1px solid #1c1c1c", "paddingTop": "16px"},
             children=[
-                html.Label(
-                    "Select ticker for sentiment data:",
-                    style={"fontSize": "12px", "color": "#666",
-                           "whiteSpace": "nowrap"},
+                html.Span(
+                    "📊 Sentiment Analysis for:",
+                    style={"fontSize": "13px", "color": "#888",
+                           "fontWeight": "600", "whiteSpace": "nowrap"},
                 ),
                 dcc.Dropdown(
                     id="charts-ticker-dropdown",
@@ -368,7 +378,7 @@ layout = html.Div(
                     value=None,
                     clearable=False,
                     className="charts-dropdown",
-                    style={"width": "160px"},
+                    style={"width": "160px", "flexShrink": "0"},
                 ),
                 html.Span(
                     id="charts-updated",

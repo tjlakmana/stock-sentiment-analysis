@@ -482,36 +482,79 @@ body {
     white-space: nowrap;
 }
 
-/* ── Charts page dropdown ───────────────────────────────────────────────── */
-.charts-dropdown .Select-control {
-    background:   #141414 !important;
-    border-color: #252525 !important;
-    border-radius: 5px !important;
-    min-height:   32px !important;
-}
-.charts-dropdown .Select-value-label,
-.charts-dropdown .Select-placeholder {
-    color: #cccccc !important;
+/* ── Charts page dropdown (dark theme) ──────────────────────────────────── */
+
+/* Outer wrapper */
+.charts-dropdown {
     font-size: 13px !important;
 }
-.charts-dropdown .Select-arrow-zone .Select-arrow {
-    border-top-color: #555 !important;
+
+/* Control (the visible box) */
+.charts-dropdown .Select-control,
+.charts-dropdown.Select.is-focused > .Select-control,
+.charts-dropdown.Select.is-focused:not(.is-open) > .Select-control {
+    background:    #141414 !important;
+    border:        1px solid #2a2a2a !important;
+    border-radius: 5px !important;
+    box-shadow:    none !important;
+    min-height:    34px !important;
 }
+.charts-dropdown .Select-control:hover {
+    border-color: #00d4ff !important;
+    box-shadow:   0 0 0 1px #00d4ff22 !important;
+}
+
+/* Placeholder and selected value text */
+.charts-dropdown .Select-placeholder,
+.charts-dropdown .Select-value,
+.charts-dropdown .Select-value-label {
+    color:       #cccccc !important;
+    line-height: 32px !important;
+}
+
+/* Caret arrow */
+.charts-dropdown .Select-arrow {
+    border-top-color: #555555 !important;
+}
+.charts-dropdown .Select-arrow-zone:hover .Select-arrow {
+    border-top-color: #00d4ff !important;
+}
+
+/* Input inside the control */
+.charts-dropdown .Select-input > input {
+    color:   #e0e0e0 !important;
+    padding: 0 !important;
+}
+
+/* Dropdown menu container */
 .charts-dropdown .Select-menu-outer {
-    background:   #1a1a1a !important;
-    border-color: #2a2a2a !important;
+    background:   #141414 !important;
+    border:       1px solid #2a2a2a !important;
+    border-top:   none !important;
+    border-radius: 0 0 5px 5px !important;
+    box-shadow:   0 4px 16px rgba(0,0,0,0.6) !important;
     z-index:      9999 !important;
 }
-.charts-dropdown .Select-option {
-    background: #1a1a1a !important;
-    color:      #cccccc !important;
-    font-size:  13px !important;
+.charts-dropdown .Select-menu {
+    background: #141414 !important;
 }
-.charts-dropdown .Select-option.is-focused,
-.charts-dropdown .Select-option:hover {
-    background: #252525 !important;
+
+/* Individual options */
+.charts-dropdown .Select-option {
+    background: #141414 !important;
+    color:      #aaaaaa !important;
+    font-size:  13px !important;
+    padding:    7px 12px !important;
+}
+.charts-dropdown .Select-option.is-focused {
+    background: #1e1e1e !important;
+    color:      #e0e0e0 !important;
 }
 .charts-dropdown .Select-option.is-selected {
-    background: #1e2a1e !important;
+    background: #0d2a1a !important;
     color:      #00e676 !important;
+    font-weight: 600 !important;
+}
+.charts-dropdown .Select-option.is-selected.is-focused {
+    background: #0f3320 !important;
 }
