@@ -294,6 +294,20 @@ _SECTOR_MAP: dict[str, str] = {
     "AVB":  "Real Estate", "IRM":  "Real Estate",  "SBAC": "Real Estate",
 }
 
+_COUNTRY_MAP: dict[str, str] = {
+    # Chinese ADRs
+    "BABA": "China", "BIDU": "China", "JD":   "China", "PDD":  "China",
+    "NIO":  "China", "XPEV": "China", "LI":   "China", "TCOM": "China",
+    "VIPS": "China", "TME":  "China", "BILI": "China", "IQ":   "China",
+    "DIDI": "China", "BOSS": "China", "LABD": "China",
+    # Canadian listings (select large-cap cross-listed)
+    "SHOP": "Canada", "CNI": "Canada", "CP":  "Canada", "TD":  "Canada",
+    "RY":   "Canada", "BMO": "Canada", "SU":  "Canada", "ENB": "Canada",
+    # UK listings
+    "BP":   "UK",     "HSBC": "UK",   "AZN": "UK",    "GSK": "UK",
+    "LNVGY":"UK",     "VOD":  "UK",
+}
+
 # ── Options ────────────────────────────────────────────────────────────────
 
 SIGNAL_OPTIONS = [
@@ -329,10 +343,73 @@ SECTOR_OPTIONS = [
 ]
 
 MKTCAP_OPTIONS = [
-    {"label": "All",              "value": "all"},
-    {"label": "Large  (>$10B)",   "value": "large"},
-    {"label": "Mid  ($2B–$10B)",  "value": "mid"},
-    {"label": "Small  (<$2B)",    "value": "small"},
+    {"label": "Any",                "value": "all"},
+    {"label": "Mega  (>$200B)",     "value": "mega"},
+    {"label": "Large  ($10B–$200B)","value": "large"},
+    {"label": "Mid  ($2B–$10B)",    "value": "mid"},
+    {"label": "Small  ($200M–$2B)", "value": "small"},
+    {"label": "Micro  (<$200M)",    "value": "micro"},
+]
+
+COUNTRY_OPTIONS = [
+    {"label": "Any Country", "value": "all"},
+    {"label": "USA",         "value": "USA"},
+    {"label": "China",       "value": "China"},
+    {"label": "UK",          "value": "UK"},
+    {"label": "Canada",      "value": "Canada"},
+]
+
+PRICE_OPTIONS = [
+    {"label": "Any Price",   "value": "all"},
+    {"label": "Under $5",    "value": "u5"},
+    {"label": "$5 – $20",    "value": "5_20"},
+    {"label": "$20 – $50",   "value": "20_50"},
+    {"label": "$50 – $100",  "value": "50_100"},
+    {"label": "$100 – $500", "value": "100_500"},
+    {"label": "Over $500",   "value": "o500"},
+]
+
+CHG_OPTIONS = [
+    {"label": "Any Change",  "value": "all"},
+    {"label": "Up 5%+",      "value": "up5"},
+    {"label": "Up 2–5%",     "value": "up2_5"},
+    {"label": "Up 0–2%",     "value": "up0_2"},
+    {"label": "Down 0–2%",   "value": "dn0_2"},
+    {"label": "Down 2–5%",   "value": "dn2_5"},
+    {"label": "Down 5%+",    "value": "dn5"},
+]
+
+VOLUME_OPTIONS = [
+    {"label": "Any Volume",  "value": "all"},
+    {"label": "Under 500K",  "value": "u500k"},
+    {"label": "500K – 1M",   "value": "500k_1m"},
+    {"label": "1M – 5M",     "value": "1m_5m"},
+    {"label": "Over 5M",     "value": "o5m"},
+]
+
+AVG_VOL_OPTIONS = [
+    {"label": "Any Avg Vol", "value": "all"},
+    {"label": "Under 1M",    "value": "u1m"},
+    {"label": "1M – 5M",     "value": "1m_5m"},
+    {"label": "Over 5M",     "value": "o5m"},
+]
+
+SENT_LABEL_OPTIONS = [
+    {"label": "Any Sentiment",    "value": "all"},
+    {"label": "Bullish",          "value": "Bullish"},
+    {"label": "Somewhat Bullish", "value": "Somewhat Bullish"},
+    {"label": "Neutral",          "value": "Neutral"},
+    {"label": "Somewhat Bearish", "value": "Somewhat Bearish"},
+    {"label": "Bearish",          "value": "Bearish"},
+]
+
+SENT_SCORE_OPTIONS = [
+    {"label": "Any Score",           "value": "all"},
+    {"label": "Strong Bull  (>0.6)", "value": "sbull"},
+    {"label": "Bull  (0.3–0.6)",     "value": "bull"},
+    {"label": "Neutral  (−0.3–0.3)", "value": "neut"},
+    {"label": "Bear  (−0.6–−0.3)",   "value": "bear"},
+    {"label": "Strong Bear  (<−0.6)","value": "sbear"},
 ]
 
 TIME_WINDOW_OPTIONS = [
@@ -342,10 +419,24 @@ TIME_WINDOW_OPTIONS = [
 ]
 
 MIN_ARTICLES_OPTIONS = [
-    {"label": "Any articles",    "value": 0},
-    {"label": "Min 5 articles",  "value": 5},
-    {"label": "Min 10 articles", "value": 10},
-    {"label": "Min 25 articles", "value": 25},
+    {"label": "Any",    "value": 0},
+    {"label": "2+",     "value": 2},
+    {"label": "5+",     "value": 5},
+    {"label": "10+",    "value": 10},
+    {"label": "25+",    "value": 25},
+]
+
+TREND_OPTIONS = [
+    {"label": "Any Trend", "value": "all"},
+    {"label": "Improving", "value": "improving"},
+    {"label": "Declining", "value": "declining"},
+    {"label": "Stable",    "value": "stable"},
+]
+
+SPIKE_OPTIONS = [
+    {"label": "Any",       "value": "all"},
+    {"label": "Has Spike", "value": "spike"},
+    {"label": "No Spike",  "value": "no_spike"},
 ]
 
 # ── SQL ───────────────────────────────────────────────────────────────────
@@ -736,17 +827,130 @@ def _apply_sector_filter(df: pd.DataFrame, sector: str) -> pd.DataFrame:
     return df[mapped == sector]
 
 
+def _apply_country_filter(df: pd.DataFrame, country: str) -> pd.DataFrame:
+    if not country or country == "all":
+        return df
+    mapped = df["ticker"].map(_COUNTRY_MAP).fillna("USA")
+    return df[mapped == country]
+
+
 def _apply_mktcap_filter(df: pd.DataFrame, mktcap: str) -> pd.DataFrame:
+    mc = df["market_cap"].fillna(0)
+    if mktcap == "mega":
+        return df[mc > 200_000_000_000]
     if mktcap == "large":
-        return df[df["market_cap"].fillna(0) > 10_000_000_000]
+        return df[(mc >= 10_000_000_000) & (mc <= 200_000_000_000)]
     if mktcap == "mid":
-        mask = (df["market_cap"].fillna(0) >= 2_000_000_000) & \
-               (df["market_cap"].fillna(0) <= 10_000_000_000)
-        return df[mask]
+        return df[(mc >= 2_000_000_000) & (mc < 10_000_000_000)]
     if mktcap == "small":
-        mask = (df["market_cap"].fillna(0) > 0) & \
-               (df["market_cap"].fillna(0) < 2_000_000_000)
-        return df[mask]
+        return df[(mc >= 200_000_000) & (mc < 2_000_000_000)]
+    if mktcap == "micro":
+        return df[(mc > 0) & (mc < 200_000_000)]
+    return df
+
+
+def _apply_price_filter(df: pd.DataFrame, price: str) -> pd.DataFrame:
+    if not price or price == "all":
+        return df
+    v = df["price"].fillna(0)
+    masks = {
+        "u5":      v < 5,
+        "5_20":    (v >= 5)   & (v < 20),
+        "20_50":   (v >= 20)  & (v < 50),
+        "50_100":  (v >= 50)  & (v < 100),
+        "100_500": (v >= 100) & (v < 500),
+        "o500":    v >= 500,
+    }
+    mask = masks.get(price)
+    return df[mask] if mask is not None else df
+
+
+def _apply_chg_pct_filter(df: pd.DataFrame, chg: str) -> pd.DataFrame:
+    if not chg or chg == "all":
+        return df
+    v = df["change_pct"].fillna(0)
+    masks = {
+        "up5":   v >= 5,
+        "up2_5": (v >= 2)  & (v < 5),
+        "up0_2": (v >= 0)  & (v < 2),
+        "dn0_2": (v > -2)  & (v < 0),
+        "dn2_5": (v >= -5) & (v < -2),
+        "dn5":   v <= -5,
+    }
+    mask = masks.get(chg)
+    return df[mask] if mask is not None else df
+
+
+def _apply_volume_filter(df: pd.DataFrame, vol: str) -> pd.DataFrame:
+    if not vol or vol == "all":
+        return df
+    v = df["volume"].fillna(0)
+    masks = {
+        "u500k":   v < 500_000,
+        "500k_1m": (v >= 500_000)   & (v < 1_000_000),
+        "1m_5m":   (v >= 1_000_000) & (v < 5_000_000),
+        "o5m":     v >= 5_000_000,
+    }
+    mask = masks.get(vol)
+    return df[mask] if mask is not None else df
+
+
+def _apply_avg_volume_filter(df: pd.DataFrame, avg_vol: str) -> pd.DataFrame:
+    if not avg_vol or avg_vol == "all" or "avg_volume" not in df.columns:
+        return df
+    v = df["avg_volume"].fillna(0)
+    masks = {
+        "u1m":   v < 1_000_000,
+        "1m_5m": (v >= 1_000_000) & (v < 5_000_000),
+        "o5m":   v >= 5_000_000,
+    }
+    mask = masks.get(avg_vol)
+    return df[mask] if mask is not None else df
+
+
+def _apply_sent_label_filter(df: pd.DataFrame, label: str) -> pd.DataFrame:
+    if not label or label == "all":
+        return df
+    df2 = df.copy()
+    df2["_lbl"] = df2["avg_sentiment"].apply(_score_to_label)
+    return df2[df2["_lbl"] == label].drop(columns=["_lbl"])
+
+
+def _apply_sent_score_filter(df: pd.DataFrame, score: str) -> pd.DataFrame:
+    if not score or score == "all":
+        return df
+    v = df["avg_sentiment"].fillna(0)
+    masks = {
+        "sbull": v > 0.6,
+        "bull":  (v >= 0.3)  & (v <= 0.6),
+        "neut":  (v > -0.3)  & (v < 0.3),
+        "bear":  (v >= -0.6) & (v <= -0.3),
+        "sbear": v < -0.6,
+    }
+    mask = masks.get(score)
+    return df[mask] if mask is not None else df
+
+
+def _apply_trend_filter(df: pd.DataFrame, trend: str) -> pd.DataFrame:
+    if not trend or trend == "all":
+        return df
+    m = df["momentum"].fillna("").str.lower()
+    if trend == "improving":
+        return df[m == "improving"]
+    if trend == "declining":
+        return df[m == "declining"]
+    if trend == "stable":
+        return df[~m.isin(["improving", "declining"])]
+    return df
+
+
+def _apply_spike_filter(df: pd.DataFrame, spike: str) -> pd.DataFrame:
+    if not spike or spike == "all":
+        return df
+    if spike == "spike":
+        return df[df["has_spike"] == True]
+    if spike == "no_spike":
+        return df[df["has_spike"] != True]
     return df
 
 
@@ -870,91 +1074,217 @@ layout = html.Div(
             children=[
                 html.Div(
                     style={"background": "#101010", "border": "1px solid #1c1c1c",
-                           "borderRadius": "6px", "padding": "12px 16px",
+                           "borderRadius": "6px", "padding": "14px 18px 10px",
                            "marginBottom": "10px"},
                     children=[
                         dbc.Tabs([
+                            # ── Descriptive tab ───────────────────────────
                             dbc.Tab(label="Descriptive", children=[
-                                html.Div(
-                                    style={"display": "flex", "gap": "12px",
-                                           "marginTop": "10px", "flexWrap": "wrap"},
-                                    children=[
-                                        html.Div([
-                                            html.Label("Sector", className="filter-label"),
-                                            dbc.Select(
-                                                id="screener-sector",
-                                                options=SECTOR_OPTIONS,
-                                                value="all",
-                                                className="filter-select",
-                                                style={"minWidth": "180px", **_SH},
-                                            ),
-                                        ]),
-                                        html.Div([
-                                            html.Label("Market Cap", className="filter-label"),
-                                            dbc.Select(
-                                                id="screener-mktcap",
-                                                options=MKTCAP_OPTIONS,
-                                                value="all",
-                                                className="filter-select",
-                                                style={"minWidth": "160px", **_SH},
-                                            ),
-                                        ]),
-                                    ],
-                                ),
+                                html.Div(style={"marginTop": "12px"}, children=[
+                                    # Row 1: Sector · Market Cap · Country
+                                    html.Div(
+                                        className="filter-row",
+                                        children=[
+                                            html.Div([
+                                                html.Label("Sector",
+                                                           className="filter-label"),
+                                                dbc.Select(
+                                                    id="screener-sector",
+                                                    options=SECTOR_OPTIONS,
+                                                    value="all",
+                                                    className="filter-select",
+                                                    style={**_SH},
+                                                ),
+                                            ], className="filter-item"),
+                                            html.Div([
+                                                html.Label("Market Cap",
+                                                           className="filter-label"),
+                                                dbc.Select(
+                                                    id="screener-mktcap",
+                                                    options=MKTCAP_OPTIONS,
+                                                    value="all",
+                                                    className="filter-select",
+                                                    style={**_SH},
+                                                ),
+                                            ], className="filter-item"),
+                                            html.Div([
+                                                html.Label("Country",
+                                                           className="filter-label"),
+                                                dbc.Select(
+                                                    id="screener-country",
+                                                    options=COUNTRY_OPTIONS,
+                                                    value="all",
+                                                    className="filter-select",
+                                                    style={**_SH},
+                                                ),
+                                            ], className="filter-item"),
+                                        ],
+                                    ),
+                                    # Row 2: Price · Change% · Volume
+                                    html.Div(
+                                        className="filter-row",
+                                        children=[
+                                            html.Div([
+                                                html.Label("Price ($)",
+                                                           className="filter-label"),
+                                                dbc.Select(
+                                                    id="screener-price",
+                                                    options=PRICE_OPTIONS,
+                                                    value="all",
+                                                    className="filter-select",
+                                                    style={**_SH},
+                                                ),
+                                            ], className="filter-item"),
+                                            html.Div([
+                                                html.Label("Change %",
+                                                           className="filter-label"),
+                                                dbc.Select(
+                                                    id="screener-chg-pct",
+                                                    options=CHG_OPTIONS,
+                                                    value="all",
+                                                    className="filter-select",
+                                                    style={**_SH},
+                                                ),
+                                            ], className="filter-item"),
+                                            html.Div([
+                                                html.Label("Volume",
+                                                           className="filter-label"),
+                                                dbc.Select(
+                                                    id="screener-volume",
+                                                    options=VOLUME_OPTIONS,
+                                                    value="all",
+                                                    className="filter-select",
+                                                    style={**_SH},
+                                                ),
+                                            ], className="filter-item"),
+                                        ],
+                                    ),
+                                    # Row 3: Average Volume
+                                    html.Div(
+                                        className="filter-row",
+                                        children=[
+                                            html.Div([
+                                                html.Label("Average Volume",
+                                                           className="filter-label"),
+                                                dbc.Select(
+                                                    id="screener-avg-volume",
+                                                    options=AVG_VOL_OPTIONS,
+                                                    value="all",
+                                                    className="filter-select",
+                                                    style={**_SH},
+                                                ),
+                                            ], className="filter-item"),
+                                        ],
+                                    ),
+                                ]),
                             ]),
+                            # ── Sentiment tab ─────────────────────────────
                             dbc.Tab(label="Sentiment", children=[
-                                html.Div(
-                                    style={"marginTop": "12px"},
-                                    children=[
-                                        html.Div(
-                                            style={"display": "flex", "gap": "12px",
-                                                   "flexWrap": "wrap", "marginBottom": "14px"},
-                                            children=[
-                                                html.Div([
-                                                    html.Label("Min Articles",
-                                                               className="filter-label"),
-                                                    dbc.Select(
-                                                        id="screener-min-articles",
-                                                        options=MIN_ARTICLES_OPTIONS,
-                                                        value=0,
-                                                        className="filter-select",
-                                                        style={"minWidth": "140px", **_SH},
-                                                    ),
-                                                ]),
-                                                html.Div([
-                                                    html.Label("Time Window",
-                                                               className="filter-label"),
-                                                    dbc.Select(
-                                                        id="screener-window",
-                                                        options=TIME_WINDOW_OPTIONS,
-                                                        value="4hr",
-                                                        className="filter-select",
-                                                        style={"minWidth": "130px", **_SH},
-                                                    ),
-                                                ]),
-                                            ],
-                                        ),
-                                        html.Label("Sentiment Range",
-                                                   className="filter-label",
-                                                   style={"marginBottom": "6px",
-                                                          "display": "block"}),
-                                        dcc.RangeSlider(
-                                            id="screener-sentiment-range",
-                                            min=-1.0, max=1.0, step=0.05,
-                                            value=[-1.0, 1.0],
-                                            marks={
-                                                -1.0: {"label": "-1.0", "style": {"color": "#ff5252"}},
-                                                -0.5: {"label": "-0.5", "style": {"color": "#ff8a80"}},
-                                                 0.0: {"label": "0",    "style": {"color": "#888"}},
-                                                 0.5: {"label": "+0.5", "style": {"color": "#69f0ae"}},
-                                                 1.0: {"label": "+1.0", "style": {"color": "#00e676"}},
-                                            },
-                                            tooltip={"placement": "bottom", "always_visible": False},
-                                        ),
-                                    ],
-                                ),
+                                html.Div(style={"marginTop": "12px"}, children=[
+                                    # Row 1: Sentiment label · Score · Time Window
+                                    html.Div(
+                                        className="filter-row",
+                                        children=[
+                                            html.Div([
+                                                html.Label("Sentiment",
+                                                           className="filter-label"),
+                                                dbc.Select(
+                                                    id="screener-sent-label",
+                                                    options=SENT_LABEL_OPTIONS,
+                                                    value="all",
+                                                    className="filter-select",
+                                                    style={**_SH},
+                                                ),
+                                            ], className="filter-item"),
+                                            html.Div([
+                                                html.Label("Sentiment Score",
+                                                           className="filter-label"),
+                                                dbc.Select(
+                                                    id="screener-sent-score",
+                                                    options=SENT_SCORE_OPTIONS,
+                                                    value="all",
+                                                    className="filter-select",
+                                                    style={**_SH},
+                                                ),
+                                            ], className="filter-item"),
+                                            html.Div([
+                                                html.Label("Time Window",
+                                                           className="filter-label"),
+                                                dbc.Select(
+                                                    id="screener-window",
+                                                    options=TIME_WINDOW_OPTIONS,
+                                                    value="4hr",
+                                                    className="filter-select",
+                                                    style={**_SH},
+                                                ),
+                                            ], className="filter-item"),
+                                        ],
+                                    ),
+                                    # Row 2: Min Articles · Trend · Spike Alert
+                                    html.Div(
+                                        className="filter-row",
+                                        children=[
+                                            html.Div([
+                                                html.Label("Min Articles",
+                                                           className="filter-label"),
+                                                dbc.Select(
+                                                    id="screener-min-articles",
+                                                    options=MIN_ARTICLES_OPTIONS,
+                                                    value=0,
+                                                    className="filter-select",
+                                                    style={**_SH},
+                                                ),
+                                            ], className="filter-item"),
+                                            html.Div([
+                                                html.Label("Trend",
+                                                           className="filter-label"),
+                                                dbc.Select(
+                                                    id="screener-trend",
+                                                    options=TREND_OPTIONS,
+                                                    value="all",
+                                                    className="filter-select",
+                                                    style={**_SH},
+                                                ),
+                                            ], className="filter-item"),
+                                            html.Div([
+                                                html.Label("Spike Alert",
+                                                           className="filter-label"),
+                                                dbc.Select(
+                                                    id="screener-spike",
+                                                    options=SPIKE_OPTIONS,
+                                                    value="all",
+                                                    className="filter-select",
+                                                    style={**_SH},
+                                                ),
+                                            ], className="filter-item"),
+                                        ],
+                                    ),
+                                ]),
                             ]),
                         ], style={"borderBottom": "none"}),
+                        # ── Reset button ──────────────────────────────────
+                        html.Div(
+                            style={"display": "flex", "justifyContent": "flex-end",
+                                   "marginTop": "12px"},
+                            children=[
+                                html.Button(
+                                    "Reset Filters",
+                                    id="screener-reset-btn",
+                                    n_clicks=0,
+                                    style={
+                                        "background":   "transparent",
+                                        "border":       "1px solid #2e2e2e",
+                                        "color":        "#666",
+                                        "fontSize":     "12px",
+                                        "padding":      "5px 14px",
+                                        "borderRadius": "4px",
+                                        "cursor":       "pointer",
+                                        "fontFamily":   "inherit",
+                                        "transition":   "border-color 0.12s, color 0.12s",
+                                    },
+                                ),
+                            ],
+                        ),
                     ],
                 ),
             ],
@@ -1031,21 +1361,60 @@ def _toggle_filter_panel(_, is_open):
     return new_open, label
 
 
+_ALL_FILTER_INPUTS = [
+    Input("screener-signal",      "value"),
+    Input("screener-order",       "value"),
+    Input("screener-sort-dir",    "data"),
+    Input("screener-search",      "value"),
+    Input("screener-sector",      "value"),
+    Input("screener-mktcap",      "value"),
+    Input("screener-country",     "value"),
+    Input("screener-price",       "value"),
+    Input("screener-chg-pct",     "value"),
+    Input("screener-volume",      "value"),
+    Input("screener-avg-volume",  "value"),
+    Input("screener-sent-label",  "value"),
+    Input("screener-sent-score",  "value"),
+    Input("screener-window",      "value"),
+    Input("screener-min-articles","value"),
+    Input("screener-trend",       "value"),
+    Input("screener-spike",       "value"),
+]
+
+
 @callback(
     Output("screener-page", "data"),
-    Input("screener-signal",          "value"),
-    Input("screener-order",           "value"),
-    Input("screener-sort-dir",        "data"),
-    Input("screener-search",          "value"),
-    Input("screener-mktcap",          "value"),
-    Input("screener-sentiment-range", "value"),
-    Input("screener-min-articles",    "value"),
-    Input("screener-window",          "value"),
-    Input("screener-sector",          "value"),
+    *_ALL_FILTER_INPUTS,
     prevent_initial_call=True,
 )
 def _reset_screener_page(*_):
     return 1
+
+
+@callback(
+    Output("screener-sector",       "value"),
+    Output("screener-mktcap",       "value"),
+    Output("screener-country",      "value"),
+    Output("screener-price",        "value"),
+    Output("screener-chg-pct",      "value"),
+    Output("screener-volume",       "value"),
+    Output("screener-avg-volume",   "value"),
+    Output("screener-sent-label",   "value"),
+    Output("screener-sent-score",   "value"),
+    Output("screener-window",       "value"),
+    Output("screener-min-articles", "value"),
+    Output("screener-trend",        "value"),
+    Output("screener-spike",        "value"),
+    Output("screener-signal",       "value"),
+    Output("screener-order",        "value"),
+    Output("screener-search",       "value"),
+    Input("screener-reset-btn",     "n_clicks"),
+    prevent_initial_call=True,
+)
+def _reset_filters(_):
+    return ("all", "all", "all", "all", "all", "all", "all",
+            "all", "all", "4hr", 0, "all", "all",
+            "all", "avg_sentiment", "")
 
 
 @callback(
@@ -1076,30 +1445,23 @@ def _handle_screener_page_click(n_clicks_list, current_page):
     Output("screener-pagination",     "children"),
     Input("screener-interval",        "n_intervals"),
     Input("screener-refresh-btn",     "n_clicks"),
-    Input("screener-signal",          "value"),
-    Input("screener-order",           "value"),
-    Input("screener-sort-dir",        "data"),
-    Input("screener-search",          "value"),
-    Input("screener-mktcap",          "value"),
-    Input("screener-sentiment-range", "value"),
-    Input("screener-min-articles",    "value"),
-    Input("screener-window",          "value"),
-    Input("screener-sector",          "value"),
+    *_ALL_FILTER_INPUTS,
     Input("screener-page",            "data"),
     State("url",                      "pathname"),
 )
-def _update_screener(n, refresh_clicks, signal, order, sort_dir, search,
-                     mktcap, sent_range, min_articles, window, sector, page, pathname):
+def _update_screener(n, refresh_clicks,
+                     signal, order, sort_dir, search,
+                     sector, mktcap, country, price, chg_pct, volume, avg_volume,
+                     sent_label, sent_score, window, min_articles, trend, spike,
+                     page, pathname):
     if pathname not in (None, "/screener"):
         raise PreventUpdate
 
-    signal       = signal       or "all"
-    order        = order        or "avg_sentiment"
-    sort_dir     = sort_dir     or "desc"
-    sector       = sector       or "all"
+    signal       = signal    or "all"
+    order        = order     or "avg_sentiment"
+    sort_dir     = sort_dir  or "desc"
+    window       = window    or "4hr"
     min_articles = int(min_articles or 0)
-    window       = window       or "4hr"
-    sent_range   = sent_range   or [-1.0, 1.0]
     page         = max(1, int(page or 1))
 
     df = _fetch_data(window, min_articles)
@@ -1118,13 +1480,17 @@ def _update_screener(n, refresh_clicks, signal, order, sort_dir, search,
     if search:
         df = df[df["ticker"].str.upper().str.startswith(search.strip().upper())]
 
-    if mktcap and mktcap != "all":
-        df = _apply_mktcap_filter(df, mktcap)
-
-    df = _apply_sector_filter(df, sector)
-
-    lo, hi = float(sent_range[0]), float(sent_range[1])
-    df = df[(df["avg_sentiment"] >= lo) & (df["avg_sentiment"] <= hi)]
+    df = _apply_sector_filter(df, sector or "all")
+    df = _apply_country_filter(df, country or "all")
+    df = _apply_mktcap_filter(df, mktcap or "all")
+    df = _apply_price_filter(df, price or "all")
+    df = _apply_chg_pct_filter(df, chg_pct or "all")
+    df = _apply_volume_filter(df, volume or "all")
+    df = _apply_avg_volume_filter(df, avg_volume or "all")
+    df = _apply_sent_label_filter(df, sent_label or "all")
+    df = _apply_sent_score_filter(df, sent_score or "all")
+    df = _apply_trend_filter(df, trend or "all")
+    df = _apply_spike_filter(df, spike or "all")
 
     # ── Sort ───────────────────────────────────────────────────────────────
     df = _apply_sort(df, signal, order, sort_dir)

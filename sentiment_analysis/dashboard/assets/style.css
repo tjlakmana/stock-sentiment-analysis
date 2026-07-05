@@ -411,6 +411,22 @@ body {
     display:       block;
 }
 
+/* ── Screener filter panel rows ─────────────────────────────────────────── */
+.filter-row {
+    display:       flex;
+    flex-wrap:     wrap;
+    gap:           10px 14px;
+    margin-bottom: 10px;
+}
+
+.filter-item {
+    display:        flex;
+    flex-direction: column;
+    min-width:      150px;
+    flex:           1 1 150px;
+    max-width:      220px;
+}
+
 /* ── Screener dense rows (CSS grid, 32 px height) ─────────────────────── */
 .scr-header {
     display:         grid;
