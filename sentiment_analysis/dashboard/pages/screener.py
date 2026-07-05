@@ -462,6 +462,10 @@ def _badge(score) -> html.Span:
             "fontSize":     "11px",
             "fontWeight":   "600",
             "whiteSpace":   "nowrap",
+            "maxWidth":     "130px",
+            "overflow":     "hidden",
+            "textOverflow": "ellipsis",
+            "display":      "inline-block",
         },
     )
 
@@ -525,7 +529,7 @@ def _pct(num, denom) -> str:
 
 # ── Grid layout constants ─────────────────────────────────────────────────
 #   No.  Ticker  Company  MktCap  Price  Chg%   Vol    Art    Sentiment  Score
-_OV_GRID   = "36px 68px 1fr 88px 78px 70px 88px 62px 128px 56px"
+_OV_GRID   = "35px 70px 180px 90px 80px 75px 90px 75px 140px 70px"
 #   No.  Ticker  Sentiment  Score  Bull%  Bear%  Neut%  Art    LastUpd    Trend
 _SENT_GRID = "36px 68px 128px 56px 62px 62px 76px 62px 106px 54px"
 
