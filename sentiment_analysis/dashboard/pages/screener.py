@@ -651,7 +651,7 @@ _OV_COLS = [
     ("Chg %",     "72px",  "right"),
     ("Volume",    "88px",  "right"),
     ("Articles",  "70px",  "right"),
-    ("Sentiment", "136px", "left"),
+    ("Sentiment", "160px", "center"),
     ("Score",     "66px",  "right"),
 ]
 
@@ -718,14 +718,15 @@ def _render_overview_rows(df: pd.DataFrame, page: int) -> list:
             html.Td(html.A(ticker, href=f"/?keyword={ticker}", className="scr-ticker"),
                     className="scr-td"),
             html.Td(company, className="scr-td scr-company"),
-            html.Td(country, className="scr-td scr-td-country"),
+            html.Td(country, className="scr-td scr-td-center scr-dim"),
             html.Td(_fmt_mktcap(r.get("market_cap")), className="scr-td scr-td-num"),
             html.Td(price_children, className="scr-td scr-td-num"),
             html.Td(chg_text, className="scr-td scr-td-num",
                     style={"color": chg_color}),
             html.Td(_fmt_volume(r.get("volume")), className="scr-td scr-td-num"),
             html.Td(str(int(r.get("article_count", 0))), className="scr-td scr-td-num"),
-            html.Td(_badge(score), className="scr-td"),
+            html.Td(_badge(score), className="scr-td",
+                    style={"textAlign": "center", "paddingLeft": "20px"}),
             html.Td(
                 f"{score:+.2f}" if score is not None else "—",
                 className="scr-td scr-td-num scr-mono",
@@ -1364,7 +1365,8 @@ layout = html.Div(
                             className="scr-table",
                             children=[
                                 html.Thead(html.Tr([
-                                    html.Th(lbl, style={"width": w, "textAlign": a})
+                                    html.Th(lbl, style={"width": w, "textAlign": a,
+                                                        **({"paddingLeft": "20px"} if lbl == "Sentiment" else {})})
                                     for lbl, w, a in _OV_COLS
                                 ])),
                                 html.Tbody(id="screener-overview-rows"),
@@ -1380,7 +1382,8 @@ layout = html.Div(
                             className="scr-table",
                             children=[
                                 html.Thead(html.Tr([
-                                    html.Th(lbl, style={"width": w, "textAlign": a})
+                                    html.Th(lbl, style={"width": w, "textAlign": a,
+                                                        **({"paddingLeft": "20px"} if lbl == "Sentiment" else {})})
                                     for lbl, w, a in _SENT_COLS
                                 ])),
                                 html.Tbody(id="screener-sentiment-rows"),
