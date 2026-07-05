@@ -141,9 +141,10 @@ _BARE_TICKER_RE = re.compile(r"\b([A-Z]{1,5})\b")
 _STOP_WORDS: frozenset = frozenset({
     "A", "I", "AN", "OR", "AND", "THE", "IN", "ON", "AT", "BY", "FOR",
     "OF", "TO", "IS", "ARE", "WAS", "BE", "AS", "IF", "UP", "DO",
-    "US", "UK", "EU", "UN", "CEO", "CFO", "COO", "IPO", "ETF", "SEC",
-    "FED", "GDP", "CPI", "EPS", "PEG", "PE", "TTM", "YTD", "QoQ", "YoY",
-    "AI", "ML", "API", "LLC", "INC", "LTD", "NYSE", "NASDAQ", "OTC",
+    "US", "UK", "EU", "UN", "CEO", "CFO", "COO", "CTO", "IPO", "ETF", "SEC",
+    "FDA", "FED", "GDP", "CPI", "EPS", "PEG", "PE", "TTM", "YTD", "QoQ", "YoY",
+    "AI", "ML", "API", "LLC", "INC", "CORP", "LTD", "PLC", "ADR",
+    "NYSE", "NASDAQ", "AMEX", "CBOE", "OTC",
     "FDIC", "IMF", "WTO", "Q1", "Q2", "Q3", "Q4", "YE", "H1", "H2",
 })
 

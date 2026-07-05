@@ -30,8 +30,8 @@ _TITLE_PHRASE_RE = re.compile(
 _CANDIDATE_BLOCKLIST: frozenset[str] = frozenset({
     "the", "a", "an", "inc", "corp", "ltd", "llc", "plc", "co",
     "sec", "fda", "epa", "doj", "ftc", "cdc", "nih", "fed",
-    "nasdaq", "nyse", "dow", "etf", "ipo", "ceo", "cfo",
-    "coo", "cto", "cmo", "vp", "svp", "evp",
+    "nasdaq", "nyse", "amex", "cboe", "otc", "dow", "etf", "ipo", "adr",
+    "ceo", "cfo", "coo", "cto", "cmo", "vp", "svp", "evp",
     "january", "february", "march", "april", "may", "june",
     "july", "august", "september", "october", "november", "december",
     "monday", "tuesday", "wednesday", "thursday", "friday",
