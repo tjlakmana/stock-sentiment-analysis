@@ -6,7 +6,7 @@ Jobs:
   - NLP pipeline     — every 10 min
   - Sentiment        — every 5 min
   - Price ingestor   — every 1 min, 24/7 (Finviz returns last close outside hours)
-  - Cleanup          — daily at midnight ET, deletes rows older than 7 days
+  - Cleanup          — on startup + daily at midnight ET, deletes rows older than 2 days
 """
 from __future__ import annotations
 
@@ -106,28 +106,28 @@ async def _store_prices(price_data: list[dict]) -> None:
 
 
 async def _job_cleanup() -> None:
-    """Delete rows older than 7 days from all pipeline tables."""
+    """Delete rows older than 2 days from all pipeline tables."""
     from sentiment_analysis.storage.database import get_async_session
     from sqlalchemy import text as _text
 
     _TABLES = [
-        ("rss_articles",            "ingested_at"),
-        ("extracted_entities",      "created_at"),
-        ("ticker_sentiment_summary","calculated_at"),
-        ("sentiment_spikes",        "detected_at"),
-        ("ingestion_log",           "run_at"),
+        ("rss_articles",             "ingested_at"),
+        ("extracted_entities",       "created_at"),
+        ("ticker_sentiment_summary", "calculated_at"),
+        ("sentiment_spikes",         "detected_at"),
+        ("ingestion_log",            "run_at"),
     ]
 
     async with get_async_session() as session:
         total_deleted = 0
         for table, col in _TABLES:
             result = await session.execute(_text(
-                f"DELETE FROM {table} WHERE {col} < NOW() - INTERVAL '7 days'"
+                f"DELETE FROM {table} WHERE {col} < NOW() - INTERVAL '2 days'"
             ))
             total_deleted += result.rowcount
         await session.commit()
 
-    logger.info(f"[cleanup] Deleted {total_deleted} rows older than 7 days.")
+    logger.info(f"[cleanup] Deleted {total_deleted} rows older than 2 days.")
 
 
 def build_scheduler() -> AsyncIOScheduler:
@@ -182,7 +182,7 @@ def build_scheduler() -> AsyncIOScheduler:
         _job_cleanup,
         trigger=CronTrigger(hour=0, minute=0, timezone="America/New_York"),
         id="cleanup",
-        name="Daily Data Cleanup (7-day retention)",
+        name="Daily Data Cleanup (2-day retention)",
         replace_existing=True,
         max_instances=1,
         misfire_grace_time=3600,
@@ -197,11 +197,12 @@ def build_scheduler() -> AsyncIOScheduler:
 
 
 async def start_scheduler() -> AsyncIOScheduler:
-    """Build, start, and immediately fire both jobs once."""
+    """Build, start, and immediately fire all jobs once."""
     scheduler = build_scheduler()
     scheduler.start()
-    logger.info("Scheduler started — running initial ingestion pass.")
+    logger.info("Scheduler started — running initial pass.")
 
+    await _job_cleanup()
     await _job_rss()
     await _job_nlp()
     await _job_sentiment()

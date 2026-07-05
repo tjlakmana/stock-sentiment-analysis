@@ -295,17 +295,38 @@ _SECTOR_MAP: dict[str, str] = {
 }
 
 _COUNTRY_MAP: dict[str, str] = {
-    # Chinese ADRs
+    # China
     "BABA": "China", "BIDU": "China", "JD":   "China", "PDD":  "China",
     "NIO":  "China", "XPEV": "China", "LI":   "China", "TCOM": "China",
     "VIPS": "China", "TME":  "China", "BILI": "China", "IQ":   "China",
-    "DIDI": "China", "BOSS": "China", "LABD": "China",
-    # Canadian listings (select large-cap cross-listed)
+    "DIDI": "China", "BOSS": "China", "NTES": "China",
+    # Canada
     "SHOP": "Canada", "CNI": "Canada", "CP":  "Canada", "TD":  "Canada",
     "RY":   "Canada", "BMO": "Canada", "SU":  "Canada", "ENB": "Canada",
-    # UK listings
-    "BP":   "UK",     "HSBC": "UK",   "AZN": "UK",    "GSK": "UK",
-    "LNVGY":"UK",     "VOD":  "UK",
+    # UK
+    "BP":   "UK", "HSBC": "UK", "AZN":   "UK", "GSK":   "UK",
+    "VOD":  "UK", "UL":   "UK", "BTI":   "UK", "DEO":   "UK",
+    "LIN":  "UK", "LNVGY":"UK",
+    # Europe
+    "ASML": "Netherlands",
+    "TSM":  "Taiwan",
+    "SE":   "Singapore",
+    "MELI": "Argentina",
+    "NU":   "Brazil",
+    "NVO":  "Denmark",
+    "TTE":  "France",
+    "SAP":  "Germany",   "SIE": "Germany",
+    "NESN": "Switzerland", "RHHBY": "Switzerland",
+    "RIO":  "Australia", "BHP": "Australia",
+    "ACN":  "Ireland",   "CRH": "Ireland", "STX": "Ireland",
+}
+
+_COUNTRY_CODE: dict[str, str] = {
+    "USA":         "USA", "China":       "CN",  "UK":          "UK",
+    "Canada":      "CA",  "Netherlands": "NL",  "Taiwan":      "TW",
+    "Singapore":   "SG",  "Argentina":   "AR",  "Brazil":      "BR",
+    "Denmark":     "DK",  "France":      "FR",  "Germany":     "DE",
+    "Switzerland": "CH",  "Australia":   "AU",  "Ireland":     "IE",
 }
 
 # ── Options ────────────────────────────────────────────────────────────────
@@ -619,12 +640,12 @@ def _pct(num, denom) -> str:
 
 
 # ── Grid layout constants ─────────────────────────────────────────────────
-#   No.  Ticker  Company  MktCap  Price  Chg%   Vol    Art    Sentiment  Score
-_OV_GRID   = "35px 70px 180px 90px 80px 75px 90px 75px 140px 70px"
+#   No.  Ticker  Company  Country  MktCap  Price  Chg%  Vol   Art   Sentiment  Score
+_OV_GRID   = "35px 70px 160px 70px 90px 80px 75px 90px 75px 140px 70px"
 #   No.  Ticker  Sentiment  Score  Bull%  Bear%  Neut%  Art    LastUpd    Trend
 _SENT_GRID = "36px 68px 128px 56px 62px 62px 76px 62px 106px 54px"
 
-_OV_HDR_CELLS   = ["#", "Ticker", "Company", "Mkt Cap", "Price",
+_OV_HDR_CELLS   = ["#", "Ticker", "Company", "Country", "Mkt Cap", "Price",
                     "Chg %", "Volume", "Articles", "Sentiment", "Score"]
 _SENT_HDR_CELLS = ["#", "Ticker", "Sentiment", "Score",
                     "Bull %", "Bear %", "Neutral %", "Articles", "Last Upd", "Trend"]
@@ -661,6 +682,8 @@ def _render_overview_rows(df: pd.DataFrame, page: int) -> list:
         global_i = offset + local_i
         ticker   = r["ticker"]
         company  = COMPANY_NAMES.get(ticker, "")
+        _cntry   = _COUNTRY_MAP.get(ticker, "USA")
+        country  = _COUNTRY_CODE.get(_cntry, _cntry[:2].upper())
         score    = _safe(r.get("avg_sentiment"))
         color    = _score_color(score)
         chg_text, chg_color = _fmt_chg(r.get("change_pct"))
@@ -690,6 +713,10 @@ def _render_overview_rows(df: pd.DataFrame, page: int) -> list:
                           style={"color": "#444", "fontSize": "11px", "textAlign": "right"}),
                 html.A(ticker, href=f"/?keyword={ticker}", className="scr-ticker"),
                 html.Span(company, className="scr-company"),
+                html.Span(country,
+                          style={"fontSize": "11px", "color": "#555",
+                                 "textAlign": "center", "fontVariant": "all-small-caps",
+                                 "letterSpacing": "0.04em"}),
                 html.Span(_fmt_mktcap(r.get("market_cap")), className="scr-num"),
                 html.Div(price_children),
                 html.Span(chg_text, className="scr-num", style={"color": chg_color}),
