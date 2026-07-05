@@ -1,37 +1,19 @@
 """
-Charts page — TradingView advanced chart with sentiment overlay panels.
+Charts page — TradingView iframe (self-contained) + sentiment panels.
 """
 from __future__ import annotations
 
 import math
 
 import dash
-import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objects as go
-from dash import ALL, Input, Output, callback, ctx, dcc, html
+from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 
 from sentiment_analysis.dashboard.db import now_et, query_df
 
 dash.register_page(__name__, path="/charts", name="Charts", title="Charts")
-
-# ── Timeframe config ──────────────────────────────────────────────────────
-
-_TIMEFRAMES = [
-    ("1M",  "1"),
-    ("3M",  "3"),
-    ("5M",  "5"),
-    ("15M", "15"),
-    ("30M", "30"),
-    ("1H",  "60"),
-    ("D",   "D"),
-    ("W",   "W"),
-    ("M",   "M"),
-]
-
-_DEFAULT_TICKER = "AAPL"
-_DEFAULT_TF     = "D"
 
 # ── Plotly base style ─────────────────────────────────────────────────────
 
@@ -52,7 +34,34 @@ _PLOTLY_BASE = dict(
     ),
 )
 
+# ── Static TradingView embed ──────────────────────────────────────────────
+
+_TV_SRC = (
+    "https://www.tradingview.com/widgetembed/"
+    "?frameElementId=tradingview_chart"
+    "&symbol=NASDAQ%3AAAPL"
+    "&interval=D"
+    "&theme=dark"
+    "&style=1"
+    "&locale=en"
+    "&toolbar_bg=%23131722"
+    "&enable_publishing=false"
+    "&hide_top_toolbar=false"
+    "&hide_legend=false"
+    "&save_image=false"
+    "&calendar=false"
+    "&hide_side_toolbar=0"
+    "&withdateranges=1"
+)
+
 # ── SQL ───────────────────────────────────────────────────────────────────
+
+_TICKERS_SQL = """
+    SELECT DISTINCT ticker
+    FROM ticker_sentiment_summary
+    WHERE calculated_at > NOW() - INTERVAL '7 days'
+    ORDER BY ticker
+"""
 
 _HIST_SQL = """
     SELECT
@@ -152,127 +161,16 @@ def _pct(num, denom) -> str:
         return "—"
 
 
-# ── Exchange map ─────────────────────────────────────────────────────────
-
-EXCHANGE_MAP: dict[str, str] = {
-    # NYSE
-    "WMT": "NYSE", "JPM": "NYSE", "BAC": "NYSE",
-    "XOM": "NYSE", "CVX": "NYSE", "JNJ": "NYSE",
-    "PG": "NYSE", "MA": "NYSE", "HD": "NYSE",
-    "MRK": "NYSE", "ABBV": "NYSE", "KO": "NYSE",
-    "PEP": "NYSE", "LLY": "NYSE", "UNH": "NYSE",
-    "GS": "NYSE", "MS": "NYSE", "C": "NYSE",
-    "WFC": "NYSE", "BRK.B": "NYSE", "V": "NYSE",
-    "UPS": "NYSE", "CAT": "NYSE", "HON": "NYSE",
-    "IBM": "NYSE", "GE": "NYSE", "DE": "NYSE",
-    "BA": "NYSE", "RTX": "NYSE", "LMT": "NYSE",
-    "NOC": "NYSE", "T": "NYSE", "VZ": "NYSE",
-    "DIS": "NYSE", "NKE": "NYSE", "MCD": "NYSE",
-    "AXP": "NYSE", "USB": "NYSE", "PNC": "NYSE",
-    "SPG": "NYSE", "O": "NYSE", "PSA": "NYSE",
-    "AMT": "NYSE", "CCI": "NYSE", "PLD": "NYSE",
-    "SHW": "NYSE", "ECL": "NYSE", "APD": "NYSE",
-    "LIN": "NYSE", "PPG": "NYSE", "DD": "NYSE",
-    "NEM": "NYSE", "FCX": "NYSE", "VMC": "NYSE",
-    "MLM": "NYSE", "NUE": "NYSE", "RSG": "NYSE",
-    "WM": "NYSE", "FDX": "NYSE", "UNP": "NYSE",
-    "NSC": "NYSE", "D": "NYSE", "DUK": "NYSE",
-    "SO": "NYSE", "AEP": "NYSE", "EXC": "NYSE",
-    "SRE": "NYSE", "OKE": "NYSE", "KMI": "NYSE",
-    "WMB": "NYSE", "BLK": "NYSE", "SPGI": "NYSE",
-    "MCO": "NYSE", "ICE": "NYSE", "CME": "NYSE",
-    "COF": "NYSE", "AIG": "NYSE", "MMC": "NYSE",
-    "AON": "NYSE", "CB": "NYSE", "TFC": "NYSE",
-    "MTB": "NYSE", "RF": "NYSE", "KEY": "NYSE",
-    "CFG": "NYSE", "FITB": "NYSE", "HBAN": "NYSE",
-    "ZTS": "NYSE", "BSX": "NYSE", "EW": "NYSE",
-    "BDX": "NYSE", "SYK": "NYSE", "MDT": "NYSE",
-    "ABT": "NYSE", "TMO": "NYSE", "DHR": "NYSE",
-    "A": "NYSE", "MTD": "NYSE", "PKI": "NYSE",
-    "RMD": "NYSE", "HOLX": "NYSE", "STE": "NYSE",
-    "HUM": "NYSE", "ELV": "NYSE", "CI": "NYSE",
-    "CVS": "NYSE", "MCK": "NYSE", "CAH": "NYSE",
-    "COR": "NYSE", "HCA": "NYSE", "UHS": "NYSE",
-    "MOH": "NYSE", "CNC": "NYSE", "DVA": "NYSE",
-    "ACN": "NYSE", "GPN": "NYSE", "FIS": "NYSE",
-    "BAH": "NYSE", "LDOS": "NYSE", "SAIC": "NYSE",
-    "DXC": "NYSE", "IT": "NYSE",
-    # NASDAQ
-    "AAPL": "NASDAQ", "MSFT": "NASDAQ", "GOOGL": "NASDAQ",
-    "AMZN": "NASDAQ", "NVDA": "NASDAQ", "META": "NASDAQ",
-    "TSLA": "NASDAQ", "AVGO": "NASDAQ", "COST": "NASDAQ",
-    "NFLX": "NASDAQ", "AMD": "NASDAQ", "INTC": "NASDAQ",
-    "CSCO": "NASDAQ", "ADBE": "NASDAQ", "QCOM": "NASDAQ",
-    "TXN": "NASDAQ", "AMAT": "NASDAQ", "LRCX": "NASDAQ",
-    "MU": "NASDAQ", "ADI": "NASDAQ", "KLAC": "NASDAQ",
-    "PANW": "NASDAQ", "SNPS": "NASDAQ", "CDNS": "NASDAQ",
-    "FTNT": "NASDAQ", "MRVL": "NASDAQ", "ASML": "NASDAQ",
-    "PYPL": "NASDAQ", "ISRG": "NASDAQ", "REGN": "NASDAQ",
-    "GILD": "NASDAQ", "AMGN": "NASDAQ", "BIIB": "NASDAQ",
-    "MRNA": "NASDAQ", "VRTX": "NASDAQ", "ILMN": "NASDAQ",
-    "IDXX": "NASDAQ", "DXCM": "NASDAQ", "PODD": "NASDAQ",
-    "ALGN": "NASDAQ", "GEHC": "NASDAQ", "FICO": "NASDAQ",
-    "ANSS": "NASDAQ", "EPAM": "NASDAQ", "CTSH": "NASDAQ",
-    "PAYX": "NASDAQ", "ADP": "NASDAQ", "INTU": "NASDAQ",
-    "NOW": "NASDAQ", "CRM": "NASDAQ", "WDAY": "NASDAQ",
-    "TEAM": "NASDAQ", "ZM": "NASDAQ", "DOCU": "NASDAQ",
-    "OKTA": "NASDAQ", "NET": "NASDAQ", "DDOG": "NASDAQ",
-    "SNOW": "NASDAQ", "PLTR": "NASDAQ", "COIN": "NASDAQ",
-    "HOOD": "NASDAQ", "SOFI": "NASDAQ", "AFRM": "NASDAQ",
-    "UPST": "NASDAQ", "NU": "NASDAQ", "SQ": "NASDAQ",
-    "ABNB": "NASDAQ", "UBER": "NASDAQ", "LYFT": "NASDAQ",
-    "DASH": "NASDAQ", "SHOP": "NASDAQ", "MELI": "NASDAQ",
-    "SE": "NASDAQ", "PDD": "NASDAQ", "JD": "NASDAQ",
-    "BIDU": "NASDAQ", "NTES": "NASDAQ", "WBA": "NASDAQ",
-    "FAST": "NASDAQ", "PCAR": "NASDAQ", "ODFL": "NASDAQ",
-    "CTAS": "NASDAQ", "VRSK": "NASDAQ", "CPRT": "NASDAQ",
-    "EXR": "NASDAQ", "EQIX": "NASDAQ", "DLR": "NASDAQ",
-    "WELL": "NASDAQ", "INVH": "NASDAQ", "MAA": "NASDAQ",
-    "PEAK": "NASDAQ", "SBAC": "NASDAQ", "WDC": "NASDAQ",
-    "STX": "NASDAQ", "NTAP": "NASDAQ", "HPE": "NASDAQ",
-    "KEYS": "NASDAQ", "TRMB": "NASDAQ", "ZBRA": "NASDAQ",
-    "TTWO": "NASDAQ", "EA": "NASDAQ", "ATVI": "NASDAQ",
-    "CMCSA": "NASDAQ", "CHTR": "NASDAQ", "NWSA": "NASDAQ",
-    "FOX": "NASDAQ", "PARA": "NASDAQ", "WBD": "NASDAQ",
-}
-
-
-# ── TradingView ───────────────────────────────────────────────────────────
-
-def _tv_src(ticker: str, interval: str) -> str:
-    t      = ticker.upper()
-    exch   = EXCHANGE_MAP.get(t, "NASDAQ")
-    symbol = f"{exch}:{t}"
-    return (
-        "https://www.tradingview.com/widgetembed/"
-        "?frameElementId=tradingview_chart"
-        f"&symbol={symbol}"
-        f"&interval={interval}"
-        "&theme=dark"
-        "&style=1"
-        "&locale=en"
-        "&toolbar_bg=%23131722"
-        "&enable_publishing=false"
-        "&hide_top_toolbar=false"
-        "&hide_legend=false"
-        "&save_image=false"
-        "&calendar=false"
-        "&hide_side_toolbar=0"
-        "&withdateranges=1"
-    )
-
-
 # ── Chart builders ────────────────────────────────────────────────────────
 
 def _sentiment_history_fig(df: pd.DataFrame, ticker: str) -> go.Figure:
     fig = go.Figure()
-    empty_layout = dict(
-        **_PLOTLY_BASE, height=270,
-        title=dict(text=f"Sentiment Score — {ticker.upper()}",
-                   font={"size": 12, "color": "#555"}, x=0.01, xanchor="left"),
-    )
     if df.empty:
-        fig.update_layout(**empty_layout)
+        fig.update_layout(
+            **_PLOTLY_BASE, height=270,
+            title=dict(text=f"Sentiment Score — {ticker}",
+                       font={"size": 12, "color": "#555"}, x=0.01, xanchor="left"),
+        )
         return fig
 
     x = df["hour"].tolist()
@@ -299,7 +197,7 @@ def _sentiment_history_fig(df: pd.DataFrame, ticker: str) -> go.Figure:
         **_PLOTLY_BASE,
         height=270,
         showlegend=False,
-        title=dict(text=f"Sentiment Score — {ticker.upper()}",
+        title=dict(text=f"Sentiment Score — {ticker}",
                    font={"size": 12, "color": "#888"}, x=0.01, xanchor="left"),
         yaxis=dict(
             **_PLOTLY_BASE["yaxis"],
@@ -317,7 +215,7 @@ def _article_volume_fig(df: pd.DataFrame, ticker: str) -> go.Figure:
     if df.empty:
         fig.update_layout(
             **_PLOTLY_BASE, height=270,
-            title=dict(text=f"Article Volume — {ticker.upper()}",
+            title=dict(text=f"Article Volume — {ticker}",
                        font={"size": 12, "color": "#555"}, x=0.01, xanchor="left"),
         )
         return fig
@@ -335,17 +233,13 @@ def _article_volume_fig(df: pd.DataFrame, ticker: str) -> go.Figure:
         height=270,
         showlegend=False,
         bargap=0.18,
-        title=dict(text=f"Article Volume — {ticker.upper()}",
+        title=dict(text=f"Article Volume — {ticker}",
                    font={"size": 12, "color": "#888"}, x=0.01, xanchor="left"),
     )
     return fig
 
 
-def _breakdown_children(
-    latest: "pd.Series | None",
-    last_art,
-    ticker: str,
-) -> list:
+def _breakdown_children(latest: "pd.Series | None", last_art, ticker: str) -> list:
     if latest is None:
         return [html.Div(
             f"No sentiment data for {ticker}.",
@@ -421,22 +315,14 @@ def _breakdown_children(
             ],
         ),
         html.Hr(style={"borderColor": "#1c1c1c", "margin": "0 0 4px", "opacity": 1}),
-        _row("Bullish",     f"{bull} ({_pct(bull, cnt)})",  "#00e676"),
-        _row("Bearish",     f"{bear} ({_pct(bear, cnt)})",  "#ff5252"),
-        _row("Neutral",     f"{neut} ({_pct(neut, cnt)})",  "#888888"),
-        _row("Total (24h)", str(cnt)),
-        _row("Momentum",    f"{arrow} {mom or 'Stable'}",   arrow_color),
-        _row("Last update", calc_str),
+        _row("Bullish",      f"{bull} ({_pct(bull, cnt)})",  "#00e676"),
+        _row("Bearish",      f"{bear} ({_pct(bear, cnt)})",  "#ff5252"),
+        _row("Neutral",      f"{neut} ({_pct(neut, cnt)})",  "#888888"),
+        _row("Total (24h)",  str(cnt)),
+        _row("Momentum",     f"{arrow} {mom or 'Stable'}",   arrow_color),
+        _row("Last update",  calc_str),
         _row("Last article", last_art_str),
     ]
-
-
-# ── Layout helpers ────────────────────────────────────────────────────────
-
-def _tf_btn(label: str, tf: str, active: bool = False) -> html.Button:
-    cls = "charts-tf-btn" + (" charts-tf-active" if active else "")
-    return html.Button(label, id={"type": "charts-tf-btn", "tf": tf},
-                       n_clicks=0, className=cls)
 
 
 # ── Layout ────────────────────────────────────────────────────────────────
@@ -445,36 +331,44 @@ layout = html.Div(
     className="page-content",
     children=[
         dcc.Interval(id="charts-interval", interval=300_000, n_intervals=0),
-        dcc.Store(id="charts-timeframe", data=_DEFAULT_TF),
 
-        # Top bar
+        # Instruction
+        html.P(
+            "Click the ticker symbol in the top-left of the chart to search for any stock",
+            style={"fontSize": "12px", "color": "#444", "margin": "0 0 10px",
+                   "fontStyle": "italic"},
+        ),
+
+        # TradingView iframe — user controls ticker/timeframe inside
+        html.Iframe(
+            src=_TV_SRC,
+            style={
+                "width":        "100%",
+                "height":       "600px",
+                "border":       "none",
+                "borderRadius": "8px",
+                "display":      "block",
+                "marginBottom": "20px",
+            },
+        ),
+
+        # Sentiment panel controls
         html.Div(
-            style={"display": "flex", "alignItems": "center", "gap": "12px",
-                   "marginBottom": "14px", "flexWrap": "wrap"},
+            style={"display": "flex", "alignItems": "center", "gap": "10px",
+                   "marginBottom": "14px"},
             children=[
-                dcc.Input(
-                    id="charts-ticker",
-                    value=_DEFAULT_TICKER,
-                    placeholder="Ticker…",
-                    debounce=True,
-                    style={
-                        "background":    "#141414",
-                        "border":        "1px solid #252525",
-                        "color":         "#e0e0e0",
-                        "borderRadius":  "5px",
-                        "padding":       "7px 12px",
-                        "fontSize":      "14px",
-                        "fontWeight":    "700",
-                        "width":         "100px",
-                        "textTransform": "uppercase",
-                        "fontFamily":    "inherit",
-                        "outline":       "none",
-                    },
+                html.Label(
+                    "Select ticker for sentiment data:",
+                    style={"fontSize": "12px", "color": "#666",
+                           "whiteSpace": "nowrap"},
                 ),
-                html.Div(
-                    style={"display": "flex", "gap": "4px"},
-                    children=[_tf_btn(lbl, tf, tf == _DEFAULT_TF)
-                              for lbl, tf in _TIMEFRAMES],
+                dcc.Dropdown(
+                    id="charts-ticker-dropdown",
+                    options=[],
+                    value=None,
+                    clearable=False,
+                    className="charts-dropdown",
+                    style={"width": "160px"},
                 ),
                 html.Span(
                     id="charts-updated",
@@ -482,20 +376,6 @@ layout = html.Div(
                            "marginLeft": "auto"},
                 ),
             ],
-        ),
-
-        # TradingView iframe
-        html.Iframe(
-            id="tradingview-chart",
-            src=_tv_src(_DEFAULT_TICKER, _DEFAULT_TF),
-            style={
-                "width":         "100%",
-                "height":        "520px",
-                "border":        "none",
-                "borderRadius":  "8px",
-                "display":       "block",
-                "marginBottom":  "16px",
-            },
         ),
 
         # Three panels
@@ -530,52 +410,46 @@ layout = html.Div(
 # ── Callbacks ─────────────────────────────────────────────────────────────
 
 @callback(
-    Output("charts-timeframe", "data"),
-    Output({"type": "charts-tf-btn", "tf": ALL}, "className"),
-    Input({"type": "charts-tf-btn", "tf": ALL}, "n_clicks"),
-    prevent_initial_call=True,
+    Output("charts-ticker-dropdown", "options"),
+    Output("charts-ticker-dropdown", "value"),
+    Input("url",             "pathname"),
+    Input("charts-interval", "n_intervals"),
+    State("charts-ticker-dropdown", "value"),
 )
-def _set_timeframe(n_clicks_list):
-    triggered = ctx.triggered_id
-    if not triggered:
+def _load_tickers(pathname, _n, current):
+    if pathname not in (None, "/charts"):
         raise PreventUpdate
-    active_tf = triggered["tf"]
-    classes = [
-        "charts-tf-btn charts-tf-active" if tf == active_tf else "charts-tf-btn"
-        for _, tf in _TIMEFRAMES
-    ]
-    return active_tf, classes
+    df = query_df(_TICKERS_SQL, {})
+    if df.empty:
+        return [], None
+    tickers = df["ticker"].tolist()
+    options = [{"label": t, "value": t} for t in tickers]
+    value   = current if current in tickers else tickers[0]
+    return options, value
 
 
 @callback(
-    Output("tradingview-chart",     "src"),
     Output("charts-sentiment-hist", "figure"),
     Output("charts-article-vol",    "figure"),
     Output("charts-breakdown",      "children"),
     Output("charts-updated",        "children"),
-    Input("charts-ticker",          "value"),
-    Input("charts-timeframe",       "data"),
+    Input("charts-ticker-dropdown", "value"),
     Input("charts-interval",        "n_intervals"),
     Input("url",                    "pathname"),
 )
-def _update_charts(ticker, timeframe, _n, pathname):
-    if pathname not in (None, "/charts"):
+def _update_panels(ticker, _n, pathname):
+    if pathname not in (None, "/charts") or not ticker:
         raise PreventUpdate
 
-    ticker    = (ticker or "AAPL").strip().upper()[:6] or "AAPL"
-    timeframe = timeframe or _DEFAULT_TF
-
-    tv_src    = _tv_src(ticker, timeframe)
     hist_fig  = _sentiment_history_fig(query_df(_HIST_SQL, {"ticker": ticker}), ticker)
-    vol_fig   = _article_volume_fig(query_df(_VOL_SQL, {"ticker": ticker}), ticker)
+    vol_fig   = _article_volume_fig(query_df(_VOL_SQL,    {"ticker": ticker}), ticker)
 
-    latest_df = query_df(_LATEST_SQL, {"ticker": ticker})
-    last_df   = query_df(_LAST_ARTICLE_SQL, {"ticker": ticker})
-
+    latest_df  = query_df(_LATEST_SQL,      {"ticker": ticker})
+    last_df    = query_df(_LAST_ARTICLE_SQL, {"ticker": ticker})
     latest_row = latest_df.iloc[0] if not latest_df.empty else None
     last_art   = last_df.iloc[0]["last_article"] if not last_df.empty else None
 
     breakdown = _breakdown_children(latest_row, last_art, ticker)
     updated   = "Updated " + now_et().strftime("%H:%M ET")
 
-    return tv_src, hist_fig, vol_fig, breakdown, updated
+    return hist_fig, vol_fig, breakdown, updated

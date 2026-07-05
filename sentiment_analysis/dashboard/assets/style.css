@@ -482,27 +482,36 @@ body {
     white-space: nowrap;
 }
 
-/* ── Charts page ────────────────────────────────────────────────────────── */
-.charts-tf-btn {
-    background:    #1a1a1a;
-    border:        1px solid #2a2a2a;
-    color:         #666666;
-    padding:       5px 10px;
-    border-radius: 4px;
-    font-size:     12px;
-    font-weight:   600;
-    font-family:   inherit;
-    cursor:        pointer;
-    transition:    border-color 0.12s, color 0.12s;
-    white-space:   nowrap;
+/* ── Charts page dropdown ───────────────────────────────────────────────── */
+.charts-dropdown .Select-control {
+    background:   #141414 !important;
+    border-color: #252525 !important;
+    border-radius: 5px !important;
+    min-height:   32px !important;
 }
-.charts-tf-btn:hover {
-    border-color: #444444;
-    color:        #cccccc;
+.charts-dropdown .Select-value-label,
+.charts-dropdown .Select-placeholder {
+    color: #cccccc !important;
+    font-size: 13px !important;
 }
-.charts-tf-active,
-.charts-tf-active:hover {
-    background:   rgba(0, 212, 255, 0.08);
-    border-color: #00d4ff !important;
-    color:        #00d4ff !important;
+.charts-dropdown .Select-arrow-zone .Select-arrow {
+    border-top-color: #555 !important;
+}
+.charts-dropdown .Select-menu-outer {
+    background:   #1a1a1a !important;
+    border-color: #2a2a2a !important;
+    z-index:      9999 !important;
+}
+.charts-dropdown .Select-option {
+    background: #1a1a1a !important;
+    color:      #cccccc !important;
+    font-size:  13px !important;
+}
+.charts-dropdown .Select-option.is-focused,
+.charts-dropdown .Select-option:hover {
+    background: #252525 !important;
+}
+.charts-dropdown .Select-option.is-selected {
+    background: #1e2a1e !important;
+    color:      #00e676 !important;
 }
