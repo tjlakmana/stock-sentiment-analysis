@@ -21,6 +21,13 @@ try:
 except ImportError:
     COMPANY_NAMES: dict[str, str] = {}
 
+try:
+    from sentiment_analysis.dashboard.pages.news import _source_chip
+except ImportError:
+    def _source_chip(source: str):  # type: ignore[misc]
+        return html.Span(source[:3].upper() if source else "—",
+                         style={"fontSize": "10px", "color": "#555"})
+
 # ── SQL ───────────────────────────────────────────────────────────────────
 
 _MOMENTUM_SQL = """
@@ -59,12 +66,12 @@ _MOMENTUM_SQL = """
 """
 
 _HEADLINES_SQL = """
-    SELECT title, url, ingested_at, tickers
+    SELECT title, url, source_name, ingested_at, sentiment_label, tickers
     FROM rss_articles
-    WHERE ingested_at > NOW() - INTERVAL '24 hours'
+    WHERE ingested_at > NOW() - INTERVAL '2 days'
       AND array_length(tickers, 1) > 0
     ORDER BY ingested_at DESC
-    LIMIT 500
+    LIMIT 1000
 """
 
 # ── Filter option defs ────────────────────────────────────────────────────
@@ -230,26 +237,55 @@ def _fsel(label: str, id_: str, opts, val) -> html.Div:
 # ── Card builders ─────────────────────────────────────────────────────────
 
 
+def _art_sent_badge(label: str | None) -> html.Span | None:
+    if not label:
+        return None
+    s = _SENT_STYLE.get(label, {})
+    if not s:
+        return None
+    return html.Span(
+        label,
+        style={
+            "background":   s.get("bg",    "#141414"),
+            "color":        s.get("color", "#666"),
+            "border":       f"1px solid {s.get('bd', '#282828')}",
+            "borderRadius": "8px",
+            "padding":      "1px 7px",
+            "fontSize":     "10px",
+            "fontWeight":   "600",
+            "whiteSpace":   "nowrap",
+            "flexShrink":   "0",
+        },
+    )
+
+
 def _headlines_panel(headlines: list[dict]) -> html.Div:
     if not headlines:
-        return html.Div("No recent headlines",
+        return html.Div("No recent articles",
                         style={"color": "#444", "fontSize": "12px", "paddingTop": "12px"})
     items = []
     for h in headlines:
         ts = ""
         try:
-            ts = pd.Timestamp(h["ingested_at"]).strftime("%H:%M")
+            dt = pd.Timestamp(h["ingested_at"])
+            ts = f"{dt.strftime('%b')} {dt.day} {dt.strftime('%H:%M')} ET"
         except Exception:
             pass
-        title = (h.get("title") or "")[:110]
-        url   = h.get("url") or "#"
-        items.append(html.Div(
-            className="mom-headline-item",
-            children=[
-                html.Span(ts, className="mom-headline-ts"),
-                html.A(title, href=url, target="_blank", className="mom-headline-title"),
-            ],
-        ))
+        title = (h.get("title") or "")[:80]
+        url    = h.get("url") or "#"
+        source = h.get("source_name") or ""
+        sent   = h.get("sentiment_label") or ""
+        sent_badge = _art_sent_badge(sent)
+
+        row_children = [
+            _source_chip(source),
+            html.Span(ts, className="mom-headline-ts"),
+            html.A(title, href=url, target="_blank", className="mom-headline-title"),
+        ]
+        if sent_badge:
+            row_children.append(sent_badge)
+
+        items.append(html.Div(className="mom-headline-item", children=row_children))
     return html.Div(items)
 
 
@@ -377,7 +413,7 @@ def _build_card(i: int, row: dict, headlines: list[dict]) -> html.Div:
                         ),
                     ]),
                     html.Div(className="mom-panel-section", children=[
-                        html.P("News (24h)", className="mom-panel-title"),
+                        html.P("News Headlines", className="mom-panel-title"),
                         _headlines_panel(headlines),
                     ]),
                     html.Div(className="mom-panel-section", children=[

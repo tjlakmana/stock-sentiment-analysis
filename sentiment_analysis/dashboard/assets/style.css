@@ -807,16 +807,28 @@ body {
 
 /* Headlines */
 .mom-headline-item {
+    display:       flex;
+    align-items:   center;
+    gap:           6px;
     padding:       5px 0;
     border-bottom: 1px solid #161616;
+    min-width:     0;
 }
-.mom-headline-ts    { display: block; font-size: 10px; color: #383838; margin-bottom: 2px; }
+.mom-headline-ts {
+    font-size:  10px;
+    color:      #3a3a3a;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
 .mom-headline-title {
+    flex:            1;
     font-size:       12px;
-    color:           #aaaaaa;
+    color:           #999;
     text-decoration: none;
-    line-height:     1.3;
-    display:         block;
+    white-space:     nowrap;
+    overflow:        hidden;
+    text-overflow:   ellipsis;
+    min-width:       0;
 }
 .mom-headline-title:hover { color: #e0e0e0; text-decoration: underline; }
 
