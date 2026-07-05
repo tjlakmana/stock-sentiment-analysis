@@ -2558,3 +2558,632 @@ urllib.error.HTTPError: HTTP Error 403: Forbidden
 2026-07-05 13:18:14 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
 2026-07-05 13:19:13 | INFO     | __main__:72 — Pipeline stopped cleanly.
 2026-07-05 13:19:13 | INFO     | __main__:148 — Dashboard process terminated.
+2026-07-05 13:44:15 | INFO     | __main__:127 — ============================================================
+2026-07-05 13:44:15 | INFO     | __main__:128 — Stock Sentiment Analysis — Phase 2 starting
+2026-07-05 13:44:15 | INFO     | __main__:129 —   DB URL   : postgresql+asyncpg://postgres:1074@localhost:5432/…
+2026-07-05 13:44:15 | INFO     | __main__:130 —   Log level: INFO
+2026-07-05 13:44:15 | INFO     | __main__:131 —   Watchlist: A, AAL, AAP, AAPL, ABBV, ABC, ABMD, ABT, ACN, ACGL, ADBE, ADI, ADM, ADP, ADSK, AEE, AEP, AES, AFL, AIG, AIZ, AJG, AKAM, ALB, ALGN, ALK, ALL, ALLE, AMAT, AMCR, AMD, AME, AMGN, AMP, AMT, AMZN, ANET, ANSS, AON, AOS, APA, APD, APH, APTV, ARE, ATO, AVB, AVGO, AVY, AWK, AXP, AXON, AZO, BA, BAC, BALL, BAX, BBWI, BBY, BCR, BDX, BEN, BF.B, BG, BIIB, BIO, BK, BKNG, BKR, BLK, BLDR, BMY, BR, BRO, BSX, BWA, BX, BXP, C, CAG, CAH, CARR, CAT, CB, CBOE, CBRE, CCI, CCL, CDNS, CDW, CE, CEG, CF, CFG, CHD, CHRW, CHTR, CI, CINF, CL, CLX, CMA, CMCSA, CME, CMG, CMI, CMS, CNC, CNP, COF, COO, COP, COR, COST, CPB, CPRT, CPT, CRL, CRM, CSCO, CSGP, CSX, CTAS, CTLT, CTRA, CTSH, CTVA, CVS, CVX, CZR, D, DAL, DAY, DD, DE, DECK, DFS, DG, DGX, DHI, DHR, DIS, DISH, DLR, DLTR, DOC, DOV, DOW, DPZ, DRI, DTE, DUK, DVA, DVN, DXC, DXCM, EA, EBAY, ECL, ED, EFX, EG, EIX, EL, ELV, EMN, EMR, ENPH, EOG, EPAM, EQIX, EQR, EQT, ES, ESS, ETN, ETR, ETSY, EVRG, EW, EXC, EXPD, EXPE, EXR, F, FANG, FAST, FCX, FDS, FDX, FE, FFIV, FI, FICO, FIS, FISV, FITB, FLT, FMC, FOX, FOXA, FRT, FSLR, FTNT, FTV, GD, GE, GDDY, GEHC, GEN, GEV, GILD, GIS, GL, GLW, GM, GNRC, GOOG, GOOGL, GPC, GPN, GPS, GRMN, GS, GWW, HAL, HAS, HBAN, HCA, HD, HES, HIG, HII, HLT, HOLX, HON, HPE, HPQ, HRL, HSIC, HST, HSY, HUBB, HUM, HWM, IBM, ICE, IDXX, IEX, IFF, ILMN, INCY, INTC, INTU, INVH, IP, IPG, IQV, IR, IRM, ISRG, IT, ITW, IVZ, J, JBL, JBHT, JCI, JKHY, JNJ, JNPR, JPM, K, KDP, KEY, KEYS, KHC, KIM, KLAC, KMB, KMI, KMX, KO, KR, KVUE, L, LDOS, LEN, LH, LHX, LIN, LKQ, LLY, LMT, LNC, LNT, LOW, LRCX, LULU, LUMN, LUV, LVS, LW, LYB, LYV, MA, MAA, MAR, MAS, MCD, MCHP, MCK, MCO, MDLZ, MDT, MET, META, MGM, MHK, MKC, MKTX, MLM, MMC, MMM, MNST, MO, MOH, MOS, MPC, MPWR, MRK, MRO, MRNA, MS, MSCI, MSFT, MSI, MTB, MTCH, MTD, MU, NCLH, NDAQ, NDSN, NEE, NEM, NFLX, NI, NKE, NOC, NOW, NRG, NSC, NTAP, NTRS, NUE, NVDA, NVR, NWL, NWS, NWSA, NXPI, O, ODFL, OKE, OMC, ON, ORCL, ORLY, OTIS, OXY, PANW, PARA, PAYC, PAYX, PCAR, PCG, PEAK, PEG, PEP, PFE, PFG, PG, PGR, PH, PHM, PKG, PKI, PLD, PM, PNC, PNR, PNW, PODD, POOL, PPG, PPL, PRU, PSA, PSX, PTC, PTVE, PWR, PXD, PYPL, QCOM, QRVO, RCL, RE, REG, REGN, RF, RHI, RJF, RL, RMD, ROK, ROL, ROP, ROST, RSG, RTX, RVTY, SBAC, SBUX, SCHW, SEE, SHW, SJM, SLB, SNA, SNPS, SO, SOLV, SPG, SPGI, SRE, STE, STLD, STT, STX, STZ, SWK, SWKS, SYF, SYK, SYY, T, TAP, TDG, TDY, TECH, TEL, TER, TFC, TFX, TGT, TJX, TMO, TMUS, TPR, TRGP, TRMB, TROW, TRV, TSCO, TSLA, TSN, TT, TTWO, TXN, TXT, TYL, UA, UAA, UAL, UDR, UHS, ULTA, UNH, UNP, UPS, URI, USB, V, VFC, VICI, VLO, VMC, VNO, VRSK, VRSN, VRTX, VST, VTR, VTRS, VZ, WAB, WAT, WBA, WBD, WDAY, WDC, WEC, WELL, WFC, WHR, WLK, WM, WMB, WMT, WRB, WRK, WST, WTW, WY, WYNN, XEL, XOM, XRAY, XYL, YUM, ZBH, ZBRA, ZION, ZTS, SPY, QQQ, IWM, DIA, GLD, SLV, TLT, HYG, LQD, VTI, VOO, VEA, VWO, EFA, EEM, XLF, XLK, XLE, XLV, XLI, XLY, XLP, XLU, XLB, XLRE, PLTR, RIVN, LCID, SOFI, GME, AMC, BB, NOK, COIN, HOOD, ROKU, SNAP, UBER, LYFT, ABNB, DASH, PINS, TWTR, SHOP, SQ, PYPL, AFRM, UPST
+2026-07-05 13:44:15 | INFO     | __main__:132 — ============================================================
+2026-07-05 13:44:15 | INFO     | __main__:87 — Dashboard started (PID 34652)  →  http://localhost:8050
+2026-07-05 13:44:15 | INFO     | __main__:50 — Database schema verified / created.
+2026-07-05 13:44:15 | INFO     | sentiment_analysis.ingestion.scheduler:191 — Scheduler configured — RSS every 5m, NLP every 10m, Sentiment every 5m, Finviz prices every 1m, Cleanup daily at midnight ET
+2026-07-05 13:44:15 | INFO     | sentiment_analysis.ingestion.scheduler:203 — Scheduler started — running initial ingestion pass.
+2026-07-05 13:44:15 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 13:44:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 13:44:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 13:44:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 13:44:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 13:44:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 13:44:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 13:44:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 13:44:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 13:44:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 13:44:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 13:44:17 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 13:44:17 | DEBUG    | sentiment_analysis.nlp.pipeline:65 — [nlp] No unprocessed articles.
+2026-07-05 13:44:17 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 13:44:17 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 13:44:17 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 3 invalid/blocked tickers.
+2026-07-05 13:44:17 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] DE: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DE&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 13:44:17 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] DAY: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DAY&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 13:44:18 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] PRU: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=PRU&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 13:44:18 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/3 tickers.
+2026-07-05 13:44:18 | INFO     | __main__:62 — Ingestion pipeline running.  Press Ctrl+C to stop.
+2026-07-05 13:45:15 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 13:45:15 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 3 invalid/blocked tickers.
+2026-07-05 13:45:16 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] DE: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DE&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 13:45:16 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] DAY: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DAY&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 13:45:17 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] PRU: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=PRU&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 13:45:17 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/3 tickers.
+2026-07-05 13:46:15 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 13:46:15 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 3 invalid/blocked tickers.
+2026-07-05 13:46:16 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:151 — [finviz] DE: added to skip list after 3 failures (401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DE&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90).
+2026-07-05 13:46:16 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:151 — [finviz] DAY: added to skip list after 3 failures (401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DAY&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90).
+2026-07-05 13:46:17 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:151 — [finviz] PRU: added to skip list after 3 failures (401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=PRU&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90).
+2026-07-05 13:46:17 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/3 tickers.
+2026-07-05 13:47:15 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 13:47:15 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 13:47:15 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 13:48:15 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 13:48:15 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 13:48:15 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 13:49:15 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 13:49:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 1/20 new articles.
+2026-07-05 13:49:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 13:49:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 13:49:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 13:49:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 13:49:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 13:49:16 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 13:49:16 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 13:49:16 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 13:49:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 13:49:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 13:49:16 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 13:49:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 13:49:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 13:49:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 13:50:15 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 13:50:15 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 13:50:15 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 13:51:15 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 13:51:15 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 13:51:15 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 13:52:15 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 13:52:15 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 13:52:15 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 13:52:44 | INFO     | __main__:72 — Pipeline stopped cleanly.
+2026-07-05 13:52:44 | INFO     | __main__:148 — Dashboard process terminated.
+2026-07-05 13:52:57 | INFO     | __main__:127 — ============================================================
+2026-07-05 13:52:57 | INFO     | __main__:128 — Stock Sentiment Analysis — Phase 2 starting
+2026-07-05 13:52:57 | INFO     | __main__:129 —   DB URL   : postgresql+asyncpg://postgres:1074@localhost:5432/…
+2026-07-05 13:52:57 | INFO     | __main__:130 —   Log level: INFO
+2026-07-05 13:52:57 | INFO     | __main__:131 —   Watchlist: A, AAL, AAP, AAPL, ABBV, ABC, ABMD, ABT, ACN, ACGL, ADBE, ADI, ADM, ADP, ADSK, AEE, AEP, AES, AFL, AIG, AIZ, AJG, AKAM, ALB, ALGN, ALK, ALL, ALLE, AMAT, AMCR, AMD, AME, AMGN, AMP, AMT, AMZN, ANET, ANSS, AON, AOS, APA, APD, APH, APTV, ARE, ATO, AVB, AVGO, AVY, AWK, AXP, AXON, AZO, BA, BAC, BALL, BAX, BBWI, BBY, BCR, BDX, BEN, BF.B, BG, BIIB, BIO, BK, BKNG, BKR, BLK, BLDR, BMY, BR, BRO, BSX, BWA, BX, BXP, C, CAG, CAH, CARR, CAT, CB, CBOE, CBRE, CCI, CCL, CDNS, CDW, CE, CEG, CF, CFG, CHD, CHRW, CHTR, CI, CINF, CL, CLX, CMA, CMCSA, CME, CMG, CMI, CMS, CNC, CNP, COF, COO, COP, COR, COST, CPB, CPRT, CPT, CRL, CRM, CSCO, CSGP, CSX, CTAS, CTLT, CTRA, CTSH, CTVA, CVS, CVX, CZR, D, DAL, DAY, DD, DE, DECK, DFS, DG, DGX, DHI, DHR, DIS, DISH, DLR, DLTR, DOC, DOV, DOW, DPZ, DRI, DTE, DUK, DVA, DVN, DXC, DXCM, EA, EBAY, ECL, ED, EFX, EG, EIX, EL, ELV, EMN, EMR, ENPH, EOG, EPAM, EQIX, EQR, EQT, ES, ESS, ETN, ETR, ETSY, EVRG, EW, EXC, EXPD, EXPE, EXR, F, FANG, FAST, FCX, FDS, FDX, FE, FFIV, FI, FICO, FIS, FISV, FITB, FLT, FMC, FOX, FOXA, FRT, FSLR, FTNT, FTV, GD, GE, GDDY, GEHC, GEN, GEV, GILD, GIS, GL, GLW, GM, GNRC, GOOG, GOOGL, GPC, GPN, GPS, GRMN, GS, GWW, HAL, HAS, HBAN, HCA, HD, HES, HIG, HII, HLT, HOLX, HON, HPE, HPQ, HRL, HSIC, HST, HSY, HUBB, HUM, HWM, IBM, ICE, IDXX, IEX, IFF, ILMN, INCY, INTC, INTU, INVH, IP, IPG, IQV, IR, IRM, ISRG, IT, ITW, IVZ, J, JBL, JBHT, JCI, JKHY, JNJ, JNPR, JPM, K, KDP, KEY, KEYS, KHC, KIM, KLAC, KMB, KMI, KMX, KO, KR, KVUE, L, LDOS, LEN, LH, LHX, LIN, LKQ, LLY, LMT, LNC, LNT, LOW, LRCX, LULU, LUMN, LUV, LVS, LW, LYB, LYV, MA, MAA, MAR, MAS, MCD, MCHP, MCK, MCO, MDLZ, MDT, MET, META, MGM, MHK, MKC, MKTX, MLM, MMC, MMM, MNST, MO, MOH, MOS, MPC, MPWR, MRK, MRO, MRNA, MS, MSCI, MSFT, MSI, MTB, MTCH, MTD, MU, NCLH, NDAQ, NDSN, NEE, NEM, NFLX, NI, NKE, NOC, NOW, NRG, NSC, NTAP, NTRS, NUE, NVDA, NVR, NWL, NWS, NWSA, NXPI, O, ODFL, OKE, OMC, ON, ORCL, ORLY, OTIS, OXY, PANW, PARA, PAYC, PAYX, PCAR, PCG, PEAK, PEG, PEP, PFE, PFG, PG, PGR, PH, PHM, PKG, PKI, PLD, PM, PNC, PNR, PNW, PODD, POOL, PPG, PPL, PRU, PSA, PSX, PTC, PTVE, PWR, PXD, PYPL, QCOM, QRVO, RCL, RE, REG, REGN, RF, RHI, RJF, RL, RMD, ROK, ROL, ROP, ROST, RSG, RTX, RVTY, SBAC, SBUX, SCHW, SEE, SHW, SJM, SLB, SNA, SNPS, SO, SOLV, SPG, SPGI, SRE, STE, STLD, STT, STX, STZ, SWK, SWKS, SYF, SYK, SYY, T, TAP, TDG, TDY, TECH, TEL, TER, TFC, TFX, TGT, TJX, TMO, TMUS, TPR, TRGP, TRMB, TROW, TRV, TSCO, TSLA, TSN, TT, TTWO, TXN, TXT, TYL, UA, UAA, UAL, UDR, UHS, ULTA, UNH, UNP, UPS, URI, USB, V, VFC, VICI, VLO, VMC, VNO, VRSK, VRSN, VRTX, VST, VTR, VTRS, VZ, WAB, WAT, WBA, WBD, WDAY, WDC, WEC, WELL, WFC, WHR, WLK, WM, WMB, WMT, WRB, WRK, WST, WTW, WY, WYNN, XEL, XOM, XRAY, XYL, YUM, ZBH, ZBRA, ZION, ZTS, SPY, QQQ, IWM, DIA, GLD, SLV, TLT, HYG, LQD, VTI, VOO, VEA, VWO, EFA, EEM, XLF, XLK, XLE, XLV, XLI, XLY, XLP, XLU, XLB, XLRE, PLTR, RIVN, LCID, SOFI, GME, AMC, BB, NOK, COIN, HOOD, ROKU, SNAP, UBER, LYFT, ABNB, DASH, PINS, TWTR, SHOP, SQ, PYPL, AFRM, UPST
+2026-07-05 13:52:57 | INFO     | __main__:132 — ============================================================
+2026-07-05 13:52:57 | INFO     | __main__:87 — Dashboard started (PID 14616)  →  http://localhost:8050
+2026-07-05 13:52:58 | INFO     | __main__:50 — Database schema verified / created.
+2026-07-05 13:52:58 | INFO     | sentiment_analysis.ingestion.scheduler:191 — Scheduler configured — RSS every 5m, NLP every 10m, Sentiment every 5m, Finviz prices every 1m, Cleanup daily at midnight ET
+2026-07-05 13:52:58 | INFO     | sentiment_analysis.ingestion.scheduler:203 — Scheduler started — running initial ingestion pass.
+2026-07-05 13:52:58 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 13:52:58 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 13:52:58 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 13:52:58 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 13:52:58 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 13:52:58 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 13:52:58 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 13:52:58 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 13:52:58 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 13:52:59 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 13:52:59 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 13:52:59 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 13:53:01 | INFO     | sentiment_analysis.nlp.pipeline:130 — [nlp] Batch complete — processed 1/1 articles
+2026-07-05 13:53:01 | INFO     | sentiment_analysis.sentiment.pipeline:126 — [sentiment] Analyzing 1 articles via Gemini.
+2026-07-05 13:53:05 | INFO     | sentiment_analysis.sentiment.pipeline:159 — [sentiment] Stored 1 results.
+2026-07-05 13:53:05 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 13:53:05 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 3 invalid/blocked tickers.
+2026-07-05 13:53:05 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] DE: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DE&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 13:53:05 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] DAY: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DAY&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 13:53:06 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] PRU: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=PRU&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 13:53:06 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/3 tickers.
+2026-07-05 13:53:06 | INFO     | __main__:62 — Ingestion pipeline running.  Press Ctrl+C to stop.
+2026-07-05 13:53:58 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 13:53:58 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 3 invalid/blocked tickers.
+2026-07-05 13:53:58 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] DE: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DE&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 13:53:58 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] DAY: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DAY&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 13:53:59 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] PRU: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=PRU&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 13:53:59 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/3 tickers.
+2026-07-05 13:54:58 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 13:54:58 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 3 invalid/blocked tickers.
+2026-07-05 13:54:58 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:151 — [finviz] DE: added to skip list after 3 failures (401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DE&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90).
+2026-07-05 13:54:58 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:151 — [finviz] DAY: added to skip list after 3 failures (401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DAY&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90).
+2026-07-05 13:54:59 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:151 — [finviz] PRU: added to skip list after 3 failures (401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=PRU&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90).
+2026-07-05 13:54:59 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/3 tickers.
+2026-07-05 13:55:27 | INFO     | __main__:72 — Pipeline stopped cleanly.
+2026-07-05 13:55:27 | INFO     | __main__:148 — Dashboard process terminated.
+2026-07-05 13:59:12 | INFO     | __main__:127 — ============================================================
+2026-07-05 13:59:12 | INFO     | __main__:128 — Stock Sentiment Analysis — Phase 2 starting
+2026-07-05 13:59:12 | INFO     | __main__:129 —   DB URL   : postgresql+asyncpg://postgres:1074@localhost:5432/…
+2026-07-05 13:59:12 | INFO     | __main__:130 —   Log level: INFO
+2026-07-05 13:59:12 | INFO     | __main__:131 —   Watchlist: A, AAL, AAP, AAPL, ABBV, ABC, ABMD, ABT, ACN, ACGL, ADBE, ADI, ADM, ADP, ADSK, AEE, AEP, AES, AFL, AIG, AIZ, AJG, AKAM, ALB, ALGN, ALK, ALL, ALLE, AMAT, AMCR, AMD, AME, AMGN, AMP, AMT, AMZN, ANET, ANSS, AON, AOS, APA, APD, APH, APTV, ARE, ATO, AVB, AVGO, AVY, AWK, AXP, AXON, AZO, BA, BAC, BALL, BAX, BBWI, BBY, BCR, BDX, BEN, BF.B, BG, BIIB, BIO, BK, BKNG, BKR, BLK, BLDR, BMY, BR, BRO, BSX, BWA, BX, BXP, C, CAG, CAH, CARR, CAT, CB, CBOE, CBRE, CCI, CCL, CDNS, CDW, CE, CEG, CF, CFG, CHD, CHRW, CHTR, CI, CINF, CL, CLX, CMA, CMCSA, CME, CMG, CMI, CMS, CNC, CNP, COF, COO, COP, COR, COST, CPB, CPRT, CPT, CRL, CRM, CSCO, CSGP, CSX, CTAS, CTLT, CTRA, CTSH, CTVA, CVS, CVX, CZR, D, DAL, DAY, DD, DE, DECK, DFS, DG, DGX, DHI, DHR, DIS, DISH, DLR, DLTR, DOC, DOV, DOW, DPZ, DRI, DTE, DUK, DVA, DVN, DXC, DXCM, EA, EBAY, ECL, ED, EFX, EG, EIX, EL, ELV, EMN, EMR, ENPH, EOG, EPAM, EQIX, EQR, EQT, ES, ESS, ETN, ETR, ETSY, EVRG, EW, EXC, EXPD, EXPE, EXR, F, FANG, FAST, FCX, FDS, FDX, FE, FFIV, FI, FICO, FIS, FISV, FITB, FLT, FMC, FOX, FOXA, FRT, FSLR, FTNT, FTV, GD, GE, GDDY, GEHC, GEN, GEV, GILD, GIS, GL, GLW, GM, GNRC, GOOG, GOOGL, GPC, GPN, GPS, GRMN, GS, GWW, HAL, HAS, HBAN, HCA, HD, HES, HIG, HII, HLT, HOLX, HON, HPE, HPQ, HRL, HSIC, HST, HSY, HUBB, HUM, HWM, IBM, ICE, IDXX, IEX, IFF, ILMN, INCY, INTC, INTU, INVH, IP, IPG, IQV, IR, IRM, ISRG, IT, ITW, IVZ, J, JBL, JBHT, JCI, JKHY, JNJ, JNPR, JPM, K, KDP, KEY, KEYS, KHC, KIM, KLAC, KMB, KMI, KMX, KO, KR, KVUE, L, LDOS, LEN, LH, LHX, LIN, LKQ, LLY, LMT, LNC, LNT, LOW, LRCX, LULU, LUMN, LUV, LVS, LW, LYB, LYV, MA, MAA, MAR, MAS, MCD, MCHP, MCK, MCO, MDLZ, MDT, MET, META, MGM, MHK, MKC, MKTX, MLM, MMC, MMM, MNST, MO, MOH, MOS, MPC, MPWR, MRK, MRO, MRNA, MS, MSCI, MSFT, MSI, MTB, MTCH, MTD, MU, NCLH, NDAQ, NDSN, NEE, NEM, NFLX, NI, NKE, NOC, NOW, NRG, NSC, NTAP, NTRS, NUE, NVDA, NVR, NWL, NWS, NWSA, NXPI, O, ODFL, OKE, OMC, ON, ORCL, ORLY, OTIS, OXY, PANW, PARA, PAYC, PAYX, PCAR, PCG, PEAK, PEG, PEP, PFE, PFG, PG, PGR, PH, PHM, PKG, PKI, PLD, PM, PNC, PNR, PNW, PODD, POOL, PPG, PPL, PRU, PSA, PSX, PTC, PTVE, PWR, PXD, PYPL, QCOM, QRVO, RCL, RE, REG, REGN, RF, RHI, RJF, RL, RMD, ROK, ROL, ROP, ROST, RSG, RTX, RVTY, SBAC, SBUX, SCHW, SEE, SHW, SJM, SLB, SNA, SNPS, SO, SOLV, SPG, SPGI, SRE, STE, STLD, STT, STX, STZ, SWK, SWKS, SYF, SYK, SYY, T, TAP, TDG, TDY, TECH, TEL, TER, TFC, TFX, TGT, TJX, TMO, TMUS, TPR, TRGP, TRMB, TROW, TRV, TSCO, TSLA, TSN, TT, TTWO, TXN, TXT, TYL, UA, UAA, UAL, UDR, UHS, ULTA, UNH, UNP, UPS, URI, USB, V, VFC, VICI, VLO, VMC, VNO, VRSK, VRSN, VRTX, VST, VTR, VTRS, VZ, WAB, WAT, WBA, WBD, WDAY, WDC, WEC, WELL, WFC, WHR, WLK, WM, WMB, WMT, WRB, WRK, WST, WTW, WY, WYNN, XEL, XOM, XRAY, XYL, YUM, ZBH, ZBRA, ZION, ZTS, SPY, QQQ, IWM, DIA, GLD, SLV, TLT, HYG, LQD, VTI, VOO, VEA, VWO, EFA, EEM, XLF, XLK, XLE, XLV, XLI, XLY, XLP, XLU, XLB, XLRE, PLTR, RIVN, LCID, SOFI, GME, AMC, BB, NOK, COIN, HOOD, ROKU, SNAP, UBER, LYFT, ABNB, DASH, PINS, TWTR, SHOP, SQ, PYPL, AFRM, UPST
+2026-07-05 13:59:12 | INFO     | __main__:132 — ============================================================
+2026-07-05 13:59:12 | INFO     | __main__:87 — Dashboard started (PID 1668)  →  http://localhost:8050
+2026-07-05 13:59:12 | INFO     | __main__:50 — Database schema verified / created.
+2026-07-05 13:59:12 | INFO     | sentiment_analysis.ingestion.scheduler:191 — Scheduler configured — RSS every 5m, NLP every 10m, Sentiment every 5m, Finviz prices every 1m, Cleanup daily at midnight ET
+2026-07-05 13:59:12 | INFO     | sentiment_analysis.ingestion.scheduler:203 — Scheduler started — running initial ingestion pass.
+2026-07-05 13:59:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 13:59:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 13:59:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 13:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 13:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 13:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 13:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 13:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 13:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 13:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 13:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 13:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 13:59:13 | DEBUG    | sentiment_analysis.nlp.pipeline:65 — [nlp] No unprocessed articles.
+2026-07-05 13:59:13 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 13:59:13 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 13:59:13 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 3 invalid/blocked tickers.
+2026-07-05 13:59:13 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] DE: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DE&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 13:59:14 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] DAY: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DAY&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 13:59:15 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] PRU: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=PRU&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 13:59:15 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/3 tickers.
+2026-07-05 13:59:15 | INFO     | __main__:62 — Ingestion pipeline running.  Press Ctrl+C to stop.
+2026-07-05 14:00:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:00:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 3 invalid/blocked tickers.
+2026-07-05 14:00:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] DE: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DE&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 14:00:13 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] DAY: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DAY&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 14:00:13 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:156 — [finviz] PRU: 401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=PRU&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90
+2026-07-05 14:00:14 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/3 tickers.
+2026-07-05 14:01:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:01:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 3 invalid/blocked tickers.
+2026-07-05 14:01:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:151 — [finviz] DE: added to skip list after 3 failures (401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DE&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90).
+2026-07-05 14:01:13 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:151 — [finviz] DAY: added to skip list after 3 failures (401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=DAY&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90).
+2026-07-05 14:01:13 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:151 — [finviz] PRU: added to skip list after 3 failures (401 Client Error: Unauthorized for url: https://elite.finviz.com/quote_export?t=PRU&p=i1&auth=575fb5fb-ba7b-48b2-80c3-0b0465dcbc90).
+2026-07-05 14:01:14 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/3 tickers.
+2026-07-05 14:02:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:02:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:02:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:03:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:03:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:03:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:04:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 14:04:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 14:04:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 14:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 14:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 14:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 14:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:04:13 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:04:13 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:04:13 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 14:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:04:13 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 14:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 14:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 14:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 14:05:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:05:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:05:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:06:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:06:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:06:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:07:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:07:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:07:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:08:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:08:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:08:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:09:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 14:09:12 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 14:09:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 14:09:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 14:09:13 | DEBUG    | sentiment_analysis.nlp.pipeline:65 — [nlp] No unprocessed articles.
+2026-07-05 14:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 14:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 14:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 14:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:09:13 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:09:13 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:09:13 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 14:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 14:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 14:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 14:10:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:10:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:10:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:11:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:11:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:11:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:12:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:12:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:12:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:13:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:13:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:13:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:14:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 14:14:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:14:12 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 14:14:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:14:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:14:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 14:14:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 14:14:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 14:14:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 14:14:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 14:14:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:14:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 14:14:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:14:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 14:14:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 14:14:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 14:15:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:15:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:15:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:16:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:16:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:16:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:17:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:17:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:17:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:18:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:18:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:18:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:19:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 14:19:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:19:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:19:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:19:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 14:19:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 14:19:12 | DEBUG    | sentiment_analysis.nlp.pipeline:65 — [nlp] No unprocessed articles.
+2026-07-05 14:19:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 14:19:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 14:19:13 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 14:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 14:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 14:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 14:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 14:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 14:20:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:20:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:20:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:21:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:21:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:21:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:22:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:22:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:22:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:23:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:23:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:23:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:24:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 14:24:12 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 14:24:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:24:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:24:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 14:24:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:24:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 14:24:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 14:24:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 14:24:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 14:24:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:24:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 14:24:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:24:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 14:24:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 14:24:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 14:25:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:25:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:25:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:26:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:26:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:26:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:27:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:27:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:27:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:28:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:28:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:28:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:29:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 14:29:12 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 14:29:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 14:29:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 14:29:13 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:29:13 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:29:13 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:29:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 14:29:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 14:29:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 14:29:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:29:13 | DEBUG    | sentiment_analysis.nlp.pipeline:65 — [nlp] No unprocessed articles.
+2026-07-05 14:29:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 14:29:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:29:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 14:29:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 14:29:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 14:30:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:30:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:30:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:31:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:31:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:31:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:32:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:32:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:32:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:33:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:33:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:33:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:34:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 14:34:12 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 14:34:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 14:34:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 14:34:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:34:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:34:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:34:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 14:34:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 14:34:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 14:34:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:34:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 14:34:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:34:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 14:34:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 14:34:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 14:35:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:35:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:35:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:36:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:36:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:36:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:37:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:37:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:37:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:38:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:38:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:38:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:39:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 14:39:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:39:12 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 14:39:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:39:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 14:39:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:39:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 14:39:12 | DEBUG    | sentiment_analysis.nlp.pipeline:65 — [nlp] No unprocessed articles.
+2026-07-05 14:39:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 14:39:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 14:39:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 14:39:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:39:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 14:39:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:39:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 14:39:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 14:39:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 14:40:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:40:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:40:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:41:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:41:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:41:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:42:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:42:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:42:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:43:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:43:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:43:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:44:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 14:44:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:44:12 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 14:44:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:44:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 14:44:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:44:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 14:44:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 14:44:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 14:44:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 14:44:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:44:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 14:44:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:44:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 14:44:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 14:44:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 14:45:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:45:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:45:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:46:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:46:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:46:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:47:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:47:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:47:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:48:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:48:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:48:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:49:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 14:49:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:49:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:49:12 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 14:49:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:49:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 14:49:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 14:49:12 | DEBUG    | sentiment_analysis.nlp.pipeline:65 — [nlp] No unprocessed articles.
+2026-07-05 14:49:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 14:49:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 14:49:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 14:49:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:49:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 14:49:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:49:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 14:49:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 14:49:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 14:50:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:50:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:50:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:51:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:51:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:51:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:52:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:52:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:52:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:53:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:53:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:53:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:54:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 14:54:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:54:12 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 14:54:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:54:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:54:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 14:54:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 14:54:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 14:54:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 14:54:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 14:54:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:54:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 14:54:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:54:14 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 14:54:14 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 14:54:14 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 14:55:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:55:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:55:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:56:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:56:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:56:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:57:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:57:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:57:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:58:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:58:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:58:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:59:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 14:59:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 14:59:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 14:59:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 14:59:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 14:59:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 14:59:13 | DEBUG    | sentiment_analysis.nlp.pipeline:65 — [nlp] No unprocessed articles.
+2026-07-05 14:59:13 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 14:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 14:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 14:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 14:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 14:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 14:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 14:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 14:59:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 15:00:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:00:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:00:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:01:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:01:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:01:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:02:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:02:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:02:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:03:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:03:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:03:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:04:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 15:04:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:04:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:04:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:04:12 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 15:04:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 15:04:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 15:04:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 15:04:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 15:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 15:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 15:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 15:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 15:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 15:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 15:04:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 15:05:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:05:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:05:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:06:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:06:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:06:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:07:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:07:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:07:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:08:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:08:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:08:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:09:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 15:09:12 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 15:09:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:09:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:09:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:09:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 15:09:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 15:09:12 | DEBUG    | sentiment_analysis.nlp.pipeline:65 — [nlp] No unprocessed articles.
+2026-07-05 15:09:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 15:09:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 15:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 15:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 15:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 15:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 15:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 15:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 15:09:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 15:10:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:10:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:10:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:11:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:11:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:11:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:12:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:12:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:12:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:13:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:13:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:13:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:14:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 15:14:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:14:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:14:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:14:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 15:14:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 15:14:12 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 15:14:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 15:14:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 15:14:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 15:14:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 15:14:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 15:14:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 15:14:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 15:14:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 15:14:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 15:15:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:15:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:15:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:16:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:16:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:16:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:17:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:17:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:17:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:18:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:18:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:18:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:19:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-05 15:19:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:19:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:19:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:19:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 0/20 new articles.
+2026-07-05 15:19:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-05 15:19:13 | DEBUG    | sentiment_analysis.sentiment.pipeline:80 — [sentiment] No unanalyzed articles — pipeline idle.
+2026-07-05 15:19:13 | DEBUG    | sentiment_analysis.nlp.pipeline:65 — [nlp] No unprocessed articles.
+2026-07-05 15:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-05 15:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-05 15:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-05 15:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-05 15:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-05 15:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-05 15:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-05 15:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-05 15:19:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-05 15:20:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:20:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:20:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:21:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:21:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:21:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:22:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:22:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:22:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:23:12 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Found 6 tickers to fetch from last 24h articles.
+2026-07-05 15:23:12 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:81 — [finviz] Skipped 6 invalid/blocked tickers.
+2026-07-05 15:23:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:90 — [finviz] Fetched 0/0 tickers.
+2026-07-05 15:23:13 | INFO     | __main__:72 — Pipeline stopped cleanly.
+2026-07-05 15:23:13 | INFO     | __main__:148 — Dashboard process terminated.
