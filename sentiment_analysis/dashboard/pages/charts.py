@@ -152,13 +152,101 @@ def _pct(num, denom) -> str:
         return "—"
 
 
+# ── Exchange map ─────────────────────────────────────────────────────────
+
+EXCHANGE_MAP: dict[str, str] = {
+    # NYSE
+    "WMT": "NYSE", "JPM": "NYSE", "BAC": "NYSE",
+    "XOM": "NYSE", "CVX": "NYSE", "JNJ": "NYSE",
+    "PG": "NYSE", "MA": "NYSE", "HD": "NYSE",
+    "MRK": "NYSE", "ABBV": "NYSE", "KO": "NYSE",
+    "PEP": "NYSE", "LLY": "NYSE", "UNH": "NYSE",
+    "GS": "NYSE", "MS": "NYSE", "C": "NYSE",
+    "WFC": "NYSE", "BRK.B": "NYSE", "V": "NYSE",
+    "UPS": "NYSE", "CAT": "NYSE", "HON": "NYSE",
+    "IBM": "NYSE", "GE": "NYSE", "DE": "NYSE",
+    "BA": "NYSE", "RTX": "NYSE", "LMT": "NYSE",
+    "NOC": "NYSE", "T": "NYSE", "VZ": "NYSE",
+    "DIS": "NYSE", "NKE": "NYSE", "MCD": "NYSE",
+    "AXP": "NYSE", "USB": "NYSE", "PNC": "NYSE",
+    "SPG": "NYSE", "O": "NYSE", "PSA": "NYSE",
+    "AMT": "NYSE", "CCI": "NYSE", "PLD": "NYSE",
+    "SHW": "NYSE", "ECL": "NYSE", "APD": "NYSE",
+    "LIN": "NYSE", "PPG": "NYSE", "DD": "NYSE",
+    "NEM": "NYSE", "FCX": "NYSE", "VMC": "NYSE",
+    "MLM": "NYSE", "NUE": "NYSE", "RSG": "NYSE",
+    "WM": "NYSE", "FDX": "NYSE", "UNP": "NYSE",
+    "NSC": "NYSE", "D": "NYSE", "DUK": "NYSE",
+    "SO": "NYSE", "AEP": "NYSE", "EXC": "NYSE",
+    "SRE": "NYSE", "OKE": "NYSE", "KMI": "NYSE",
+    "WMB": "NYSE", "BLK": "NYSE", "SPGI": "NYSE",
+    "MCO": "NYSE", "ICE": "NYSE", "CME": "NYSE",
+    "COF": "NYSE", "AIG": "NYSE", "MMC": "NYSE",
+    "AON": "NYSE", "CB": "NYSE", "TFC": "NYSE",
+    "MTB": "NYSE", "RF": "NYSE", "KEY": "NYSE",
+    "CFG": "NYSE", "FITB": "NYSE", "HBAN": "NYSE",
+    "ZTS": "NYSE", "BSX": "NYSE", "EW": "NYSE",
+    "BDX": "NYSE", "SYK": "NYSE", "MDT": "NYSE",
+    "ABT": "NYSE", "TMO": "NYSE", "DHR": "NYSE",
+    "A": "NYSE", "MTD": "NYSE", "PKI": "NYSE",
+    "RMD": "NYSE", "HOLX": "NYSE", "STE": "NYSE",
+    "HUM": "NYSE", "ELV": "NYSE", "CI": "NYSE",
+    "CVS": "NYSE", "MCK": "NYSE", "CAH": "NYSE",
+    "COR": "NYSE", "HCA": "NYSE", "UHS": "NYSE",
+    "MOH": "NYSE", "CNC": "NYSE", "DVA": "NYSE",
+    "ACN": "NYSE", "GPN": "NYSE", "FIS": "NYSE",
+    "BAH": "NYSE", "LDOS": "NYSE", "SAIC": "NYSE",
+    "DXC": "NYSE", "IT": "NYSE",
+    # NASDAQ
+    "AAPL": "NASDAQ", "MSFT": "NASDAQ", "GOOGL": "NASDAQ",
+    "AMZN": "NASDAQ", "NVDA": "NASDAQ", "META": "NASDAQ",
+    "TSLA": "NASDAQ", "AVGO": "NASDAQ", "COST": "NASDAQ",
+    "NFLX": "NASDAQ", "AMD": "NASDAQ", "INTC": "NASDAQ",
+    "CSCO": "NASDAQ", "ADBE": "NASDAQ", "QCOM": "NASDAQ",
+    "TXN": "NASDAQ", "AMAT": "NASDAQ", "LRCX": "NASDAQ",
+    "MU": "NASDAQ", "ADI": "NASDAQ", "KLAC": "NASDAQ",
+    "PANW": "NASDAQ", "SNPS": "NASDAQ", "CDNS": "NASDAQ",
+    "FTNT": "NASDAQ", "MRVL": "NASDAQ", "ASML": "NASDAQ",
+    "PYPL": "NASDAQ", "ISRG": "NASDAQ", "REGN": "NASDAQ",
+    "GILD": "NASDAQ", "AMGN": "NASDAQ", "BIIB": "NASDAQ",
+    "MRNA": "NASDAQ", "VRTX": "NASDAQ", "ILMN": "NASDAQ",
+    "IDXX": "NASDAQ", "DXCM": "NASDAQ", "PODD": "NASDAQ",
+    "ALGN": "NASDAQ", "GEHC": "NASDAQ", "FICO": "NASDAQ",
+    "ANSS": "NASDAQ", "EPAM": "NASDAQ", "CTSH": "NASDAQ",
+    "PAYX": "NASDAQ", "ADP": "NASDAQ", "INTU": "NASDAQ",
+    "NOW": "NASDAQ", "CRM": "NASDAQ", "WDAY": "NASDAQ",
+    "TEAM": "NASDAQ", "ZM": "NASDAQ", "DOCU": "NASDAQ",
+    "OKTA": "NASDAQ", "NET": "NASDAQ", "DDOG": "NASDAQ",
+    "SNOW": "NASDAQ", "PLTR": "NASDAQ", "COIN": "NASDAQ",
+    "HOOD": "NASDAQ", "SOFI": "NASDAQ", "AFRM": "NASDAQ",
+    "UPST": "NASDAQ", "NU": "NASDAQ", "SQ": "NASDAQ",
+    "ABNB": "NASDAQ", "UBER": "NASDAQ", "LYFT": "NASDAQ",
+    "DASH": "NASDAQ", "SHOP": "NASDAQ", "MELI": "NASDAQ",
+    "SE": "NASDAQ", "PDD": "NASDAQ", "JD": "NASDAQ",
+    "BIDU": "NASDAQ", "NTES": "NASDAQ", "WBA": "NASDAQ",
+    "FAST": "NASDAQ", "PCAR": "NASDAQ", "ODFL": "NASDAQ",
+    "CTAS": "NASDAQ", "VRSK": "NASDAQ", "CPRT": "NASDAQ",
+    "EXR": "NASDAQ", "EQIX": "NASDAQ", "DLR": "NASDAQ",
+    "WELL": "NASDAQ", "INVH": "NASDAQ", "MAA": "NASDAQ",
+    "PEAK": "NASDAQ", "SBAC": "NASDAQ", "WDC": "NASDAQ",
+    "STX": "NASDAQ", "NTAP": "NASDAQ", "HPE": "NASDAQ",
+    "KEYS": "NASDAQ", "TRMB": "NASDAQ", "ZBRA": "NASDAQ",
+    "TTWO": "NASDAQ", "EA": "NASDAQ", "ATVI": "NASDAQ",
+    "CMCSA": "NASDAQ", "CHTR": "NASDAQ", "NWSA": "NASDAQ",
+    "FOX": "NASDAQ", "PARA": "NASDAQ", "WBD": "NASDAQ",
+}
+
+
 # ── TradingView ───────────────────────────────────────────────────────────
 
 def _tv_src(ticker: str, interval: str) -> str:
+    t      = ticker.upper()
+    exch   = EXCHANGE_MAP.get(t, "NASDAQ")
+    symbol = f"{exch}:{t}"
     return (
         "https://www.tradingview.com/widgetembed/"
         "?frameElementId=tradingview_chart"
-        f"&symbol={ticker.upper()}"
+        f"&symbol={symbol}"
         f"&interval={interval}"
         "&theme=dark"
         "&style=1"
