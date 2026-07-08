@@ -1,5 +1,5 @@
 """
-Momentum — Finviz-style stock detail page with volume chart.
+#Momentum — Finviz-style stock detail page with volume chart.
 """
 from __future__ import annotations
 
