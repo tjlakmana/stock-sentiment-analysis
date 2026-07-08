@@ -1222,15 +1222,26 @@ body {
 
 /* Two-column layout */
 .mom-two-col {
-    display:               grid;
-    grid-template-columns: 60% 40%;
-    min-height:            400px;
+    display:    flex;
+    width:      100%;
+    overflow:   hidden;
+    min-height: 400px;
 }
 .mom-headlines-col {
-    padding:      16px;
+    flex:      0 0 60%;
+    min-width: 0;
+    overflow:  hidden;
+    padding:   16px;
     border-right: 1px solid #1a1a1a;
+    box-sizing: border-box;
 }
-.mom-sentiment-col { padding: 16px; }
+.mom-sentiment-col {
+    flex:      0 0 40%;
+    min-width: 0;
+    overflow:  hidden;
+    padding:   16px;
+    box-sizing: border-box;
+}
 
 .mom-sect-title {
     color:          #444;
@@ -1252,6 +1263,7 @@ body {
 .mom-headlines-list::-webkit-scrollbar-thumb  { background: #252525; border-radius: 2px; }
 
 .mom-hl-item {
+    overflow:      hidden;
     padding:       7px 8px 7px 10px;
     margin-bottom: 4px;
     background:    #111;
@@ -1274,7 +1286,10 @@ body {
     display:         block;
     font-size:       12px;
     line-height:     1.4;
+    overflow:        hidden;
     text-decoration: none;
+    text-overflow:   ellipsis;
+    white-space:     nowrap;
 }
 .mom-hl-title:hover { color: #00d4ff; }
 
