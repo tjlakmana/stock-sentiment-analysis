@@ -1,5 +1,5 @@
 """
-#Momentum — Finviz-style stock detail page with volume chart.
+Momentum — Finviz-style stock detail page with volume chart.
 """
 from __future__ import annotations
 
@@ -87,9 +87,8 @@ _EXCHANGE_MAP: dict[str, str] = {
 _STRIP_SQL = """
     SELECT ticker, price, change_pct
     FROM ticker_prices
-    WHERE change_pct IS NOT NULL
-    ORDER BY ABS(change_pct) DESC NULLS LAST
-    LIMIT 50
+    ORDER BY ABS(change_pct) DESC
+    LIMIT 10
 """
 
 _TICKER_INFO_SQL = """
