@@ -1,5 +1,5 @@
 """
-Momentum Scanner — high-velocity movers with sentiment overlay.
+Momentum — Finviz-style stock detail page with volume chart.
 """
 from __future__ import annotations
 
@@ -7,13 +7,13 @@ import concurrent.futures
 import math
 
 import dash
-import dash_bootstrap_components as dbc
 import pandas as pd
-from dash import ALL, MATCH, Input, Output, State, callback, ctx, dcc, html, no_update
+import plotly.graph_objects as go
+import pytz
+from dash import ALL, Input, Output, State, callback, ctx, dcc, html
 from dash.exceptions import PreventUpdate
 
 from sentiment_analysis.dashboard.db import now_et, query_df
-from sentiment_analysis.ingestion.finviz_ingestor import is_market_hours
 
 dash.register_page(__name__, path="/momentum", name="Momentum", title="Momentum Scanner")
 
@@ -26,92 +26,114 @@ try:
     from sentiment_analysis.dashboard.pages.news import _source_chip
 except ImportError:
     def _source_chip(source: str):  # type: ignore[misc]
-        return html.Span(source[:3].upper() if source else "—",
-                         style={"fontSize": "10px", "color": "#555"})
+        return html.Span(
+            (source[:3] or "—").upper(),
+            style={"fontSize": "10px", "color": "#555", "background": "#1c1c1c",
+                   "border": "1px solid #282828", "borderRadius": "3px",
+                   "padding": "1px 5px", "flexShrink": "0"},
+        )
+
+_ET = pytz.timezone("America/New_York")
 
 # ── Constants ─────────────────────────────────────────────────────────────
 
-_PER_PAGE = 10
-_MAX_TOP  = 25
-_TIMEOUT  = 10  # seconds for DB queries
+_TIMEOUT    = 10
+_TF_LABELS  = ["1M", "3M", "5M", "15M", "30M", "1H", "D", "W", "M"]
+_TF_MAP     = {"1M": "1", "3M": "3", "5M": "5", "15M": "15", "30M": "30",
+               "1H": "60", "D": "D", "W": "W", "M": "M"}
+_DEFAULT_TF = "D"
+
+_SECTOR_MAP: dict[str, str] = {
+    "AAPL": "Technology",          "MSFT": "Technology",
+    "NVDA": "Technology",          "AMD":  "Technology",
+    "INTC": "Technology",          "AVGO": "Technology",
+    "QCOM": "Technology",          "CSCO": "Technology",
+    "ADBE": "Technology",          "CRM":  "Technology",
+    "PANW": "Technology",          "CRWD": "Technology",
+    "SNOW": "Technology",          "MDB":  "Technology",
+    "DDOG": "Technology",          "ZS":   "Technology",
+    "NET":  "Technology",          "FTNT": "Technology",
+    "PLTR": "Technology",          "IBM":  "Technology",
+    "GOOGL": "Communication",      "META": "Communication",
+    "NFLX": "Communication",       "DIS":  "Communication",
+    "T":    "Communication",       "VZ":   "Communication",
+    "CMCSA": "Communication",
+    "AMZN": "Consumer Cyclical",   "TSLA": "Consumer Cyclical",
+    "HD":   "Consumer Cyclical",   "NKE":  "Consumer Cyclical",
+    "WMT":  "Consumer Defensive",  "PG":   "Consumer Defensive",
+    "KO":   "Consumer Defensive",  "PEP":  "Consumer Defensive",
+    "COST": "Consumer Defensive",
+    "JPM":  "Financial",           "BAC":  "Financial",
+    "V":    "Financial",           "MA":   "Financial",
+    "GS":   "Financial",
+    "JNJ":  "Healthcare",          "UNH":  "Healthcare",
+    "LLY":  "Healthcare",          "ABBV": "Healthcare",
+    "MRK":  "Healthcare",          "TMO":  "Healthcare",
+    "XOM":  "Energy",              "CVX":  "Energy",
+}
+
+_EXCHANGE_MAP: dict[str, str] = {
+    "AAPL": "NASDAQ", "MSFT": "NASDAQ", "NVDA": "NASDAQ", "GOOGL": "NASDAQ",
+    "META": "NASDAQ", "AMZN": "NASDAQ", "TSLA": "NASDAQ", "INTC": "NASDAQ",
+    "AMD":  "NASDAQ", "CSCO": "NASDAQ", "QCOM": "NASDAQ", "ADBE": "NASDAQ",
+    "CRM":  "NASDAQ", "NFLX": "NASDAQ", "AVGO": "NASDAQ", "COST": "NASDAQ",
+    "PEP":  "NASDAQ", "CRWD": "NASDAQ", "PLTR": "NASDAQ", "SNOW": "NASDAQ",
+    "MDB":  "NASDAQ", "DDOG": "NASDAQ", "ZS":   "NASDAQ", "NET":  "NASDAQ",
+    "PANW": "NASDAQ", "FTNT": "NASDAQ",
+}
 
 # ── SQL ───────────────────────────────────────────────────────────────────
 
-_MOMENTUM_SQL = """
-    WITH latest_sent AS (
-        SELECT DISTINCT ON (ticker)
-            ticker,
-            avg_sentiment,
-            article_count,
-            bullish_count,
-            bearish_count,
-            neutral_count,
-            momentum,
-            calculated_at
-        FROM ticker_sentiment_summary
-        WHERE "window" = '24hr'
-        ORDER BY ticker, calculated_at DESC
-    )
-    SELECT
-        p.ticker,
-        p.price,
-        p.change_pct,
-        p.volume,
-        p.market_cap,
-        COALESCE(s.avg_sentiment,  0) AS avg_sentiment,
-        COALESCE(s.article_count,  0) AS article_count,
-        COALESCE(s.bullish_count,  0) AS bullish_count,
-        COALESCE(s.bearish_count,  0) AS bearish_count,
-        COALESCE(s.neutral_count,  0) AS neutral_count,
-        s.momentum,
-        s.calculated_at
-    FROM ticker_prices p
-    LEFT JOIN latest_sent s ON p.ticker = s.ticker
-    WHERE p.volume IS NOT NULL
-      AND p.change_pct IS NOT NULL
-    ORDER BY ABS(p.change_pct) DESC NULLS LAST
+_STRIP_SQL = """
+    SELECT ticker, price, change_pct
+    FROM ticker_prices
+    WHERE change_pct IS NOT NULL
+    ORDER BY ABS(change_pct) DESC NULLS LAST
+    LIMIT 50
 """
 
-# Per-ticker lazy headline fetch (called on card expand)
-_TICKER_HEADLINES_SQL = """
-    SELECT title, url, source_name, ingested_at, sentiment_label
+_TICKER_INFO_SQL = """
+    SELECT ticker, price, change_pct, volume, market_cap, updated_at
+    FROM ticker_prices
+    WHERE ticker = :ticker
+    LIMIT 1
+"""
+
+_NEWS_BANNER_SQL = """
+    SELECT title, ingested_at
+    FROM rss_articles
+    WHERE :ticker = ANY(tickers)
+    ORDER BY ingested_at DESC
+    LIMIT 1
+"""
+
+_HEADLINES_SQL = """
+    SELECT title, source_name, ingested_at, sentiment_label, url
     FROM rss_articles
     WHERE :ticker = ANY(tickers)
       AND ingested_at > NOW() - INTERVAL '2 days'
     ORDER BY ingested_at DESC
-    LIMIT 5
+    LIMIT 15
 """
 
-# ── Filter options ────────────────────────────────────────────────────────
+_SENTIMENT_SQL = """
+    SELECT avg_sentiment, article_count, bullish_count, bearish_count,
+           neutral_count, calculated_at
+    FROM ticker_sentiment_summary
+    WHERE ticker = :ticker
+      AND "window" = '24hr'
+    ORDER BY calculated_at DESC
+    LIMIT 1
+"""
 
-_MIN_VOL_OPTS = [
-    {"label": "Any Vol",  "value": "0"},
-    {"label": "100K+",    "value": "100000"},
-    {"label": "500K+",    "value": "500000"},
-    {"label": "1M+",      "value": "1000000"},
-    {"label": "5M+",      "value": "5000000"},
-    {"label": "10M+",     "value": "10000000"},
-]
-_TOP_OPTS = [
-    {"label": "Top 5",   "value": "5"},
-    {"label": "Top 10",  "value": "10"},
-    {"label": "Top 20",  "value": "20"},
-    {"label": "Top 25",  "value": "25"},
-]
-_MAX_PRICE_OPTS = [
-    {"label": "Any $",   "value": "0"},
-    {"label": "< $10",   "value": "10"},
-    {"label": "< $25",   "value": "25"},
-    {"label": "< $50",   "value": "50"},
-    {"label": "< $100",  "value": "100"},
-    {"label": "< $500",  "value": "500"},
-]
-_SENT_OPTS = [
-    {"label": "All Sent",  "value": "all"},
-    {"label": "Bullish",   "value": "bullish"},
-    {"label": "Bearish",   "value": "bearish"},
-    {"label": "Neutral",   "value": "neutral"},
-]
+_SPARKLINE_SQL = """
+    SELECT avg_sentiment, calculated_at
+    FROM ticker_sentiment_summary
+    WHERE ticker = :ticker
+      AND "window" = '24hr'
+      AND calculated_at > NOW() - INTERVAL '48 hours'
+    ORDER BY calculated_at ASC
+"""
 
 # ── Sentiment styling ─────────────────────────────────────────────────────
 
@@ -124,31 +146,6 @@ _SENT_STYLE: dict[str, dict] = {
 }
 
 # ── Helpers ───────────────────────────────────────────────────────────────
-
-
-def _safe_query(sql: str, params: dict | None = None) -> pd.DataFrame | None:
-    """Run query_df in a thread; return None on timeout or error."""
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
-        future = pool.submit(query_df, sql, params or {})
-        try:
-            return future.result(timeout=_TIMEOUT)
-        except concurrent.futures.TimeoutError:
-            return None
-        except Exception:
-            return None
-
-
-def _score_to_label(score) -> str:
-    try:
-        s = float(score)
-    except (TypeError, ValueError):
-        return "Neutral"
-    if math.isnan(s):  return "Neutral"
-    if s >= 0.35:      return "Bullish"
-    if s >= 0.15:      return "Somewhat Bullish"
-    if s > -0.15:      return "Neutral"
-    if s > -0.35:      return "Somewhat Bearish"
-    return "Bearish"
 
 
 def _safe(v):
@@ -164,345 +161,315 @@ def _fmt_price(v) -> str:
     return f"${v:,.2f}" if v is not None else "—"
 
 
-def _fmt_chg(v) -> tuple[str, str]:
+def _fmt_chg_pct(v) -> tuple[str, str]:
     v = _safe(v)
     if v is None:
         return "—", "#666"
-    color = "#00e676" if v >= 0 else "#ff5252"
-    return f"{'+'if v>=0 else ''}{v:.2f}%", color
+    return (f"+{v:.2f}%" if v >= 0 else f"{v:.2f}%"), ("#00ff88" if v >= 0 else "#ff4444")
 
 
-def _fmt_volume(v) -> str:
+def _fmt_chg_dollar(v) -> tuple[str, str]:
     v = _safe(v)
-    if v is None:   return "—"
-    if v >= 1e9:    return f"{v/1e9:.1f}B"
-    if v >= 1e6:    return f"{v/1e6:.1f}M"
-    if v >= 1e3:    return f"{v/1e3:.0f}K"
-    return str(int(v))
+    if v is None:
+        return "—", "#666"
+    color = "#00ff88" if v >= 0 else "#ff4444"
+    return (f"+${abs(v):,.2f}" if v >= 0 else f"-${abs(v):,.2f}"), color
 
 
 def _pct(num, denom) -> str:
     try:
         n, d = int(num), int(denom)
-        return f"{n/d*100:.0f}%" if d else "—"
+        return f"{n / d * 100:.0f}%" if d else "—"
     except (TypeError, ValueError):
         return "—"
 
 
-def _sent_badge(score) -> html.Span:
-    label = _score_to_label(score)
-    s = _SENT_STYLE.get(label, {})
-    return html.Span(
-        label,
-        style={
-            "background":   s.get("bg",    "#141414"),
-            "color":        s.get("color", "#666"),
-            "border":       f"1px solid {s.get('bd', '#282828')}",
-            "borderRadius": "10px",
-            "padding":      "2px 9px",
-            "fontSize":     "11px",
-            "fontWeight":   "600",
-            "whiteSpace":   "nowrap",
-        },
-    )
+def _score_to_label(score) -> str:
+    try:
+        s = float(score)
+    except (TypeError, ValueError):
+        return "Neutral"
+    if math.isnan(s): return "Neutral"
+    if s >= 0.35:     return "Bullish"
+    if s >= 0.15:     return "Somewhat Bullish"
+    if s > -0.15:     return "Neutral"
+    if s > -0.35:     return "Somewhat Bearish"
+    return "Bearish"
 
 
-def _art_sent_badge(label: str | None) -> html.Span | None:
-    if not label:
-        return None
-    s = _SENT_STYLE.get(label, {})
-    if not s:
-        return None
-    return html.Span(
-        label,
-        style={
-            "background":   s.get("bg",    "#141414"),
-            "color":        s.get("color", "#666"),
-            "border":       f"1px solid {s.get('bd', '#282828')}",
-            "borderRadius": "8px",
-            "padding":      "1px 7px",
-            "fontSize":     "10px",
-            "fontWeight":   "600",
-            "whiteSpace":   "nowrap",
-            "flexShrink":   "0",
-        },
-    )
-
-
-def _progress_bar(score) -> html.Div:
-    s = _safe(score) or 0.0
-    label = _score_to_label(s)
-    color = _SENT_STYLE.get(label, {}).get("color", "#333")
-    pct = max(0, min(100, (s + 1) / 2 * 100))
-    return html.Div(
-        className="mom-progress-wrap",
-        children=[
-            html.Div(className="mom-progress-fill",
-                     style={"width": f"{pct:.0f}%", "background": color}),
-        ],
-    )
-
-
-def _tv_mini_src(ticker: str) -> str:
+def _tv_src(ticker: str, tf: str = "D") -> str:
+    interval = _TF_MAP.get(tf, "D")
     return (
         "https://www.tradingview.com/widgetembed/"
         f"?symbol={ticker.upper()}"
-        "&interval=5"
-        "&theme=dark"
-        "&style=1"
-        "&locale=en"
+        f"&interval={interval}"
+        "&theme=dark&style=1&locale=en"
         "&toolbar_bg=%23131722"
         "&enable_publishing=false"
-        "&hide_top_toolbar=true"
-        "&hide_legend=true"
-        "&save_image=false"
-        "&hide_side_toolbar=true"
-        "&allow_symbol_change=false"
+        "&hide_top_toolbar=false&hide_legend=false"
+        "&save_image=false&hide_side_toolbar=false"
+        "&allow_symbol_change=true&studies=%5B%5D"
     )
 
 
-def _fsel(label: str, id_: str, opts, val) -> html.Div:
-    return html.Div(
-        className="mom-fsel-wrap",
-        children=[
-            html.Span(label, className="mom-fsel-label"),
-            dbc.Select(id=id_, options=opts, value=val, className="mom-fsel"),
-        ],
-    )
+def _to_et(dt_val):
+    dt = pd.Timestamp(dt_val)
+    if dt.tzinfo is None:
+        return dt.tz_localize("UTC").tz_convert(_ET)
+    return dt.tz_convert(_ET)
 
 
-# ── Card & panel builders ─────────────────────────────────────────────────
+def _fmt_ts_banner(dt_val) -> str:
+    try:
+        dt = _to_et(dt_val)
+        return dt.strftime("%b %d %I:%M %p ET")
+    except Exception:
+        return ""
 
 
-def _headlines_panel(headlines: list[dict]) -> html.Div:
-    if not headlines:
-        return html.Div("No recent articles",
-                        style={"color": "#444", "fontSize": "12px", "paddingTop": "8px"})
-    items = []
-    for h in headlines:
-        ts = ""
-        try:
-            dt = pd.Timestamp(h["ingested_at"])
-            ts = f"{dt.strftime('%b')} {dt.day} {dt.strftime('%H:%M')} ET"
-        except Exception:
-            pass
-        title      = (h.get("title") or "")[:80]
-        url        = h.get("url") or "#"
-        source     = h.get("source_name") or ""
-        sent_badge = _art_sent_badge(h.get("sentiment_label") or "")
-
-        row_children = [
-            _source_chip(source),
-            html.Span(ts, className="mom-headline-ts"),
-            html.A(title, href=url, target="_blank", className="mom-headline-title"),
-        ]
-        if sent_badge:
-            row_children.append(sent_badge)
-
-        items.append(html.Div(className="mom-headline-item", children=row_children))
-    return html.Div(items)
+def _fmt_ts_hl(dt_val) -> str:
+    try:
+        dt = _to_et(dt_val)
+        if dt.date() == now_et().date():
+            return f"Today {dt.strftime('%I:%M%p')}"
+        return dt.strftime("%b %d %I:%M%p")
+    except Exception:
+        return ""
 
 
-def _sent_detail_panel(row: dict) -> html.Div:
-    score    = _safe(row.get("avg_sentiment"))
-    label    = _score_to_label(score)
-    s        = _SENT_STYLE.get(label, {})
-    cnt      = int(row.get("article_count") or 0)
-    bull     = int(row.get("bullish_count") or 0)
-    bear     = int(row.get("bearish_count") or 0)
-    neut     = int(row.get("neutral_count") or 0)
-    calc     = row.get("calculated_at")
-    calc_str = "—"
-    if calc is not None:
-        try:
-            calc_str = pd.Timestamp(calc).strftime("%H:%M")
-        except Exception:
-            pass
+def _parallel_queries(ticker: str) -> dict[str, pd.DataFrame]:
+    queries = {
+        "info":   (_TICKER_INFO_SQL, {"ticker": ticker}),
+        "banner": (_NEWS_BANNER_SQL, {"ticker": ticker}),
+        "hl":     (_HEADLINES_SQL,   {"ticker": ticker}),
+        "sent":   (_SENTIMENT_SQL,   {"ticker": ticker}),
+        "spark":  (_SPARKLINE_SQL,   {"ticker": ticker}),
+    }
+    results: dict[str, pd.DataFrame] = {k: pd.DataFrame() for k in queries}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
+        fs = {pool.submit(query_df, sql, p): k for k, (sql, p) in queries.items()}
+        done, _ = concurrent.futures.wait(fs, timeout=_TIMEOUT)
+        for f in done:
+            try:
+                results[fs[f]] = f.result()
+            except Exception:
+                pass
+    return results
 
-    def _drow(lbl, val, color="#555"):
-        return html.Div(className="mom-detail-row", children=[
-            html.Span(lbl, className="mom-detail-key"),
-            html.Span(val, className="mom-detail-val", style={"color": color}),
-        ])
+# ── Panel builders ────────────────────────────────────────────────────────
 
-    return html.Div([
-        html.Div(className="mom-detail-header", children=[
-            html.Span(
-                label,
-                style={
-                    "background":   s.get("bg",    "#141414"),
-                    "color":        s.get("color", "#666"),
-                    "border":       f"1px solid {s.get('bd','#282828')}",
-                    "borderRadius": "12px",
-                    "padding":      "3px 14px",
-                    "fontSize":     "12px",
-                    "fontWeight":   "700",
-                },
-            ),
-            html.Div(
-                f"{score:+.3f}" if score is not None else "—",
-                style={"fontSize": "22px", "fontWeight": "700",
-                       "color": s.get("color", "#888"),
-                       "fontFamily": "monospace", "marginTop": "6px"},
-            ),
+
+def _build_infobar(ticker: str, row: dict) -> list:
+    price   = _safe(row.get("price"))
+    chg_pct = _safe(row.get("change_pct"))
+    chg_dollar = None
+    if price is not None and chg_pct is not None:
+        prev       = price / (1 + chg_pct / 100)
+        chg_dollar = price - prev
+
+    pct_str,    pct_col = _fmt_chg_pct(chg_pct)
+    dollar_str, dol_col = _fmt_chg_dollar(chg_dollar)
+
+    sector   = _SECTOR_MAP.get(ticker, "—")
+    exchange = _EXCHANGE_MAP.get(ticker, "—")
+
+    return [
+        html.Div(className="mom-ib-top", children=[
+            html.Span(ticker,                  className="mom-ib-ticker"),
+            html.Span(COMPANY_NAMES.get(ticker, ""), className="mom-ib-company"),
+            html.Span(_fmt_price(price),       className="mom-ib-price"),
+            html.Span(className="mom-ib-chg", children=[
+                html.Span(dollar_str, style={"color": dol_col}),
+                html.Span(" (", style={"color": "#444"}),
+                html.Span(pct_str,    style={"color": pct_col}),
+                html.Span(")",  style={"color": "#444"}),
+            ]),
         ]),
-        _drow("Bullish",  f"{bull} ({_pct(bull, cnt)})", "#00e676"),
-        _drow("Bearish",  f"{bear} ({_pct(bear, cnt)})", "#ff5252"),
-        _drow("Neutral",  f"{neut} ({_pct(neut, cnt)})", "#888"),
-        _drow("Articles", str(cnt)),
-        _drow("Updated",  calc_str),
-    ])
+        html.Div(className="mom-ib-tags", children=[
+            html.Span(sector,   className="mom-tag-pill"),
+            html.Span("·", style={"color": "#2a2a2a", "padding": "0 4px"}),
+            html.Span("USA",    className="mom-tag-pill"),
+            html.Span("·", style={"color": "#2a2a2a", "padding": "0 4px"}),
+            html.Span(exchange, className="mom-tag-pill"),
+        ]),
+    ]
 
 
-def _build_card(i: int, row: dict) -> html.Div:
-    """Build a single ticker card. Headlines are lazy-loaded on expand."""
-    ticker  = str(row.get("ticker", ""))
-    company = COMPANY_NAMES.get(ticker, "")
-    score   = _safe(row.get("avg_sentiment"))
-    label   = _score_to_label(score)
-    s_color = _SENT_STYLE.get(label, {}).get("color", "#666")
-    chg_text, chg_color = _fmt_chg(row.get("change_pct"))
+def _build_banner(row: dict) -> list:
+    title = (row.get("title") or "")[:120]
+    ts    = _fmt_ts_banner(row.get("ingested_at"))
+    return [
+        html.Span("⭐", style={"marginRight": "6px", "flexShrink": "0"}),
+        html.Span(ts, style={"color": "#555", "fontSize": "11px", "marginRight": "10px",
+                             "flexShrink": "0", "whiteSpace": "nowrap"}),
+        html.Span(title, style={"color": "#00d4ff", "fontSize": "12px",
+                                "overflow": "hidden", "textOverflow": "ellipsis",
+                                "whiteSpace": "nowrap"}),
+    ]
 
-    def _col(lbl, val, color="#888") -> html.Div:
-        return html.Div(className="mom-col", children=[
-            html.Span(lbl, className="mom-col-label"),
-            html.Span(val, className="mom-col-val", style={"color": color}),
+
+def _build_headlines(hl_df: pd.DataFrame) -> list:
+    if hl_df.empty:
+        return [html.Div("No recent news for this ticker",
+                         style={"color": "#444", "fontSize": "12px", "padding": "16px 0"})]
+    items = []
+    for row in hl_df.to_dict("records"):
+        label    = row.get("sentiment_label") or "Neutral"
+        bd_color = _SENT_STYLE.get(label, {}).get("bd", "#282828")
+        items.append(html.Div(
+            className="mom-hl-item",
+            style={"borderLeft": f"3px solid {bd_color}"},
+            children=[
+                html.Div(className="mom-hl-meta", children=[
+                    html.Span(_fmt_ts_hl(row.get("ingested_at")), className="mom-hl-ts"),
+                    _source_chip(row.get("source_name") or ""),
+                ]),
+                html.A((row.get("title") or "")[:100],
+                       href=row.get("url") or "#",
+                       target="_blank",
+                       className="mom-hl-title"),
+            ],
+        ))
+    return items
+
+
+def _build_sparkline(spark_df: pd.DataFrame) -> go.Figure:
+    fig = go.Figure()
+    if not spark_df.empty:
+        y = spark_df["avg_sentiment"].fillna(0)
+        fig.add_trace(go.Scatter(
+            x=spark_df["calculated_at"], y=y,
+            mode="lines",
+            line=dict(color="#00ff88", width=1.5),
+            fill="tozeroy", fillcolor="rgba(0,255,136,0.06)",
+            hovertemplate="%{x|%H:%M}<br>%{y:.3f}<extra></extra>",
+        ))
+        fig.add_hline(y=0, line_color="#252525", line_width=1)
+    fig.update_layout(
+        paper_bgcolor="#0d0d0d", plot_bgcolor="#0d0d0d",
+        height=100, margin=dict(l=0, r=0, t=4, b=0),
+        showlegend=False,
+        xaxis=dict(visible=False), yaxis=dict(visible=False),
+    )
+    return fig
+
+
+def _build_sentiment(sent_df: pd.DataFrame, spark_df: pd.DataFrame) -> list:
+    if sent_df.empty:
+        return [html.Div("No sentiment data available",
+                         style={"color": "#444", "fontSize": "12px", "padding": "16px 0"})]
+    row   = sent_df.iloc[0]
+    score = _safe(row.get("avg_sentiment"))
+    label = _score_to_label(score)
+    s     = _SENT_STYLE.get(label, {})
+    cnt   = int(row.get("article_count") or 0)
+    bull  = int(row.get("bullish_count")  or 0)
+    bear  = int(row.get("bearish_count")  or 0)
+    neut  = int(row.get("neutral_count")  or 0)
+    calc_str = "—"
+    try:
+        calc_str = _to_et(row.get("calculated_at")).strftime("%H:%M ET")
+    except Exception:
+        pass
+
+    def _stat(lbl, val, color="#888"):
+        return html.Div(className="mom-stat-row", children=[
+            html.Span(lbl, className="mom-stat-lbl"),
+            html.Span(val, className="mom-stat-val", style={"color": color}),
         ])
 
-    return html.Div(
-        className="mom-card",
-        children=[
-            # ── Collapsed header ──────────────────────────────────────────
-            html.Div(
-                className="mom-card-header",
-                children=[
-                    html.Span(str(i), className="mom-rank"),
-                    html.Div(className="mom-id", children=[
-                        html.Span(ticker, className="mom-ticker"),
-                        html.Span(company, className="mom-company"),
-                    ]),
-                    _col("Price",   _fmt_price(row.get("price"))),
-                    _col("Chg %",   chg_text, chg_color),
-                    _col("Volume",  _fmt_volume(row.get("volume"))),
-                    html.Div(className="mom-col mom-col-sent", children=[
-                        html.Span("Sentiment", className="mom-col-label"),
-                        html.Div(
-                            style={"display": "flex", "alignItems": "center", "gap": "6px"},
-                            children=[
-                                html.Span(
-                                    f"{score:+.2f}" if score is not None else "—",
-                                    className="mom-col-val",
-                                    style={"color": s_color},
-                                ),
-                                _sent_badge(score),
-                            ],
-                        ),
-                    ]),
-                    _col("Articles", str(int(row.get("article_count", 0)))),
-                    html.Div(style={"flex": "1"}),
-                    _progress_bar(score),
-                    html.Button(
-                        "▶",
-                        id={"type": "momentum-expand", "ticker": ticker},
-                        n_clicks=0,
-                        className="mom-expand-btn",
-                    ),
-                ],
-            ),
-            # ── Expanded panel (3 columns, lazy) ──────────────────────────
-            html.Div(
-                id={"type": "momentum-panel", "ticker": ticker},
-                className="mom-card-panel",
-                style={"display": "none"},
-                children=[
-                    html.Div(className="mom-panel-section", children=[
-                        html.P("Intraday (5m)", className="mom-panel-title"),
-                        html.Iframe(
-                            src=_tv_mini_src(ticker),
-                            style={"width": "100%", "height": "220px",
-                                   "border": "none", "borderRadius": "4px"},
-                        ),
-                    ]),
-                    # Headlines placeholder — filled lazily by _toggle_card
-                    html.Div(className="mom-panel-section", children=[
-                        html.P("News Headlines", className="mom-panel-title"),
-                        html.Div(
-                            id={"type": "momentum-headlines", "ticker": ticker},
-                            children=html.Div(
-                                "Loading...",
-                                style={"color": "#2a2a2a", "fontSize": "11px",
-                                       "paddingTop": "6px"},
-                            ),
-                        ),
-                    ]),
-                    html.Div(className="mom-panel-section", children=[
-                        html.P("Sentiment Detail", className="mom-panel-title"),
-                        _sent_detail_panel(row),
-                    ]),
-                ],
-            ),
-        ],
-    )
-
-
-def _msg(text: str, color: str = "#444") -> html.Div:
-    return html.Div(text,
-                    style={"padding": "48px", "textAlign": "center",
-                           "color": color, "fontSize": "13px"})
+    return [
+        html.Div(className="mom-sent-header", children=[
+            html.Span(label, style={
+                "background":   s.get("bg",    "#141414"),
+                "color":        s.get("color", "#666"),
+                "border":       f"1px solid {s.get('bd', '#282828')}",
+                "borderRadius": "12px", "padding": "4px 16px",
+                "fontSize": "14px", "fontWeight": "700",
+            }),
+            html.Div(f"{score:+.2f}" if score is not None else "—",
+                     className="mom-sent-score",
+                     style={"color": s.get("color", "#888")}),
+        ]),
+        html.Div(className="mom-stat-grid", children=[
+            _stat("Bullish", f"{_pct(bull, cnt)}  ({bull} articles)", "#00ff88"),
+            _stat("Bearish", f"{_pct(bear, cnt)}  ({bear} articles)", "#ff4444"),
+            _stat("Neutral", f"{_pct(neut, cnt)}  ({neut} articles)", "#888"),
+            _stat("Total",   f"{cnt} articles"),
+            _stat("Updated", calc_str),
+        ]),
+        html.Div(className="mom-sparkline-wrap", children=[
+            dcc.Graph(figure=_build_sparkline(spark_df),
+                      config={"displayModeBar": False},
+                      style={"height": "100px"}),
+        ]),
+    ]
 
 
 # ── Layout ────────────────────────────────────────────────────────────────
 
 layout = html.Div(
     className="page-content",
-    style={"padding": "0"},
+    style={"padding": "0", "background": "#0d0d0d"},
     children=[
-        dcc.Interval(id="momentum-interval", interval=60_000, n_intervals=0),
-        dcc.Store(id="momentum-page",  data=0),
-        dcc.Store(id="momentum-total", data=0),
+        dcc.Store(id="mom-ticker-store", data=None),
+        dcc.Store(id="mom-tf-store",     data=_DEFAULT_TF),
+        dcc.Interval(id="mom-init", interval=1, n_intervals=0, max_intervals=1),
 
-        # Market status banner
-        html.Div(id="momentum-banner", className="mom-banner"),
-
-        # Title bar
-        html.Div(className="mom-title-bar", children=[
-            html.Span("Momentum Scanner", className="mom-title"),
-            html.Span(id="momentum-count",   className="mom-count"),
-            html.Span(id="momentum-updated", className="mom-updated"),
+        # Search bar
+        html.Div(className="mom-search-wrap", children=[
+            html.Span("🔍", className="mom-search-icon"),
+            dcc.Input(
+                id="mom-search-input",
+                type="text",
+                placeholder="Search ticker (e.g. AAPL)...",
+                debounce=True,
+                className="mom-search-input",
+                n_submit=0,
+            ),
         ]),
 
-        # Filter bar
-        html.Div(className="mom-filter-bar", children=[
-            _fsel("MIN VOL", "momentum-min-vol",   _MIN_VOL_OPTS,   "0"),
-            _fsel("REL VOL", "momentum-rel-vol",   [{"label":"Any","value":"0"}], "0"),
-            _fsel("TOP",     "momentum-top",        _TOP_OPTS,       "10"),
-            _fsel("MAX $",   "momentum-max-price",  _MAX_PRICE_OPTS, "0"),
-            _fsel("SENT",    "momentum-sent",       _SENT_OPTS,      "all"),
-            html.Button("↺ Refresh", id="momentum-refresh", className="mom-refresh-btn"),
+        # Ticker strip (scrollable, clicking loads ticker)
+        html.Div(id="mom-strip", className="mom-ticker-strip"),
+
+        # Info bar
+        html.Div(id="mom-infobar", className="mom-infobar"),
+
+        # Latest news banner
+        html.Div(id="mom-news-banner", className="mom-news-banner"),
+
+        # Timeframe buttons
+        html.Div(className="mom-tf-bar", children=[
+            html.Button(
+                label,
+                id={"type": "mom-tf-btn", "tf": label},
+                n_clicks=0,
+                className="mom-tf-btn mom-tf-active" if label == _DEFAULT_TF else "mom-tf-btn",
+            )
+            for label in _TF_LABELS
         ]),
 
-        # Ticker strip
-        html.Div(id="momentum-ticker-strip", className="mom-ticker-strip"),
+        # TradingView chart (550px shows candlesticks + built-in volume bars)
+        html.Div(style={"width": "100%", "height": "550px"}, children=[
+            html.Iframe(
+                id="mom-tv-iframe",
+                src="",
+                style={"width": "100%", "height": "100%",
+                       "border": "none", "display": "block"},
+            ),
+        ]),
 
-        # Card list with loading spinner
-        dcc.Loading(
-            type="circle",
-            color="#00d4ff",
-            style={"minHeight": "120px"},
-            children=html.Div(id="momentum-cards", className="mom-cards"),
-        ),
-
-        # Pagination (static buttons, dynamic text/disabled state)
-        html.Div(
-            className="mom-pagination",
-            children=[
-                html.Button("← Prev", id="momentum-prev",
-                            className="mom-page-btn", disabled=True),
-                html.Span("", id="momentum-page-info", className="mom-page-info"),
-                html.Button("Next →", id="momentum-next",
-                            className="mom-page-btn", disabled=True),
-            ],
-        ),
+        # Two-column: news (60%) + sentiment (40%)
+        html.Div(className="mom-two-col", children=[
+            html.Div(className="mom-headlines-col", children=[
+                html.Div("NEWS HEADLINES", className="mom-sect-title"),
+                html.Div(id="mom-headlines", className="mom-headlines-list"),
+            ]),
+            html.Div(className="mom-sentiment-col", children=[
+                html.Div("SENTIMENT ANALYSIS", className="mom-sect-title"),
+                html.Div(id="mom-sentiment"),
+            ]),
+        ]),
     ],
 )
 
@@ -510,180 +477,121 @@ layout = html.Div(
 # ── Callbacks ─────────────────────────────────────────────────────────────
 
 @callback(
-    Output("momentum-banner", "children"),
-    Input("momentum-interval", "n_intervals"),
+    Output("mom-strip",        "children"),
+    Output("mom-ticker-store", "data"),
+    Input("mom-init",          "n_intervals"),
 )
-def _update_banner(_):
-    open_ = is_market_hours()
-    dot   = "#00e676" if open_ else "#ff9800"
-    label = "Market Open" if open_ else "Market Closed"
-    return [
-        html.Span("●", style={"color": dot, "marginRight": "6px", "fontSize": "10px"}),
-        html.Span(label, style={"color": "#888", "fontSize": "12px", "fontWeight": "600"}),
-    ]
-
-
-@callback(
-    Output("momentum-ticker-strip", "children"),
-    Output("momentum-cards",        "children"),
-    Output("momentum-count",        "children"),
-    Output("momentum-updated",      "children"),
-    Output("momentum-total",        "data"),
-    Output("momentum-page-info",    "children"),
-    Output("momentum-prev",         "disabled"),
-    Output("momentum-next",         "disabled"),
-    Input("momentum-interval",    "n_intervals"),
-    Input("momentum-refresh",     "n_clicks"),
-    Input("momentum-min-vol",     "value"),
-    Input("momentum-top",         "value"),
-    Input("momentum-max-price",   "value"),
-    Input("momentum-sent",        "value"),
-    Input("momentum-page",        "data"),
-)
-def _update_cards(_, _refresh, min_vol, top, max_price, sent_filter, page):
-    page = page or 0
-
-    # ── Fetch with timeout ────────────────────────────────────────────────
-    df = _safe_query(_MOMENTUM_SQL)
-    if df is None:
-        err = html.Div([
-            html.Div("⚠ Query timed out",
-                     style={"color": "#ff9800", "fontWeight": "600", "marginBottom": "4px"}),
-            html.Div("Too many tickers — try reducing the TOP filter",
-                     style={"color": "#555", "fontSize": "12px"}),
-        ], style={"padding": "48px", "textAlign": "center"})
-        return [], [err], "—", "", 0, "", True, True
-
-    if df.empty:
-        return [], [_msg("No price data available. Market data refreshes every minute.")], \
-               "0 tickers", "", 0, "", True, True
-
-    # ── Filters ───────────────────────────────────────────────────────────
+def _init_page(_):
+    """Load ticker strip and default ticker on page mount."""
     try:
-        mv = int(min_vol or 0)
-        if mv > 0:
-            df = df[df["volume"].fillna(0) >= mv]
-    except (TypeError, ValueError):
-        pass
+        df = query_df(_STRIP_SQL)
+    except Exception:
+        df = pd.DataFrame()
 
-    try:
-        mp = float(max_price or 0)
-        if mp > 0:
-            df = df[df["price"].fillna(9999) < mp]
-    except (TypeError, ValueError):
-        pass
+    if df is None or df.empty:
+        return [], "AAPL"
 
-    if sent_filter and sent_filter != "all":
-        def _matches(score):
-            lbl = _score_to_label(score).lower()
-            if sent_filter == "bullish":  return "bullish" in lbl
-            if sent_filter == "bearish":  return "bearish" in lbl
-            return lbl == "neutral"
-        df = df[df["avg_sentiment"].apply(_matches)]
-
-    try:
-        n_top = min(int(top or 10), _MAX_TOP)
-    except (TypeError, ValueError):
-        n_top = 10
-    df = df.head(n_top)
-
-    if df.empty:
-        return [], [_msg("No tickers match the current filters.")], \
-               "0 tickers", "", 0, "", True, True
-
-    # ── Pagination ────────────────────────────────────────────────────────
-    total       = len(df)
-    total_pages = max(1, math.ceil(total / _PER_PAGE))
-    page        = max(0, min(page, total_pages - 1))
-    start       = page * _PER_PAGE
-    page_df     = df.iloc[start : start + _PER_PAGE]
-
-    # ── Ticker strip (all tickers, up to 25) ──────────────────────────────
-    strip_items = []
+    items = []
     for _, row in df.iterrows():
-        chg_text, chg_color = _fmt_chg(row.get("change_pct"))
-        strip_items.append(html.Div(
-            className="mom-strip-badge",
+        ticker  = str(row["ticker"])
+        chg     = _safe(row.get("change_pct"))
+        chg_str = (f"+{chg:.2f}%" if chg >= 0 else f"{chg:.2f}%") if chg is not None else "—"
+        chg_col = "#00ff88" if (chg or 0) >= 0 else "#ff4444"
+        items.append(html.Button(
             children=[
-                html.Span(str(row["ticker"]), className="mom-strip-ticker"),
-                html.Span(chg_text, style={"color": chg_color, "fontSize": "10px"}),
+                html.Span(ticker,  className="mom-strip-ticker"),
+                html.Span(chg_str, style={"color": chg_col, "fontSize": "10px"}),
             ],
+            id={"type": "mom-strip-btn", "ticker": ticker},
+            n_clicks=0,
+            className="mom-strip-badge",
         ))
 
-    # ── Cards (current page only) ─────────────────────────────────────────
-    cards = [_build_card(start + i + 1, row.to_dict())
-             for i, (_, row) in enumerate(page_df.iterrows())]
-
-    page_info = f"Page {page + 1} / {total_pages}"
-    updated   = f"Updated {now_et().strftime('%H:%M')} ET"
-    prev_dis  = page == 0
-    next_dis  = page >= total_pages - 1
-
-    return strip_items, cards, f"{total} tickers", updated, total, page_info, prev_dis, next_dis
+    return items, str(df.iloc[0]["ticker"])
 
 
 @callback(
-    Output("momentum-page", "data"),
-    Input("momentum-prev",      "n_clicks"),
-    Input("momentum-next",      "n_clicks"),
-    Input("momentum-min-vol",   "value"),
-    Input("momentum-top",       "value"),
-    Input("momentum-max-price", "value"),
-    Input("momentum-sent",      "value"),
-    Input("momentum-refresh",   "n_clicks"),
-    State("momentum-page",  "data"),
-    State("momentum-total", "data"),
+    Output("mom-ticker-store", "data",  allow_duplicate=True),
+    Output("mom-search-input", "value"),
+    Input({"type": "mom-strip-btn", "ticker": ALL}, "n_clicks"),
+    Input("mom-search-input",  "n_submit"),
+    Input("mom-search-input",  "value"),
+    State("mom-ticker-store",  "data"),
     prevent_initial_call=True,
 )
-def _change_page(prev, nxt, mv, top, mp, sf, refresh, page, total):
+def _set_ticker(_strip_clicks, _n_submit, search_val, current_ticker):
     triggered = ctx.triggered_id
-    if triggered in {"momentum-min-vol", "momentum-top", "momentum-max-price",
-                     "momentum-sent", "momentum-refresh"}:
-        return 0
-    page        = page or 0
-    total_pages = max(1, math.ceil((total or 0) / _PER_PAGE))
-    if triggered == "momentum-prev":
-        return max(0, page - 1)
-    if triggered == "momentum-next":
-        return min(total_pages - 1, page + 1)
-    return page
+    if triggered == "mom-search-input":
+        ticker = (search_val or "").strip().upper()
+        if not ticker or ticker == (current_ticker or "").upper():
+            raise PreventUpdate
+        return ticker, ticker
+    if isinstance(triggered, dict) and triggered.get("type") == "mom-strip-btn":
+        ticker = triggered["ticker"]
+        if ticker == current_ticker:
+            raise PreventUpdate
+        return ticker, ticker
+    raise PreventUpdate
 
 
 @callback(
-    Output({"type": "momentum-panel",     "ticker": MATCH}, "style"),
-    Output({"type": "momentum-headlines", "ticker": MATCH}, "children"),
-    Output({"type": "momentum-expand",    "ticker": MATCH}, "children"),
-    Input({"type":  "momentum-expand",    "ticker": MATCH}, "n_clicks"),
-    State({"type":  "momentum-panel",     "ticker": MATCH}, "style"),
-    State({"type":  "momentum-expand",    "ticker": MATCH}, "id"),
+    Output("mom-tv-iframe", "src"),
+    Input("mom-ticker-store", "data"),
+    Input("mom-tf-store",     "data"),
+)
+def _update_tv(ticker, tf):
+    return _tv_src((ticker or "AAPL").strip().upper(), tf or _DEFAULT_TF)
+
+
+@callback(
+    Output("mom-tf-store", "data"),
+    Output({"type": "mom-tf-btn", "tf": ALL}, "className"),
+    Input({"type":  "mom-tf-btn", "tf": ALL}, "n_clicks"),
+    State({"type":  "mom-tf-btn", "tf": ALL}, "id"),
     prevent_initial_call=True,
 )
-def _toggle_card(n_clicks, current_style, expand_id):
-    if not n_clicks:
+def _set_tf(_clicks, ids):
+    triggered = ctx.triggered_id
+    if not isinstance(triggered, dict):
         raise PreventUpdate
+    selected = triggered["tf"]
+    classes  = [
+        "mom-tf-btn mom-tf-active" if id_["tf"] == selected else "mom-tf-btn"
+        for id_ in ids
+    ]
+    return selected, classes
 
-    is_open = (current_style or {}).get("display") not in (None, "none")
-    if is_open:
-        return {"display": "none"}, no_update, "▶"
 
-    ticker = expand_id["ticker"]
+@callback(
+    Output("mom-infobar",     "children"),
+    Output("mom-news-banner", "children"),
+    Output("mom-headlines",   "children"),
+    Output("mom-sentiment",   "children"),
+    Input("mom-ticker-store", "data"),
+)
+def _load_detail(ticker):
+    if not ticker:
+        raise PreventUpdate
+    ticker = ticker.strip().upper()
+    r = _parallel_queries(ticker)
 
-    # Lazy-fetch headlines for this ticker only
-    hl_df = _safe_query(_TICKER_HEADLINES_SQL, {"ticker": ticker})
-    if hl_df is None:
-        hl_content = html.Div(
-            "Headlines unavailable (query timed out)",
-            style={"color": "#ff9800", "fontSize": "11px", "paddingTop": "6px"},
-        )
-    else:
-        hl_content = _headlines_panel(hl_df.to_dict("records") if not hl_df.empty else [])
+    infobar = (
+        _build_infobar(ticker, r["info"].iloc[0].to_dict())
+        if not r["info"].empty
+        else [html.Div(ticker, className="mom-ib-ticker",
+                       style={"padding": "16px", "color": "#00d4ff",
+                              "fontSize": "28px", "fontWeight": "700"})]
+    )
 
-    panel_style = {
-        "display":             "grid",
-        "gridTemplateColumns": "1fr 1fr 260px",
-        "gap":                 "16px",
-        "padding":             "12px 16px 16px",
-        "borderTop":           "1px solid #1c1c1c",
-        "background":          "#0d0d0d",
-    }
-    return panel_style, hl_content, "▼"
+    banner = (
+        _build_banner(r["banner"].iloc[0].to_dict())
+        if not r["banner"].empty
+        else [html.Span("No recent news", style={"color": "#444", "fontSize": "12px"})]
+    )
+
+    return (
+        infobar,
+        banner,
+        _build_headlines(r["hl"]),
+        _build_sentiment(r["sent"], r["spark"]),
+    )

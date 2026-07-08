@@ -2,7 +2,7 @@
 Charts page — full-screen TradingView advanced chart.
 """
 import dash
-from dash import dcc, html
+from dash import html
 
 dash.register_page(__name__, path="/charts", name="Charts", title="Charts")
 
@@ -30,12 +30,7 @@ layout = html.Div(
     children=[
         html.Iframe(
             src=_TV_SRC,
-            style={
-                "width":   "100%",
-                "height":  "100%",
-                "border":  "none",
-                "display": "block",
-            },
+            style={"width": "100%", "height": "100%", "border": "none", "display": "block"},
         ),
     ],
 )
