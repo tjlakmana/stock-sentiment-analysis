@@ -39,8 +39,15 @@ _TIMEOUT = 10
 _STRIP_SQL = """
     SELECT ticker, price, change_pct
     FROM ticker_prices
-    ORDER BY ABS(change_pct) DESC
+    ORDER BY ABS(change_pct) DESC NULLS LAST
     LIMIT 10
+"""
+
+_PRICE_SQL = """
+    SELECT price, change_pct, updated_at,
+           company_name, sector, country, exchange
+    FROM ticker_prices
+    WHERE ticker = :ticker
 """
 
 _HEADLINES_SQL = """
@@ -142,6 +149,70 @@ def _fmt_ts_hl(dt_val) -> str:
         return dt.strftime("%b %d %I:%M%p")
     except Exception:
         return ""
+
+
+def _fmt_ts_price(dt_val) -> str:
+    try:
+        dt = _to_et(dt_val)
+        return dt.strftime("%b %-d • %I:%M%p ET")
+    except Exception:
+        try:
+            dt = _to_et(dt_val)
+            return dt.strftime("%b %d • %I:%M%p ET").replace(" 0", " ")
+        except Exception:
+            return "—"
+
+
+def _build_infobar(ticker: str, df: pd.DataFrame) -> list:
+    if df is None or df.empty:
+        return []
+
+    row      = df.iloc[0]
+    price    = _safe(row.get("price"))
+    chg_pct  = _safe(row.get("change_pct"))
+
+    price_str = f"{price:.2f}" if price is not None else "—"
+
+    if price is not None and chg_pct is not None:
+        chg_dollar = price * chg_pct / 100
+        if chg_pct >= 0:
+            chg_str = f"+${chg_dollar:.2f} ({chg_pct:.2f}%)"
+        else:
+            chg_str = f"-${abs(chg_dollar):.2f} ({chg_pct:.2f}%)"
+        chg_col = "#00ff88" if chg_pct >= 0 else "#ff4444"
+    else:
+        chg_str = "—"
+        chg_col = "#888888"
+
+    dt_str       = _fmt_ts_price(row.get("updated_at"))
+    company_name = str(row.get("company_name") or ticker)
+    sector       = str(row.get("sector")   or "")
+    country      = str(row.get("country")  or "")
+    exchange     = str(row.get("exchange") or "")
+    tags         = " · ".join(x for x in [sector, country, exchange] if x)
+
+    return [
+        html.Div(
+            style={"display": "flex", "alignItems": "center", "padding": "12px 0"},
+            children=[
+                html.Span(price_str, style={
+                    "fontSize": "36px", "fontWeight": "bold", "color": "white",
+                }),
+                html.Div(
+                    style={"marginLeft": "15px"},
+                    children=[
+                        html.Div(dt_str,  style={"fontSize": "13px", "color": "#888888"}),
+                        html.Div(chg_str, style={"fontSize": "14px", "color": chg_col}),
+                    ],
+                ),
+            ],
+        ),
+        html.Div(company_name, style={
+            "fontSize": "14px", "fontWeight": "600",
+            "color": "#cccccc", "marginBottom": "2px",
+        }),
+        html.Div(tags, style={"fontSize": "12px", "color": "#666666", "marginBottom": "8px"}),
+    ]
 
 
 def _parallel_queries(ticker: str) -> dict[str, pd.DataFrame]:
@@ -287,6 +358,12 @@ layout = html.Div(
         # Ticker strip — top 10 movers, clickable
         html.Div(id="mom-strip", className="mom-ticker-strip"),
 
+        # Info bar — price, change, company name, tags
+        html.Div(
+            id="mom-infobar",
+            style={"padding": "0 16px"},
+        ),
+
         # TradingView chart (built-in price bar, OHLC, volume)
         html.Div(style={"width": "100%", "height": "550px"}, children=[
             html.Iframe(
@@ -315,19 +392,18 @@ layout = html.Div(
 # ── Callbacks ─────────────────────────────────────────────────────────────
 
 @callback(
-    Output("mom-strip",        "children"),
-    Output("mom-ticker-store", "data"),
-    Input("mom-init",          "n_intervals"),
+    Output("mom-strip", "children"),
+    Input("mom-init",   "n_intervals"),
 )
-def _init_page(_):
-    """Load ticker strip and set default ticker on page mount."""
+def _update_strip(_):
+    """Load top-10 movers strip independently on page mount."""
     try:
         df = query_df(_STRIP_SQL)
     except Exception:
         df = pd.DataFrame()
 
     if df is None or df.empty:
-        return [], "AAPL"
+        return []
 
     items = []
     for _, row in df.iterrows():
@@ -344,8 +420,23 @@ def _init_page(_):
             n_clicks=0,
             className="mom-strip-badge",
         ))
+    return items
 
-    return items, str(df.iloc[0]["ticker"])
+
+@callback(
+    Output("mom-ticker-store", "data"),
+    Input("mom-init",          "n_intervals"),
+)
+def _init_default_ticker(_):
+    """Set the default detail ticker to the top mover on page mount."""
+    try:
+        df = query_df(_STRIP_SQL)
+    except Exception:
+        df = pd.DataFrame()
+
+    if df is None or df.empty:
+        return "AAPL"
+    return str(df.iloc[0]["ticker"])
 
 
 @callback(
@@ -370,6 +461,21 @@ def _set_ticker(_strip_clicks, _n_submit, search_val, current_ticker):
             raise PreventUpdate
         return ticker, ticker
     raise PreventUpdate
+
+
+@callback(
+    Output("mom-infobar", "children"),
+    Input("mom-ticker-store", "data"),
+)
+def _update_infobar(ticker):
+    if not ticker:
+        raise PreventUpdate
+    ticker = ticker.strip().upper()
+    try:
+        df = query_df(_PRICE_SQL, {"ticker": ticker})
+    except Exception:
+        df = pd.DataFrame()
+    return _build_infobar(ticker, df)
 
 
 @callback(

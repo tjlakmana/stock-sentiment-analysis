@@ -223,6 +223,10 @@ class TickerPrice(Base):
     pre_market_price  = Column(Float,                 nullable=True)
     post_market_price = Column(Float,                 nullable=True)
     updated_at        = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    company_name      = Column(Text,        nullable=True)
+    sector            = Column(String(100), nullable=True)
+    country           = Column(String(50),  nullable=True)
+    exchange          = Column(String(20),  nullable=True)
 
     def __repr__(self) -> str:
         return f"<TickerPrice {self.ticker} ${self.price}>"
