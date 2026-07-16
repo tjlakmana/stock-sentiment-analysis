@@ -10,7 +10,7 @@ import dash
 import pandas as pd
 import plotly.graph_objects as go
 import pytz
-from dash import ALL, Input, Output, State, callback, ctx, dcc, html
+from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 
 from sentiment_analysis.dashboard.db import now_et, query_df
@@ -35,13 +35,6 @@ _ET = pytz.timezone("America/New_York")
 _TIMEOUT = 10
 
 # ── SQL ───────────────────────────────────────────────────────────────────
-
-_STRIP_SQL = """
-    SELECT ticker, price, change_pct
-    FROM ticker_prices
-    ORDER BY ABS(change_pct) DESC NULLS LAST
-    LIMIT 10
-"""
 
 _PRICE_SQL = """
     SELECT price, change_pct, updated_at,
@@ -339,8 +332,7 @@ layout = html.Div(
     className="page-content",
     style={"padding": "0", "background": "#0d0d0d"},
     children=[
-        dcc.Store(id="mom-ticker-store", data=None),
-        dcc.Interval(id="mom-init", interval=1, n_intervals=0, max_intervals=1),
+        dcc.Store(id="mom-ticker-store", data="AAPL"),
 
         # Ticker search bar
         html.Div(className="mom-search-wrap", children=[
@@ -355,9 +347,6 @@ layout = html.Div(
             ),
         ]),
 
-        # Ticker strip — top 10 movers, clickable
-        html.Div(id="mom-strip", className="mom-ticker-strip"),
-
         # Info bar — price, change, company name, tags
         html.Div(
             id="mom-infobar",
@@ -365,7 +354,7 @@ layout = html.Div(
         ),
 
         # TradingView chart (built-in price bar, OHLC, volume)
-        html.Div(style={"width": "100%", "height": "550px"}, children=[
+        html.Div(style={"width": "100%", "height": "600px"}, children=[
             html.Iframe(
                 id="mom-tv-iframe",
                 src="",
@@ -392,75 +381,17 @@ layout = html.Div(
 # ── Callbacks ─────────────────────────────────────────────────────────────
 
 @callback(
-    Output("mom-strip", "children"),
-    Input("mom-init",   "n_intervals"),
-)
-def _update_strip(_):
-    """Load top-10 movers strip independently on page mount."""
-    try:
-        df = query_df(_STRIP_SQL)
-    except Exception:
-        df = pd.DataFrame()
-
-    if df is None or df.empty:
-        return []
-
-    items = []
-    for _, row in df.iterrows():
-        ticker  = str(row["ticker"])
-        chg     = _safe(row.get("change_pct"))
-        chg_str = (f"+{chg:.2f}%" if chg >= 0 else f"{chg:.2f}%") if chg is not None else "—"
-        chg_col = "#00ff88" if (chg or 0) >= 0 else "#ff4444"
-        items.append(html.Button(
-            children=[
-                html.Span(ticker,  className="mom-strip-ticker"),
-                html.Span(chg_str, style={"color": chg_col, "fontSize": "10px"}),
-            ],
-            id={"type": "mom-strip-btn", "ticker": ticker},
-            n_clicks=0,
-            className="mom-strip-badge",
-        ))
-    return items
-
-
-@callback(
     Output("mom-ticker-store", "data"),
-    Input("mom-init",          "n_intervals"),
-)
-def _init_default_ticker(_):
-    """Set the default detail ticker to the top mover on page mount."""
-    try:
-        df = query_df(_STRIP_SQL)
-    except Exception:
-        df = pd.DataFrame()
-
-    if df is None or df.empty:
-        return "AAPL"
-    return str(df.iloc[0]["ticker"])
-
-
-@callback(
-    Output("mom-ticker-store", "data",  allow_duplicate=True),
     Output("mom-search-input", "value"),
-    Input({"type": "mom-strip-btn", "ticker": ALL}, "n_clicks"),
-    Input("mom-search-input",  "n_submit"),
     Input("mom-search-input",  "value"),
     State("mom-ticker-store",  "data"),
     prevent_initial_call=True,
 )
-def _set_ticker(_strip_clicks, _n_submit, search_val, current_ticker):
-    triggered = ctx.triggered_id
-    if triggered == "mom-search-input":
-        ticker = (search_val or "").strip().upper()
-        if not ticker or ticker == (current_ticker or "").upper():
-            raise PreventUpdate
-        return ticker, ticker
-    if isinstance(triggered, dict) and triggered.get("type") == "mom-strip-btn":
-        ticker = triggered["ticker"]
-        if ticker == current_ticker:
-            raise PreventUpdate
-        return ticker, ticker
-    raise PreventUpdate
+def _set_ticker(search_val, current_ticker):
+    ticker = (search_val or "").strip().upper()
+    if not ticker or ticker == (current_ticker or "").upper():
+        raise PreventUpdate
+    return ticker, ticker
 
 
 @callback(

@@ -877,42 +877,6 @@ body {
     color:        #e0e0e0;
 }
 
-/* Ticker strip */
-.mom-ticker-strip {
-    display:    flex;
-    gap:        6px;
-    padding:    8px 16px;
-    overflow-x: auto;
-    background: #0a0a0a;
-    border-bottom: 1px solid #181818;
-    scrollbar-width: thin;
-    scrollbar-color: #252525 transparent;
-}
-.mom-ticker-strip::-webkit-scrollbar        { height: 4px; }
-.mom-ticker-strip::-webkit-scrollbar-thumb  { background: #252525; border-radius: 2px; }
-.mom-strip-badge {
-    display:        flex;
-    flex-direction: column;
-    align-items:    center;
-    gap:            1px;
-    background:     #141414;
-    border:         1px solid #1e1e1e;
-    border-radius:  5px;
-    padding:        4px 10px;
-    flex-shrink:    0;
-    cursor:         pointer;
-    font-family:    inherit;
-    transition:     border-color 0.1s;
-}
-.mom-strip-badge:hover  { border-color: #00d4ff55; background: #1a1a1a; }
-.mom-strip-badge:focus  { outline: none; }
-.mom-strip-badge:active { background: #1f1f1f; }
-.mom-strip-ticker {
-    font-size:   11px;
-    font-weight: 700;
-    color:       #00d4ff;
-}
-
 /* Cards */
 .mom-cards { display: flex; flex-direction: column; }
 
