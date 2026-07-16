@@ -65,6 +65,38 @@ class FinvizIngestor:
 
     # ── Public API ────────────────────────────────────────────────────────
 
+    def fetch_all_prices(self) -> list[dict]:
+        """
+        Fetch prices for all tickers via the Finviz Elite bulk screener export.
+        Returns one dict per row; failures on individual rows are silently skipped.
+        """
+        url = f"https://elite.finviz.com/export.ashx?v=111&auth={self.auth_token}"
+        try:
+            response = self._session.get(url, timeout=30)
+            response.raise_for_status()
+            df = pd.read_csv(StringIO(response.text))
+        except Exception as exc:
+            logger.warning(f"[finviz] Bulk fetch failed: {exc}")
+            return []
+
+        results: list[dict] = []
+        for _, row in df.iterrows():
+            try:
+                results.append({
+                    "ticker":            str(row["Ticker"]),
+                    "price":             float(row["Price"]),
+                    "change_pct":        float(str(row["Change"]).replace("%", "")),
+                    "volume":            int(row["Volume"]),
+                    "market_cap":        None,
+                    "pre_market_price":  None,
+                    "post_market_price": None,
+                    "updated_at":        datetime.now(_ET),
+                })
+            except Exception:
+                continue
+
+        return results
+
     def get_quotes_batch(self, tickers: list[str]) -> list[dict]:
         """
         Fetch prices for all tickers, returning one dict per success.

@@ -60,35 +60,16 @@ async def _job_sentiment() -> None:
 
 
 async def _job_prices() -> None:
-    """Scheduled job: fetch price data for tickers mentioned in recent articles."""
+    """Scheduled job: bulk-fetch all stock prices from Finviz Elite screener export."""
     if not settings.finviz_token:
         logger.warning("[finviz] FINVIZ_TOKEN not set — skipping price fetch.")
         return
 
-    # Fetch tickers that appeared in articles over the last 24 hours
-    from sentiment_analysis.storage.database import get_async_session
-    from sqlalchemy import text as _text
-
-    async with get_async_session() as session:
-        result = await session.execute(_text(
-            "SELECT DISTINCT unnest(tickers) AS ticker "
-            "FROM rss_articles "
-            "WHERE ingested_at > NOW() - INTERVAL '24 hours' "
-            "  AND tickers IS NOT NULL "
-            "  AND array_length(tickers, 1) > 0"
-        ))
-        article_tickers = [row[0] for row in result.fetchall() if row[0]]
-
-    combined = list(set(article_tickers) | set(PERMANENT_WATCHLIST))[:200]
-    logger.info(
-        f"[finviz] Fetching prices for {len(combined)} tickers "
-        f"({len(article_tickers)} from articles + {len(PERMANENT_WATCHLIST)} from watchlist)"
-    )
-    tickers = combined
-
     price_data = await asyncio.to_thread(
-        FinvizIngestor(settings.finviz_token).get_quotes_batch, tickers
+        FinvizIngestor(settings.finviz_token).fetch_all_prices
     )
+
+    logger.info(f"[finviz] Bulk fetch: {len(price_data)} tickers updated")
 
     if price_data:
         await _store_prices(price_data)
