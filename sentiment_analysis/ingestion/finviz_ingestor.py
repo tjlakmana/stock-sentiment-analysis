@@ -91,10 +91,6 @@ class FinvizIngestor:
                     "pre_market_price":  None,
                     "post_market_price": None,
                     "updated_at":        datetime.now(_ET),
-                    "company_name":      str(row.get("Company", "") or ""),
-                    "sector":            str(row.get("Sector", "") or ""),
-                    "country":           str(row.get("Country", "") or ""),
-                    "exchange":          str(row.get("Exchange", "") or ""),
                 })
             except Exception:
                 continue
