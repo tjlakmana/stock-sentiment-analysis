@@ -26,6 +26,16 @@ from sentiment_analysis.sentiment.pipeline import run_sentiment_pipeline
 
 _rss_ingestor: Optional[RSSIngestor] = None
 
+PERMANENT_WATCHLIST = [
+    "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META",
+    "TSLA", "JPM", "V", "WMT", "JNJ", "XOM", "BAC",
+    "UNH", "MA", "HD", "CVX", "PG", "LLY", "ABBV",
+    "NFLX", "AMD", "INTC", "CSCO", "ADBE", "QCOM",
+    "TXN", "CRM", "ORCL", "IBM", "GE", "CAT", "HON",
+    "BA", "RTX", "GS", "MS", "WFC", "C", "USB",
+    "SPY", "QQQ", "IWM", "DIA", "VXX",
+]
+
 
 def _get_rss() -> RSSIngestor:
     global _rss_ingestor
@@ -67,13 +77,14 @@ async def _job_prices() -> None:
             "  AND tickers IS NOT NULL "
             "  AND array_length(tickers, 1) > 0"
         ))
-        tickers = [row[0] for row in result.fetchall() if row[0]][:200]
+        article_tickers = [row[0] for row in result.fetchall() if row[0]]
 
-    logger.info(f"[finviz] Found {len(tickers)} tickers to fetch from last 24h articles.")
-
-    if not tickers:
-        logger.debug("[finviz] No active tickers in last 24h — skipping price fetch.")
-        return
+    combined = list(set(article_tickers) | set(PERMANENT_WATCHLIST))[:200]
+    logger.info(
+        f"[finviz] Fetching prices for {len(combined)} tickers "
+        f"({len(article_tickers)} from articles + {len(PERMANENT_WATCHLIST)} from watchlist)"
+    )
+    tickers = combined
 
     price_data = await asyncio.to_thread(
         FinvizIngestor(settings.finviz_token).get_quotes_batch, tickers

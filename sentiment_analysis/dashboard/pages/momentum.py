@@ -155,26 +155,6 @@ def _safe(v):
         return None
 
 
-def _fmt_price(v) -> str:
-    v = _safe(v)
-    return f"${v:,.2f}" if v is not None else "—"
-
-
-def _fmt_chg_pct(v) -> tuple[str, str]:
-    v = _safe(v)
-    if v is None:
-        return "—", "#666"
-    return (f"+{v:.2f}%" if v >= 0 else f"{v:.2f}%"), ("#00ff88" if v >= 0 else "#ff4444")
-
-
-def _fmt_chg_dollar(v) -> tuple[str, str]:
-    v = _safe(v)
-    if v is None:
-        return "—", "#666"
-    color = "#00ff88" if v >= 0 else "#ff4444"
-    return (f"+${abs(v):,.2f}" if v >= 0 else f"-${abs(v):,.2f}"), color
-
-
 def _pct(num, denom) -> str:
     try:
         n, d = int(num), int(denom)
@@ -216,6 +196,14 @@ def _to_et(dt_val):
     if dt.tzinfo is None:
         return dt.tz_localize("UTC").tz_convert(_ET)
     return dt.tz_convert(_ET)
+
+
+def _fmt_ts_price(dt_val) -> str:
+    try:
+        dt = _to_et(dt_val)
+        return dt.strftime("%b %d • %I:%M%p ET")
+    except Exception:
+        return "—"
 
 
 def _fmt_ts_banner(dt_val) -> str:
@@ -266,23 +254,36 @@ def _build_infobar(ticker: str, row: dict) -> list:
         prev       = price / (1 + chg_pct / 100)
         chg_dollar = price - prev
 
-    pct_str,    pct_col = _fmt_chg_pct(chg_pct)
-    dollar_str, dol_col = _fmt_chg_dollar(chg_dollar)
+    price_str = f"{price:,.2f}" if price is not None else "—"
+    ts_str    = _fmt_ts_price(row.get("updated_at"))
+
+    chg_str = "—"
+    chg_col = "#888"
+    if chg_dollar is not None and chg_pct is not None:
+        sign    = "+" if chg_dollar >= 0 else "-"
+        chg_str = f"{sign}{abs(chg_dollar):.2f} ({abs(chg_pct):.2f}%)"
+        chg_col = "#00ff88" if chg_dollar >= 0 else "#ff4444"
 
     sector   = _SECTOR_MAP.get(ticker, "—")
     exchange = _EXCHANGE_MAP.get(ticker, "—")
 
     return [
         html.Div(className="mom-ib-top", children=[
-            html.Span(ticker,                  className="mom-ib-ticker"),
+            html.Span(ticker, className="mom-ib-ticker"),
             html.Span(COMPANY_NAMES.get(ticker, ""), className="mom-ib-company"),
-            html.Span(_fmt_price(price),       className="mom-ib-price"),
-            html.Span(className="mom-ib-chg", children=[
-                html.Span(dollar_str, style={"color": dol_col}),
-                html.Span(" (", style={"color": "#444"}),
-                html.Span(pct_str,    style={"color": pct_col}),
-                html.Span(")",  style={"color": "#444"}),
-            ]),
+            html.Div(
+                style={"marginLeft": "auto", "display": "flex", "alignItems": "center"},
+                children=[
+                    html.Span(price_str, style={
+                        "fontSize": "36px", "fontWeight": "bold",
+                        "color": "white", "fontFamily": "monospace",
+                    }),
+                    html.Div(style={"marginLeft": "12px"}, children=[
+                        html.Div(ts_str,    style={"fontSize": "13px", "color": "#888888"}),
+                        html.Div(chg_str,   style={"fontSize": "14px", "color": chg_col}),
+                    ]),
+                ],
+            ),
         ]),
         html.Div(className="mom-ib-tags", children=[
             html.Span(sector,   className="mom-tag-pill"),
