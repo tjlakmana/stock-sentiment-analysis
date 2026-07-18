@@ -39,9 +39,22 @@ loguru>=0.7.2
 nltk>=3.8
 rapidfuzz>=3.0
 
+# Entity Resolution Engine — spaCy NER (Phase 3 replacement)
+# Model is downloaded automatically on first start if not already cached.
+# To pre-bake into a Docker image, add to your Dockerfile:
+#   RUN python -m spacy download en_core_web_sm
+spacy>=3.7.0
+
 # Sentiment analysis — Phase 4
 google-genai>=1.0.0
 pysentiment2>=0.1.1
+
+# FinBERT sentiment engine
+# For Railway CPU-only deployments, add this line ABOVE these two to halve
+# the image size (~200 MB vs ~700 MB):
+#   --extra-index-url https://download.pytorch.org/whl/cpu
+transformers>=4.40.0
+torch>=2.2.0
 
 # Timezone handling
 pytz>=2024.1

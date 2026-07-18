@@ -8,9 +8,10 @@ aggregation and spike detection.
 
 Routing:
   SEC filings (sec_edgar, sec_form4, sec_10q, sec_s1, sec_sc13g)
-      → SECAnalyzer (rule-based, local, instant, no threshold)
+      → SECAnalyzer  (rule-based, local, always stores a result)
   All other articles
-      → GeminiAnalyzer (gemini-2.5-flash, structured output, batched, confidence ≥ 0.1)
+      → FinBERTAnalyzer  PRIMARY  (peyterho/finbert-macro-sentiment, local, batched)
+      → GeminiAnalyzer   FALLBACK (gemini-2.5-flash, only if FinBERT raises)
 """
 from __future__ import annotations
 
@@ -23,10 +24,12 @@ from loguru import logger
 from sqlalchemy import update as sa_update
 from sqlalchemy import select
 
+from sentiment_analysis.config import settings
 from sentiment_analysis.sentiment.aggregator import (
     aggregate_ticker_sentiment,
     detect_spikes,
 )
+from sentiment_analysis.sentiment.finbert_analyzer import FinBERTAnalyzer
 from sentiment_analysis.sentiment.gemini_analyzer import GeminiAnalyzer, score_to_label
 from sentiment_analysis.sentiment.sec_analyzer import SECAnalyzer
 from sentiment_analysis.storage.database import get_async_session
@@ -34,11 +37,22 @@ from sentiment_analysis.storage.models import RSSArticle
 
 _SEC_SOURCES = frozenset({"sec_edgar", "sec_form4", "sec_10q", "sec_s1", "sec_sc13g"})
 
-# Confidence threshold applied only to Gemini results; SEC results are always stored
+# Applied only to Gemini fallback results (FinBERT always stores)
 _GEMINI_CONFIDENCE_MIN = 0.1
 
-_gemini_analyzer: Optional[GeminiAnalyzer] = None
-_sec_analyzer:    Optional[SECAnalyzer]     = None
+_finbert_analyzer: Optional[FinBERTAnalyzer] = None
+_gemini_analyzer:  Optional[GeminiAnalyzer]  = None
+_sec_analyzer:     Optional[SECAnalyzer]      = None
+
+
+def _get_finbert_analyzer() -> FinBERTAnalyzer:
+    global _finbert_analyzer
+    if _finbert_analyzer is None:
+        _finbert_analyzer = FinBERTAnalyzer(
+            pos_threshold=settings.finbert_positive_threshold,
+            neg_threshold=settings.finbert_negative_threshold,
+        )
+    return _finbert_analyzer
 
 
 def _get_gemini_analyzer() -> GeminiAnalyzer:
@@ -59,9 +73,11 @@ async def run_sentiment_pipeline(batch_size: int = 100) -> None:
     """
     Analyze one batch of articles.
 
-    SEC articles are always stored (rule-based, always returns a meaningful score).
-    Groq results below confidence 0.1 are skipped as noise.
-    Articles skipped due to API errors are still marked analyzed to prevent re-queuing.
+    SEC articles are always stored (rule-based, no threshold).
+    FinBERT results are always stored (every article gets a score).
+    Gemini is used only as fallback if FinBERT raises an exception.
+    Articles that still have no result after both analyzers are still marked
+    analyzed (sentiment_analyzed_at=now) to prevent infinite re-queuing.
     """
     # 1. Fetch batch: NLP done, sentiment not yet run
     async with get_async_session() as session:
@@ -86,19 +102,19 @@ async def run_sentiment_pipeline(batch_size: int = 100) -> None:
 
     results: list[dict] = []
 
-    # 3a. SECAnalyzer for SEC filings (rule-based + LM, local, no API, no threshold)
+    # 3a. SEC filings → SECAnalyzer (rule-based + LM, local, no API, unchanged)
     if sec_articles:
         logger.info(
             f"[sentiment] Analyzing {len(sec_articles)} SEC articles via SEC Analyzer."
         )
         sec_batch = [
             {
-                "id":          article.id,
-                "source_name": article.source_name,   # sec_analyzer normalises rss: prefix
-                "title":       article.title or "",
-                "summary":     article.summary or article.cleaned_text or "",
+                "id":          a.id,
+                "source_name": a.source_name,
+                "title":       a.title or "",
+                "summary":     a.summary or a.cleaned_text or "",
             }
-            for article in sec_articles
+            for a in sec_articles
         ]
         for r in _get_sec_analyzer().score_batch(sec_batch):
             results.append({
@@ -108,7 +124,6 @@ async def run_sentiment_pipeline(batch_size: int = 100) -> None:
                 "sentiment_confidence": r["confidence"],
             })
 
-        # Breakdown by filing type
         counts = {}
         for a in sec_articles:
             counts[a.source_name] = counts.get(a.source_name, 0) + 1
@@ -116,29 +131,60 @@ async def run_sentiment_pipeline(batch_size: int = 100) -> None:
             "[sentiment] SEC breakdown: "
             f"{counts.get('sec_form4', 0)} Form4, "
             f"{counts.get('sec_edgar', 0)} 8-K, "
-            f"{counts.get('sec_10q', 0)} 10-Q, "
-            f"{counts.get('sec_s1', 0)} S-1, "
+            f"{counts.get('sec_10q',   0)} 10-Q, "
+            f"{counts.get('sec_s1',    0)} S-1, "
             f"{counts.get('sec_sc13g', 0)} SC13G scored."
         )
 
-    # 3b. Gemini for non-SEC articles (batched API call, confidence ≥ 0.1)
+    # 3b. Non-SEC articles → FinBERT primary, Gemini fallback
     if other_articles:
-        logger.info(f"[sentiment] Analyzing {len(other_articles)} articles via Gemini.")
-        gemini_batch = [
+        logger.info(f"[sentiment] Analyzing {len(other_articles)} articles via FinBERT.")
+        finbert_batch = [
             {
-                "article_id":   article.id,
-                "ticker":       ", ".join(article.tickers or []),
-                "headline":     article.title or "",
-                "cleaned_text": article.cleaned_text or "",
+                "article_id":   a.id,
+                "headline":     a.title or "",
+                "cleaned_text": a.cleaned_text or "",
             }
-            for article in other_articles
+            for a in other_articles
         ]
-        gemini_raw = await asyncio.to_thread(
-            _get_gemini_analyzer().analyze_batch, gemini_batch
-        )
-        for r in gemini_raw:
-            if r["sentiment_confidence"] >= _GEMINI_CONFIDENCE_MIN:
-                results.append(r)
+
+        finbert_results: Optional[list[dict]] = None
+        try:
+            finbert_results = await asyncio.to_thread(
+                _get_finbert_analyzer().score_batch, finbert_batch
+            )
+        except Exception as exc:
+            logger.error(f"[finbert] FinBERT inference failed: {exc}")
+            logger.info("[finbert] Falling back to Gemini.")
+
+        if finbert_results is not None:
+            results.extend(finbert_results)
+        else:
+            # Gemini fallback — only reached when FinBERT raises
+            if not settings.gemini_api_key:
+                logger.warning(
+                    "[gemini] GEMINI_API_KEY not set — Gemini fallback unavailable. "
+                    f"{len(other_articles)} articles will be skipped this cycle."
+                )
+            else:
+                logger.info(
+                    f"[gemini] Running Gemini fallback for {len(other_articles)} articles."
+                )
+                gemini_batch = [
+                    {
+                        "article_id":   a.id,
+                        "ticker":       ", ".join(a.tickers or []),
+                        "headline":     a.title or "",
+                        "cleaned_text": a.cleaned_text or "",
+                    }
+                    for a in other_articles
+                ]
+                gemini_raw = await asyncio.to_thread(
+                    _get_gemini_analyzer().analyze_batch, gemini_batch
+                )
+                for r in gemini_raw:
+                    if r["sentiment_confidence"] >= _GEMINI_CONFIDENCE_MIN:
+                        results.append(r)
 
     now = datetime.now(timezone.utc)
     analyzed_ids: set[UUID] = set()
@@ -168,6 +214,6 @@ async def run_sentiment_pipeline(batch_size: int = 100) -> None:
                 .values(sentiment_analyzed_at=now)
             )
 
-    # 6. Aggregate and detect spikes
+    # 6. Aggregate per-ticker sentiment and detect article-count spikes
     await aggregate_ticker_sentiment()
     await detect_spikes()

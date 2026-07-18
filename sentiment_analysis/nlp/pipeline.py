@@ -18,16 +18,17 @@ from typing import Optional
 from loguru import logger
 from sqlalchemy import select, update
 
-from sentiment_analysis.nlp.entity_extractor import EntityExtractor
+from sentiment_analysis.entity_resolution.pipeline import EntityResolutionPipeline
 from sentiment_analysis.nlp.entity_queue import add_or_increment
 from sentiment_analysis.nlp.text_preprocessor import TextPreprocessor
-from sentiment_analysis.nlp.ticker_mapper import TickerMapper
+from sentiment_analysis.scoring.scorer import ImportanceScorer
 from sentiment_analysis.storage.database import get_async_session
 from sentiment_analysis.storage.models import ExtractedEntity, RSSArticle
 
 # Module-level singletons — loaded once, reused across scheduler invocations
 _preprocessor: Optional[TextPreprocessor] = None
-_extractor: Optional[EntityExtractor] = None
+_extractor: Optional[EntityResolutionPipeline] = None
+_scorer: Optional[ImportanceScorer] = None
 
 
 def _get_preprocessor() -> TextPreprocessor:
@@ -37,11 +38,18 @@ def _get_preprocessor() -> TextPreprocessor:
     return _preprocessor
 
 
-def _get_extractor() -> EntityExtractor:
+def _get_extractor() -> EntityResolutionPipeline:
     global _extractor
     if _extractor is None:
-        _extractor = EntityExtractor(TickerMapper())
+        _extractor = EntityResolutionPipeline()
     return _extractor
+
+
+def _get_scorer() -> ImportanceScorer:
+    global _scorer
+    if _scorer is None:
+        _scorer = ImportanceScorer()
+    return _scorer
 
 
 async def run_nlp_pipeline(batch_size: int = 50) -> None:
@@ -66,9 +74,10 @@ async def run_nlp_pipeline(batch_size: int = 50) -> None:
         return
 
     preprocessor = _get_preprocessor()
-    extractor = _get_extractor()
-    processed = 0
-    errors = 0
+    extractor    = _get_extractor()
+    scorer       = _get_scorer()
+    processed    = 0
+    errors       = 0
 
     for article in articles:
         try:
@@ -92,7 +101,16 @@ async def run_nlp_pipeline(batch_size: int = 50) -> None:
                 if db_article is None:
                     continue
 
-                db_article.cleaned_text = cleaned or ""
+                db_article.cleaned_text  = cleaned or ""
+
+                # Importance scoring — runs on raw title + summary (not cleaned)
+                imp = scorer.score(
+                    title=article.title or "",
+                    source_name=article.source_name or "",
+                    summary=article.summary or "",
+                )
+                db_article.importance_score = imp.score
+                db_article.importance_label = imp.label
 
                 # Merge newly found tickers into the existing tickers array
                 existing_tickers = set(db_article.tickers or [])

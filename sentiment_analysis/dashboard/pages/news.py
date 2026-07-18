@@ -3,9 +3,8 @@ News Feed page — live article stream with filters, manual fetch, and paginatio
 """
 from __future__ import annotations
 
-import math
 import threading
-from datetime import datetime
+from datetime import datetime, timezone
 
 from loguru import logger
 
@@ -58,13 +57,13 @@ REFRESH_OPTIONS = [
     {"label": "5 min",  "value": "300"},
 ]
 
-_SOURCE_META: dict[str, tuple[str, str]] = {
-    "pr_newswire":            ("PRN", "#00d4ff"),
-    "globe_newswire_finance": ("GNW", "#9b59b6"),
-    "globe_newswire_ma":      ("GNW", "#9b59b6"),
-    "sec_edgar":              ("8-K", "#f39c12"),
-    "sec_form4":              ("F-4", "#f39c12"),
-    "fda":                    ("FDA", "#e74c3c"),
+_SOURCE_META: dict[str, tuple[str, str, str]] = {
+    "pr_newswire":            ("PRN", "#38a4c8", "PR Newswire"),
+    "globe_newswire_finance": ("GNW", "#8860c0", "Globe Newswire"),
+    "globe_newswire_ma":      ("GNW", "#8860c0", "Globe Newswire"),
+    "sec_edgar":              ("8-K",  "#c87820", "SEC Edgar"),
+    "sec_form4":              ("F-4",  "#c87820", "SEC Form 4"),
+    "fda":                    ("FDA", "#c84040", "FDA"),
 }
 
 _SENTIMENT_STYLE: dict[str, dict] = {
@@ -76,11 +75,11 @@ _SENTIMENT_STYLE: dict[str, dict] = {
 }
 
 _SENT_BORDER: dict[str, str] = {
-    "Bullish":          "#00ff88",
-    "Somewhat Bullish": "#00ff88",
-    "Neutral":          "#888888",
-    "Somewhat Bearish": "#ff4444",
-    "Bearish":          "#ff4444",
+    "Bullish":          "#00c880",
+    "Somewhat Bullish": "#008a56",
+    "Neutral":          "#383860",
+    "Somewhat Bearish": "#8a3030",
+    "Bearish":          "#c83030",
 }
 
 _TIME_CLAUSE: dict[str, str] = {
@@ -232,17 +231,23 @@ def _run_ingest_thread(count_before: int) -> None:
 
 # ── Render helpers ────────────────────────────────────────────────────────
 
+_LABEL_SHORT: dict[str, str] = {
+    "Somewhat Bullish": "↑ Bullish",
+    "Somewhat Bearish": "↓ Bearish",
+}
+
 def _badge(label: str) -> html.Span:
     s = _SENTIMENT_STYLE.get(label, {})
+    display = _LABEL_SHORT.get(label, label) or "—"
     return html.Span(
-        label or "—",
+        display,
         style={
             "background":   s.get("bg",    "#141414"),
             "color":        s.get("color", "#444444"),
             "border":       f"1px solid {s.get('bd', '#282828')}",
-            "borderRadius": "12px",
-            "padding":      "3px 10px",
-            "fontSize":     "11px",
+            "borderRadius": "3px",
+            "padding":      "2px 8px",
+            "fontSize":     "10px",
             "fontWeight":   "600",
             "whiteSpace":   "nowrap",
             "display":      "inline-block",
@@ -250,67 +255,198 @@ def _badge(label: str) -> html.Span:
     )
 
 
-def _source_chip(source: str) -> html.Span:
-    abbr, color = _SOURCE_META.get(source, (source[:3].upper() if source else "???", "#555555"))
+def _source_chip(source: str) -> html.Div:
+    meta = _SOURCE_META.get(source)
+    if meta:
+        abbr, color, name = meta
+    else:
+        abbr  = source[:3].upper() if source else "???"
+        color = "#505060"
+        name  = source or "Unknown"
+    return html.Div(
+        style={"display": "flex", "flexDirection": "column", "gap": "2px", "minWidth": "0"},
+        children=[
+            html.Span(
+                abbr,
+                style={
+                    "background":    f"{color}18",
+                    "color":         color,
+                    "border":        f"1px solid {color}40",
+                    "borderRadius":  "3px",
+                    "padding":       "1px 6px",
+                    "fontSize":      "10px",
+                    "fontWeight":    "700",
+                    "letterSpacing": "0.3px",
+                    "fontFamily":    "monospace",
+                    "whiteSpace":    "nowrap",
+                    "display":       "inline-block",
+                    "alignSelf":     "flex-start",
+                },
+            ),
+            html.Span(
+                name,
+                style={
+                    "fontSize":     "9px",
+                    "color":        "#3c3c50",
+                    "whiteSpace":   "nowrap",
+                    "overflow":     "hidden",
+                    "textOverflow": "ellipsis",
+                    "maxWidth":     "86px",
+                    "lineHeight":   "1",
+                },
+            ),
+        ],
+    )
+
+
+_CAT_STYLE: dict[str, tuple[str, str, str]] = {
+    "Earnings": ("#3acf82", "#071f12", "#185c38"),
+    "SEC":      ("#c8901a", "#180e00", "#5a3a00"),
+    "Insider":  ("#c0a000", "#141000", "#4a3c00"),
+    "M&A":      ("#4a88d8", "#040b18", "#183060"),
+    "IPO":      ("#9068d8", "#090518", "#341c60"),
+    "Crypto":   ("#18b0d0", "#001318", "#004858"),
+    "Biotech":  ("#d05858", "#180606", "#501818"),
+    "FDA":      ("#d05858", "#180606", "#501818"),
+    "Macro":    ("#5080b0", "#060c14", "#1c3050"),
+    "Press":    ("#585878", "#0e0e14", "#26263a"),
+}
+
+_SOURCE_CAT: dict[str, str] = {
+    "sec_edgar":              "SEC",
+    "sec_form4":              "Insider",
+    "fda":                    "FDA",
+    "globe_newswire_ma":      "M&A",
+    "globe_newswire_finance": "Press",
+    "pr_newswire":            "Press",
+}
+
+_KW_CATS: list[tuple[str, list[str]]] = [
+    ("Earnings", ["earnings", "revenue", "eps ", "per share", "guidance",
+                  "beats", "misses", "quarterly", "fiscal", "q1 ", "q2 ",
+                  "q3 ", "q4 ", "profit", "loss", "net income"]),
+    ("Biotech",  ["fda ", "clinical trial", "drug", "biotech", "pharmaceutical",
+                  "phase 1", "phase 2", "phase 3", "approval", "nda ", "bla ",
+                  "biologics", "vaccine", "510k"]),
+    ("M&A",      ["merger", "acquisition", "acquires", "acquire", "takeover",
+                  "buyout", "strategic combination", "agreement to acquire"]),
+    ("IPO",      ["ipo", "initial public offering", "s-1", "spac",
+                  "goes public", "debut on", "shares offered"]),
+    ("Crypto",   ["bitcoin", "crypto", "blockchain", "ethereum", "btc ",
+                  "eth ", "digital asset", "defi", "nft", "stablecoin"]),
+    ("Macro",    ["federal reserve", "fed rate", "interest rate", "inflation",
+                  "gdp", "cpi ", "ppi ", "treasury yield", "fomc"]),
+]
+
+
+def _detect_category(source: str, title: str) -> str:
+    tl = (title or "").lower()
+    for label, keywords in _KW_CATS:
+        if any(kw in tl for kw in keywords):
+            return label
+    return _SOURCE_CAT.get(source, "Press")
+
+
+def _cat_badge(label: str) -> html.Span:
+    fg, bg, bd = _CAT_STYLE.get(label, _CAT_STYLE["Press"])
     return html.Span(
-        abbr,
+        label,
         style={
-            "background":    f"{color}1e",
-            "color":         color,
-            "border":        f"1px solid {color}55",
-            "borderRadius":  "4px",
-            "padding":       "2px 7px",
+            "background":    bg,
+            "color":         fg,
+            "border":        f"1px solid {bd}",
+            "borderRadius":  "3px",
+            "padding":       "2px 6px",
             "fontSize":      "10px",
             "fontWeight":    "700",
-            "letterSpacing": "0.4px",
+            "letterSpacing": "0.3px",
             "whiteSpace":    "nowrap",
+            "display":       "inline-block",
             "fontFamily":    "monospace",
         },
     )
 
 
-def _score_color(score) -> str:
-    if score is None or (isinstance(score, float) and math.isnan(score)):
-        return "#3a3a3a"
-    s = float(score)
-    if s >= 0.35:   return "#00e676"
-    elif s >= 0.15: return "#69f0ae"
-    elif s > -0.15: return "#82b1ff"
-    elif s > -0.35: return "#ff8a80"
-    return "#ff5252"
+def _rel_time(ts) -> str:
+    try:
+        now = datetime.now(timezone.utc)
+        if ts is None:
+            return "—"
+        if hasattr(ts, "to_pydatetime"):
+            dt = ts.to_pydatetime()
+        elif isinstance(ts, datetime):
+            dt = ts
+        else:
+            return "—"
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        diff = int((now - dt).total_seconds())
+        if diff < 60:    return "just now"
+        if diff < 3600:  return f"{diff // 60}m ago"
+        if diff < 86400: return f"{diff // 3600}h ago"
+        return f"{diff // 86400}d ago"
+    except Exception:
+        return "—"
+
+
+_IMP_META: dict[str, tuple[str, str]] = {
+    "High":   ("🔴", "#c84040"),
+    "Medium": ("🟡", "#907820"),
+    "Low":    ("⚪", "#2c2c3e"),
+}
+
+
+def _imp_badge(imp_label: str) -> html.Span:
+    if not imp_label:
+        return html.Span("—", className="col-unscored")
+    dot, color = _IMP_META.get(imp_label, ("⚪", "#2c2c3e"))
+    return html.Span(
+        f"{dot} {imp_label}",
+        style={
+            "fontSize":      "10px",
+            "color":         color,
+            "whiteSpace":    "nowrap",
+            "fontWeight":    "600",
+            "letterSpacing": "0.1px",
+        },
+    )
 
 
 def _render_row(i: int, row: dict) -> html.Div:
-    score = row.get("sentiment_score")
-    label = row.get("sentiment_label", "")
-    is_nan = score is None or (isinstance(score, float) and math.isnan(score))
-    score_val = float(score) if not is_nan else None
-    score_text = f"{score_val:+.2f}" if score_val is not None else "—"
-    border_color = _SENT_BORDER.get(label, "#333333")
+    label     = row.get("sentiment_label", "")
+    imp_label = row.get("importance_label", "")
+    title     = (row.get("title") or "")[:160]
+    url       = row.get("url") or "#"
+    source    = row.get("source_name", "")
+    ts        = row.get("ingested_at")
+
+    cat_label    = _detect_category(source, title)
+    rel_t        = _rel_time(ts)
+    border_color = _SENT_BORDER.get(label, "#20202e")
 
     return html.Div(
         className="article-row",
         style={"borderLeft": f"3px solid {border_color}"},
         children=[
-            html.Span(row.get("time_str", ""), className="col-time"),
-            _source_chip(row.get("source_name", "")),
-            html.Span(row.get("tickers", "") or "", className="col-tickers"),
+            _source_chip(source),
+            html.Span(rel_t, className="col-time"),
+            _cat_badge(cat_label),
+            _imp_badge(imp_label),
             html.A(
-                (row.get("title") or "")[:150],
-                href=row.get("url") or "#",
+                title,
+                href=url,
                 target="_blank",
                 rel="noopener noreferrer",
                 className="headline-link",
             ),
-            _badge(label),
-            html.Span(
-                score_text,
-                style={
-                    "color":      _score_color(score),
-                    "fontFamily": "monospace",
-                    "fontSize":   "12px",
-                    "textAlign":  "right",
-                },
+            _badge(label) if label else html.Span("—", className="col-unscored"),
+            html.A(
+                "↗",
+                href=url,
+                target="_blank",
+                rel="noopener noreferrer",
+                className="row-link-btn",
+                title="Open article",
             ),
         ],
     )
@@ -428,13 +564,38 @@ def _build_count_where(cat_name: str) -> tuple[str, dict]:
     return " AND ".join(conds), params
 
 
+# ── AI Intelligence Strip (compact placeholder) ────────────────────────────
+
+
+_INTEL_STRIP = html.Div(
+    className="intel-strip",
+    children=[
+        html.Span("⚡", className="intel-icon"),
+        html.Span("INTELLIGENCE", className="intel-label"),
+        html.Div(className="intel-sep"),
+        html.Div([
+            html.Span("Sentiment ", className="intel-kv-key"),
+            html.Span("Moderately Bullish", className="intel-kv-val intel-bull"),
+            html.Span(" +0.24", className="intel-kv-val intel-bull intel-mono"),
+        ], className="intel-group"),
+        html.Div(className="intel-sep"),
+        html.Span("● 58% Bull",    className="intel-stat intel-s-bull"),
+        html.Span("● 28% Neutral", className="intel-stat intel-s-neut"),
+        html.Span("● 14% Bear",    className="intel-stat intel-s-bear"),
+        html.Div(className="intel-sep"),
+        html.Span("247 articles · 24h", className="intel-count"),
+        html.Span("AI ANALYSIS COMING SOON", className="intel-future"),
+    ],
+)
+
+
 # ── Layout ────────────────────────────────────────────────────────────────
 
 _TABLE_HEADER = html.Div(
     className="table-header",
     children=[
         html.Span(c, className="th")
-        for c in ["Time", "Source", "Tickers", "Headline", "Sentiment", "Score"]
+        for c in ["Source", "Time", "Category", "Imp", "Headline", "Sentiment", ""]
     ],
 )
 
@@ -471,6 +632,9 @@ layout = html.Div(
         dcc.Interval(id="news-banner-dismiss", interval=5_500,  n_intervals=0, disabled=True),
         dcc.Store(id="news-page",        data=1),
         dcc.Store(id="news-fetch-store", data={"done_at": None}),
+
+        # ── AI Intelligence Strip ─────────────────────────────────────────
+        _INTEL_STRIP,
 
         # ── Filter row ────────────────────────────────────────────────────
         html.Div(
@@ -734,15 +898,14 @@ def _update_feed(n, category, keyword, source, sentiment, time_range, page,
 
     logger.debug(f"[news] feed count={total} for cat={active_cat!r}")
 
-    total_pages  = max(1, math.ceil(total / PAGE_SIZE))
+    total_pages  = max(1, (total + PAGE_SIZE - 1) // PAGE_SIZE)
     current_page = max(1, min(current_page, total_pages))
     offset       = (current_page - 1) * PAGE_SIZE
 
     df = query_df(f"""
         SELECT
-            to_char(ingested_at AT TIME ZONE 'America/New_York', 'MM-DD HH24:MI') AS time_str,
+            ingested_at,
             source_name,
-            COALESCE(array_to_string(tickers, ', '), '') AS tickers,
             COALESCE(
                 CASE WHEN source_name LIKE 'sec%' THEN
                     TRIM(REGEXP_REPLACE(
@@ -756,7 +919,8 @@ def _update_feed(n, category, keyword, source, sentiment, time_range, page,
             ) AS title,
             COALESCE(url,            '#') AS url,
             COALESCE(sentiment_label, '') AS sentiment_label,
-            sentiment_score
+            importance_score,
+            COALESCE(importance_label, '') AS importance_label
         FROM rss_articles
         WHERE {where}
         ORDER BY ingested_at DESC NULLS LAST

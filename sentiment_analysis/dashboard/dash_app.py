@@ -152,6 +152,9 @@ def _highlight_nav(pathname: str):
             return "nav-link active"
         if path != "/" and pathname == path:
             return "nav-link active"
+        # Highlight Screener when viewing any Stock Workspace page
+        if path == "/screener" and (pathname or "").startswith("/stock/"):
+            return "nav-link active"
         return "nav-link"
     return [_cls(path) for _, _, path in _NAV]
 

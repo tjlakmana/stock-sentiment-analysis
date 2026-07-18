@@ -20,324 +20,36 @@ dash.register_page(__name__, path="/screener", name="Screener", title="Screener"
 
 PAGE_SIZE = 25
 
-# ── Company / sector data ──────────────────────────────────────────────────
-
-COMPANY_NAMES: dict[str, str] = {
-    # Technology
-    "AAPL":  "Apple Inc",               "MSFT":  "Microsoft Corp",
-    "NVDA":  "NVIDIA Corp",             "AVGO":  "Broadcom Inc",
-    "AMD":   "Advanced Micro Devices",  "INTC":  "Intel Corp",
-    "QCOM":  "Qualcomm Inc",            "CSCO":  "Cisco Systems",
-    "TXN":   "Texas Instruments",       "ADBE":  "Adobe Inc",
-    "CRM":   "Salesforce Inc",          "NOW":   "ServiceNow Inc",
-    "AMAT":  "Applied Materials",       "LRCX":  "Lam Research",
-    "MU":    "Micron Technology",       "ADI":   "Analog Devices",
-    "KLAC":  "KLA Corp",                "PANW":  "Palo Alto Networks",
-    "SNPS":  "Synopsys Inc",            "CDNS":  "Cadence Design",
-    "FTNT":  "Fortinet Inc",            "IBM":   "IBM Corp",
-    "ACN":   "Accenture PLC",           "FICO":  "Fair Isaac Corp",
-    "ANSS":  "ANSYS Inc",               "IT":    "Gartner Inc",
-    "LDOS":  "Leidos Holdings",         "SAIC":  "SAIC Inc",
-    "BAH":   "Booz Allen Hamilton",     "CACI":  "CACI International",
-    "DXC":   "DXC Technology",          "WEX":   "WEX Inc",
-    "FIS":   "Fidelity Natl Info",      "FISV":  "Fiserv Inc",
-    "GPN":   "Global Payments",         "INTU":  "Intuit Inc",
-    "MSCI":  "MSCI Inc",                "EPAM":  "EPAM Systems",
-    "CTSH":  "Cognizant Tech",          "PLTR":  "Palantir Technologies",
-    "CRWD":  "CrowdStrike Holdings",    "SNOW":  "Snowflake Inc",
-    "MDB":   "MongoDB Inc",             "DDOG":  "Datadog Inc",
-    "ZS":    "Zscaler Inc",             "NET":   "Cloudflare Inc",
-    "HUBS":  "HubSpot Inc",             "TEAM":  "Atlassian Corp",
-    "WDAY":  "Workday Inc",             "VEEV":  "Veeva Systems",
-    "TTD":   "Trade Desk Inc",          "RBLX":  "Roblox Corp",
-    "U":     "Unity Software",          "HOOD":  "Robinhood Markets",
-    # Communication
-    "GOOGL": "Alphabet Inc",            "META":  "Meta Platforms",
-    "NFLX":  "Netflix Inc",             "T":     "AT&T Inc",
-    "VZ":    "Verizon Communications",  "CMCSA": "Comcast Corp",
-    "CHTR":  "Charter Communications",  "TMUS":  "T-Mobile US",
-    "PARA":  "Paramount Global",        "WBD":   "Warner Bros Discovery",
-    "FOX":   "Fox Corp",                "DIS":   "Walt Disney Co",
-    "ROKU":  "Roku Inc",                "SNAP":  "Snap Inc",
-    "PINS":  "Pinterest Inc",           "SPOT":  "Spotify Technology",
-    # Healthcare
-    "UNH":   "UnitedHealth Group",      "JNJ":   "Johnson & Johnson",
-    "LLY":   "Eli Lilly & Co",          "MRK":   "Merck & Co",
-    "ABBV":  "AbbVie Inc",              "TMO":   "Thermo Fisher",
-    "ABT":   "Abbott Laboratories",     "DHR":   "Danaher Corp",
-    "BSX":   "Boston Scientific",       "ELV":   "Elevance Health",
-    "CI":    "Cigna Group",             "HUM":   "Humana Inc",
-    "MCK":   "McKesson Corp",           "CVS":   "CVS Health",
-    "VRTX":  "Vertex Pharmaceuticals",  "REGN":  "Regeneron Pharma",
-    "GILD":  "Gilead Sciences",         "AMGN":  "Amgen Inc",
-    "BIIB":  "Biogen Inc",              "MRNA":  "Moderna Inc",
-    "ILMN":  "Illumina Inc",            "IDXX":  "IDEXX Laboratories",
-    "ZTS":   "Zoetis Inc",              "BDX":   "Becton Dickinson",
-    "EW":    "Edwards Lifesciences",    "STE":   "Steris PLC",
-    "RMD":   "ResMed Inc",              "ISRG":  "Intuitive Surgical",
-    "DXCM":  "Dexcom Inc",              "HOLX":  "Hologic Inc",
-    "PODD":  "Insulet Corp",            "A":     "Agilent Technologies",
-    "MTD":   "Mettler-Toledo",          "IQV":   "IQVIA Holdings",
-    "CNC":   "Centene Corp",            "MOH":   "Molina Healthcare",
-    # Finance
-    "JPM":   "JPMorgan Chase",          "BAC":   "Bank of America",
-    "WFC":   "Wells Fargo",             "MS":    "Morgan Stanley",
-    "GS":    "Goldman Sachs",           "C":     "Citigroup Inc",
-    "USB":   "U.S. Bancorp",            "PNC":   "PNC Financial",
-    "TFC":   "Truist Financial",        "COF":   "Capital One Financial",
-    "AIG":   "American Intl Group",     "MMC":   "Marsh McLennan",
-    "AON":   "Aon PLC",                 "CB":    "Chubb Ltd",
-    "V":     "Visa Inc",                "MA":    "Mastercard Inc",
-    "AXP":   "American Express",        "PYPL":  "PayPal Holdings",
-    "SQ":    "Block Inc",               "AFRM":  "Affirm Holdings",
-    "UPST":  "Upstart Holdings",        "SOFI":  "SoFi Technologies",
-    "NU":    "Nu Holdings",             "COIN":  "Coinbase Global",
-    "MSTR":  "MicroStrategy",           "RIOT":  "Riot Platforms",
-    "MARA":  "Marathon Digital",        "HUT":   "Hut 8 Corp",
-    "SPGI":  "S&P Global Inc",          "BLK":   "BlackRock Inc",
-    "MCO":   "Moody's Corp",            "ICE":   "Intercontinental Exchange",
-    "CME":   "CME Group",               "NDAQ":  "Nasdaq Inc",
-    "SCHW":  "Charles Schwab",          "BX":    "Blackstone Inc",
-    "KKR":   "KKR & Co",                "APO":   "Apollo Global Mgmt",
-    # Energy
-    "XOM":   "Exxon Mobil",             "CVX":   "Chevron Corp",
-    "COP":   "ConocoPhillips",          "EOG":   "EOG Resources",
-    "PXD":   "Pioneer Natural Res",     "DVN":   "Devon Energy",
-    "SLB":   "SLB (Schlumberger)",      "HAL":   "Halliburton Co",
-    "BKR":   "Baker Hughes",            "MPC":   "Marathon Petroleum",
-    "PSX":   "Phillips 66",             "VLO":   "Valero Energy",
-    "HES":   "Hess Corp",               "WMB":   "Williams Companies",
-    "KMI":   "Kinder Morgan",           "OKE":   "ONEOK Inc",
-    "SRE":   "Sempra",
-    # Consumer
-    "AMZN":  "Amazon.com Inc",          "TSLA":  "Tesla Inc",
-    "WMT":   "Walmart Inc",             "HD":    "Home Depot",
-    "COST":  "Costco Wholesale",        "LOW":   "Lowe's Companies",
-    "TGT":   "Target Corp",             "NKE":   "Nike Inc",
-    "MCD":   "McDonald's Corp",         "SBUX":  "Starbucks Corp",
-    "YUM":   "Yum! Brands",             "CMG":   "Chipotle Mexican Grill",
-    "DG":    "Dollar General",          "DLTR":  "Dollar Tree",
-    "ROST":  "Ross Stores",             "TJX":   "TJX Companies",
-    "PG":    "Procter & Gamble",        "KO":    "Coca-Cola Co",
-    "PEP":   "PepsiCo Inc",             "MDLZ":  "Mondelez Intl",
-    "CL":    "Colgate-Palmolive",       "GIS":   "General Mills",
-    "HSY":   "Hershey Co",              "KHC":   "Kraft Heinz Co",
-    "MO":    "Altria Group",            "PM":    "Philip Morris Intl",
-    "BABA":  "Alibaba Group",           "EBAY":  "eBay Inc",
-    "ETSY":  "Etsy Inc",                "ABNB":  "Airbnb Inc",
-    "UBER":  "Uber Technologies",       "LYFT":  "Lyft Inc",
-    "DASH":  "DoorDash Inc",            "RIVN":  "Rivian Automotive",
-    "LCID":  "Lucid Group",             "GM":    "General Motors",
-    "F":     "Ford Motor Co",           "STLA":  "Stellantis NV",
-    "DKNG":  "DraftKings Inc",
-    # Industrial
-    "HON":   "Honeywell Intl",          "CAT":   "Caterpillar Inc",
-    "UNP":   "Union Pacific",           "UPS":   "United Parcel Service",
-    "FDX":   "FedEx Corp",              "NSC":   "Norfolk Southern",
-    "RTX":   "RTX Corp",                "LMT":   "Lockheed Martin",
-    "NOC":   "Northrop Grumman",        "GD":    "General Dynamics",
-    "BA":    "Boeing Co",               "GE":    "GE Aerospace",
-    "RSG":   "Republic Services",       "WM":    "Waste Management",
-    "MMM":   "3M Co",                   "EMR":   "Emerson Electric",
-    "ETN":   "Eaton Corp",              "ROP":   "Roper Technologies",
-    "IR":    "Ingersoll Rand",          "CARR":  "Carrier Global",
-    "OTIS":  "Otis Worldwide",          "FAST":  "Fastenal Co",
-    "DE":    "Deere & Co",              "PCAR":  "PACCAR Inc",
-    "ROK":   "Rockwell Automation",     "PH":    "Parker Hannifin",
-    "DOV":   "Dover Corp",              "XYL":   "Xylem Inc",
-    # Materials
-    "LIN":   "Linde PLC",               "APD":   "Air Products",
-    "ECL":   "Ecolab Inc",              "SHW":   "Sherwin-Williams",
-    "PPG":   "PPG Industries",          "DD":    "DuPont de Nemours",
-    "DOW":   "Dow Inc",                 "NEM":   "Newmont Corp",
-    "FCX":   "Freeport-McMoRan",        "VMC":   "Vulcan Materials",
-    "MLM":   "Martin Marietta",         "NUE":   "Nucor Corp",
-    "STLD":  "Steel Dynamics",          "CF":    "CF Industries",
-    "MOS":   "Mosaic Co",               "FMC":   "FMC Corp",
-    # Utilities
-    "NEE":   "NextEra Energy",          "DUK":   "Duke Energy",
-    "SO":    "Southern Co",             "D":     "Dominion Energy",
-    "AEP":   "American Electric Power", "EXC":   "Exelon Corp",
-    "XEL":   "Xcel Energy",             "ES":    "Eversource Energy",
-    "ETR":   "Entergy Corp",            "FE":    "FirstEnergy Corp",
-    "PCG":   "PG&E Corp",               "EIX":   "Edison Intl",
-    "AWK":   "American Water Works",    "PPL":   "PPL Corp",
-    "AES":   "AES Corp",
-    # Real Estate
-    "AMT":   "American Tower",          "CCI":   "Crown Castle",
-    "EQIX":  "Equinix Inc",             "PSA":   "Public Storage",
-    "SPG":   "Simon Property Group",    "O":     "Realty Income",
-    "WELL":  "Welltower Inc",           "DLR":   "Digital Realty",
-    "PLD":   "Prologis Inc",            "VICI":  "VICI Properties",
-    "ARE":   "Alexandria Real Estate",  "EQR":   "Equity Residential",
-    "AVB":   "AvalonBay Communities",   "IRM":   "Iron Mountain",
-    "SBAC":  "SBA Communications",
-    # ETFs / Macro
-    "SPY":   "SPDR S&P 500 ETF",        "QQQ":   "Invesco QQQ ETF",
-    "IWM":   "iShares Russell 2000",    "DIA":   "SPDR Dow Jones ETF",
-    "GLD":   "SPDR Gold Shares",        "TLT":   "iShs 20+ Yr Treasury",
-    "HYG":   "iShs HY Corp Bond",       "VTI":   "Vanguard Total Mkt",
-    "XLF":   "Financial Select SPDR",   "XLK":   "Technology Select SPDR",
-    "XLE":   "Energy Select SPDR",      "XLV":   "Health Care Select SPDR",
-    "XLI":   "Industrial Select SPDR",  "XLY":   "Cons Discr Select SPDR",
-    "XLP":   "Cons Staples Select SPDR","XLU":   "Utilities Select SPDR",
-    "XLB":   "Materials Select SPDR",   "XLRE":  "Real Estate Select SPDR",
-    "XLC":   "Comm Services SPDR",      "GME":   "GameStop Corp",
-    "AMC":   "AMC Entertainment",
-}
-
-_SECTOR_MAP: dict[str, str] = {
-    # Technology
-    "AAPL": "Technology",  "MSFT": "Technology",  "NVDA": "Technology",
-    "AVGO": "Technology",  "AMD":  "Technology",   "INTC": "Technology",
-    "QCOM": "Technology",  "CSCO": "Technology",   "TXN":  "Technology",
-    "ADBE": "Technology",  "CRM":  "Technology",   "NOW":  "Technology",
-    "AMAT": "Technology",  "LRCX": "Technology",   "MU":   "Technology",
-    "ADI":  "Technology",  "KLAC": "Technology",   "PANW": "Technology",
-    "SNPS": "Technology",  "CDNS": "Technology",   "FTNT": "Technology",
-    "IBM":  "Technology",  "ACN":  "Technology",   "FICO": "Technology",
-    "ANSS": "Technology",  "IT":   "Technology",   "LDOS": "Technology",
-    "SAIC": "Technology",  "BAH":  "Technology",   "CACI": "Technology",
-    "DXC":  "Technology",  "WEX":  "Technology",   "FIS":  "Technology",
-    "FISV": "Technology",  "GPN":  "Technology",   "INTU": "Technology",
-    "MSCI": "Technology",  "EPAM": "Technology",   "CTSH": "Technology",
-    "PLTR": "Technology",  "CRWD": "Technology",   "SNOW": "Technology",
-    "MDB":  "Technology",  "DDOG": "Technology",   "ZS":   "Technology",
-    "NET":  "Technology",  "HUBS": "Technology",   "TEAM": "Technology",
-    "WDAY": "Technology",  "VEEV": "Technology",   "TTD":  "Technology",
-    "RBLX": "Technology",  "U":    "Technology",
-    # Communication
-    "GOOGL": "Communication", "META":  "Communication", "NFLX":  "Communication",
-    "T":     "Communication", "VZ":    "Communication", "CMCSA": "Communication",
-    "CHTR":  "Communication", "TMUS":  "Communication", "PARA":  "Communication",
-    "WBD":   "Communication", "FOX":   "Communication", "DIS":   "Communication",
-    "ROKU":  "Communication", "SNAP":  "Communication", "PINS":  "Communication",
-    "SPOT":  "Communication", "HOOD":  "Communication",
-    # Healthcare
-    "UNH":  "Healthcare",  "JNJ":  "Healthcare",   "LLY":  "Healthcare",
-    "MRK":  "Healthcare",  "ABBV": "Healthcare",   "TMO":  "Healthcare",
-    "ABT":  "Healthcare",  "DHR":  "Healthcare",   "BSX":  "Healthcare",
-    "ELV":  "Healthcare",  "CI":   "Healthcare",   "HUM":  "Healthcare",
-    "MCK":  "Healthcare",  "CVS":  "Healthcare",   "VRTX": "Healthcare",
-    "REGN": "Healthcare",  "GILD": "Healthcare",   "AMGN": "Healthcare",
-    "BIIB": "Healthcare",  "MRNA": "Healthcare",   "ILMN": "Healthcare",
-    "IDXX": "Healthcare",  "ZTS":  "Healthcare",   "BDX":  "Healthcare",
-    "EW":   "Healthcare",  "STE":  "Healthcare",   "RMD":  "Healthcare",
-    "ISRG": "Healthcare",  "DXCM": "Healthcare",   "HOLX": "Healthcare",
-    "PODD": "Healthcare",  "A":    "Healthcare",   "MTD":  "Healthcare",
-    "IQV":  "Healthcare",  "CNC":  "Healthcare",   "MOH":  "Healthcare",
-    # Finance
-    "JPM":  "Finance",     "BAC":  "Finance",      "WFC":  "Finance",
-    "MS":   "Finance",     "GS":   "Finance",      "C":    "Finance",
-    "USB":  "Finance",     "PNC":  "Finance",      "TFC":  "Finance",
-    "COF":  "Finance",     "AIG":  "Finance",      "MMC":  "Finance",
-    "AON":  "Finance",     "CB":   "Finance",      "V":    "Finance",
-    "MA":   "Finance",     "AXP":  "Finance",      "PYPL": "Finance",
-    "SQ":   "Finance",     "AFRM": "Finance",      "UPST": "Finance",
-    "SOFI": "Finance",     "NU":   "Finance",      "COIN": "Finance",
-    "MSTR": "Finance",     "RIOT": "Finance",      "MARA": "Finance",
-    "HUT":  "Finance",     "SPGI": "Finance",      "BLK":  "Finance",
-    "MCO":  "Finance",     "ICE":  "Finance",      "CME":  "Finance",
-    "NDAQ": "Finance",     "SCHW": "Finance",      "BX":   "Finance",
-    "KKR":  "Finance",     "APO":  "Finance",
-    # Energy
-    "XOM":  "Energy",      "CVX":  "Energy",       "COP":  "Energy",
-    "EOG":  "Energy",      "PXD":  "Energy",       "DVN":  "Energy",
-    "SLB":  "Energy",      "HAL":  "Energy",       "BKR":  "Energy",
-    "MPC":  "Energy",      "PSX":  "Energy",       "VLO":  "Energy",
-    "HES":  "Energy",      "WMB":  "Energy",       "KMI":  "Energy",
-    "OKE":  "Energy",      "SRE":  "Energy",
-    # Consumer
-    "AMZN": "Consumer",    "TSLA": "Consumer",     "WMT":  "Consumer",
-    "HD":   "Consumer",    "COST": "Consumer",     "LOW":  "Consumer",
-    "TGT":  "Consumer",    "NKE":  "Consumer",     "MCD":  "Consumer",
-    "SBUX": "Consumer",    "YUM":  "Consumer",     "CMG":  "Consumer",
-    "DG":   "Consumer",    "DLTR": "Consumer",     "ROST": "Consumer",
-    "TJX":  "Consumer",    "PG":   "Consumer",     "KO":   "Consumer",
-    "PEP":  "Consumer",    "MDLZ": "Consumer",     "CL":   "Consumer",
-    "GIS":  "Consumer",    "HSY":  "Consumer",     "KHC":  "Consumer",
-    "MO":   "Consumer",    "PM":   "Consumer",     "BABA": "Consumer",
-    "EBAY": "Consumer",    "ETSY": "Consumer",     "ABNB": "Consumer",
-    "UBER": "Consumer",    "LYFT": "Consumer",     "DASH": "Consumer",
-    "RIVN": "Consumer",    "LCID": "Consumer",     "GM":   "Consumer",
-    "F":    "Consumer",    "STLA": "Consumer",     "DKNG": "Consumer",
-    "GME":  "Consumer",    "AMC":  "Consumer",
-    # Industrial
-    "HON":  "Industrial",  "CAT":  "Industrial",   "UNP":  "Industrial",
-    "UPS":  "Industrial",  "FDX":  "Industrial",   "NSC":  "Industrial",
-    "RTX":  "Industrial",  "LMT":  "Industrial",   "NOC":  "Industrial",
-    "GD":   "Industrial",  "BA":   "Industrial",   "GE":   "Industrial",
-    "RSG":  "Industrial",  "WM":   "Industrial",   "MMM":  "Industrial",
-    "EMR":  "Industrial",  "ETN":  "Industrial",   "ROP":  "Industrial",
-    "IR":   "Industrial",  "CARR": "Industrial",   "OTIS": "Industrial",
-    "FAST": "Industrial",  "DE":   "Industrial",   "PCAR": "Industrial",
-    "ROK":  "Industrial",  "PH":   "Industrial",   "DOV":  "Industrial",
-    "XYL":  "Industrial",
-    # Materials
-    "LIN":  "Materials",   "APD":  "Materials",    "ECL":  "Materials",
-    "SHW":  "Materials",   "PPG":  "Materials",    "DD":   "Materials",
-    "DOW":  "Materials",   "NEM":  "Materials",    "FCX":  "Materials",
-    "VMC":  "Materials",   "MLM":  "Materials",    "NUE":  "Materials",
-    "STLD": "Materials",   "CF":   "Materials",    "MOS":  "Materials",
-    "FMC":  "Materials",
-    # Utilities
-    "NEE":  "Utilities",   "DUK":  "Utilities",    "SO":   "Utilities",
-    "D":    "Utilities",   "AEP":  "Utilities",    "EXC":  "Utilities",
-    "XEL":  "Utilities",   "ES":   "Utilities",    "ETR":  "Utilities",
-    "FE":   "Utilities",   "PCG":  "Utilities",    "EIX":  "Utilities",
-    "AWK":  "Utilities",   "PPL":  "Utilities",    "AES":  "Utilities",
-    # Real Estate
-    "AMT":  "Real Estate", "CCI":  "Real Estate",  "EQIX": "Real Estate",
-    "PSA":  "Real Estate", "SPG":  "Real Estate",  "O":    "Real Estate",
-    "WELL": "Real Estate", "DLR":  "Real Estate",  "PLD":  "Real Estate",
-    "VICI": "Real Estate", "ARE":  "Real Estate",  "EQR":  "Real Estate",
-    "AVB":  "Real Estate", "IRM":  "Real Estate",  "SBAC": "Real Estate",
-}
-
-_COUNTRY_MAP: dict[str, str] = {
-    # China
-    "BABA": "China", "BIDU": "China", "JD":   "China", "PDD":  "China",
-    "NIO":  "China", "XPEV": "China", "LI":   "China", "TCOM": "China",
-    "VIPS": "China", "TME":  "China", "BILI": "China", "IQ":   "China",
-    "DIDI": "China", "BOSS": "China", "NTES": "China",
-    # Canada
-    "SHOP": "Canada", "CNI": "Canada", "CP":  "Canada", "TD":  "Canada",
-    "RY":   "Canada", "BMO": "Canada", "SU":  "Canada", "ENB": "Canada",
-    # UK
-    "BP":   "UK", "HSBC": "UK", "AZN":   "UK", "GSK":   "UK",
-    "VOD":  "UK", "UL":   "UK", "BTI":   "UK", "DEO":   "UK",
-    "LIN":  "UK", "LNVGY":"UK",
-    # Europe
-    "ASML": "Netherlands",
-    "TSM":  "Taiwan",
-    "SE":   "Singapore",
-    "MELI": "Argentina",
-    "NU":   "Brazil",
-    "NVO":  "Denmark",
-    "TTE":  "France",
-    "SAP":  "Germany",   "SIE": "Germany",
-    "NESN": "Switzerland", "RHHBY": "Switzerland",
-    "RIO":  "Australia", "BHP": "Australia",
-    "ACN":  "Ireland",   "CRH": "Ireland", "STX": "Ireland",
-}
-
-_COUNTRY_CODE: dict[str, str] = {
-    "USA":         "USA", "China":       "CN",  "UK":          "UK",
-    "Canada":      "CA",  "Netherlands": "NL",  "Taiwan":      "TW",
-    "Singapore":   "SG",  "Argentina":   "AR",  "Brazil":      "BR",
-    "Denmark":     "DK",  "France":      "FR",  "Germany":     "DE",
-    "Switzerland": "CH",  "Australia":   "AU",  "Ireland":     "IE",
+# Country abbreviations for the display column.
+# Keys are country strings stored in ticker_prices.country (from Finviz).
+# Filters use the raw DB value directly; this dict is display-only.
+_COUNTRY_DISPLAY: dict[str, str] = {
+    "USA":           "USA", "United States":  "USA",
+    "China":         "CN",  "United Kingdom": "UK",
+    "Canada":        "CA",  "Netherlands":    "NL",
+    "Taiwan":        "TW",  "Singapore":      "SG",
+    "Argentina":     "AR",  "Brazil":         "BR",
+    "Denmark":       "DK",  "France":         "FR",
+    "Germany":       "DE",  "Switzerland":    "CH",
+    "Australia":     "AU",  "Ireland":        "IE",
+    "Japan":         "JP",  "South Korea":    "KR",
+    "India":         "IN",  "Israel":         "IL",
+    "Sweden":        "SE",  "Hong Kong":      "HK",
+    "Mexico":        "MX",  "South Africa":   "ZA",
+    "Belgium":       "BE",  "Spain":          "ES",
+    "Italy":         "IT",
 }
 
 # ── Options ────────────────────────────────────────────────────────────────
 
 SIGNAL_OPTIONS = [
-    {"label": "All",               "value": "all"},
-    {"label": "Bullish Sentiment", "value": "bullish"},
-    {"label": "Bearish Sentiment", "value": "bearish"},
-    {"label": "Unusual Volume",    "value": "unusual_volume"},
-    {"label": "Most Articles",     "value": "most_articles"},
-    {"label": "Sentiment Spike",   "value": "spike"},
+    {"label": "All",                        "value": "all"},
+    {"label": "Bullish Sentiment",          "value": "bullish"},
+    {"label": "Bearish Sentiment",          "value": "bearish"},
+    {"label": "Unusual Volume",             "value": "unusual_volume"},
+    {"label": "Most Articles",              "value": "most_articles"},
+    {"label": "Sentiment Spike",            "value": "spike"},
+    {"label": "Hot News (High Importance)", "value": "hot"},
 ]
 
 ORDER_OPTIONS = [
@@ -481,6 +193,19 @@ _SCREENER_SQL = """
         SELECT DISTINCT ticker
         FROM sentiment_spikes
         WHERE detected_at > NOW() - INTERVAL '2 hours'
+    ),
+    news_intel AS (
+        SELECT
+            unnest(tickers)                                      AS ticker,
+            COUNT(*) FILTER (WHERE importance_label = 'High')   AS high_count,
+            COUNT(*) FILTER (WHERE importance_label = 'Medium') AS med_count,
+            COUNT(*) FILTER (WHERE importance_label = 'Low')    AS low_count
+        FROM rss_articles
+        WHERE ingested_at > NOW() - INTERVAL '24 hours'
+          AND importance_label IS NOT NULL
+          AND tickers IS NOT NULL
+          AND cardinality(tickers) > 0
+        GROUP BY ticker
     )
     SELECT
         l.ticker,
@@ -495,12 +220,19 @@ _SCREENER_SQL = """
         p.change_pct,
         p.volume,
         p.market_cap,
+        p.company_name,
+        p.sector,
+        p.country,
         p.pre_market_price,
         p.post_market_price,
+        COALESCE(ni.high_count, 0)      AS high_count,
+        COALESCE(ni.med_count,  0)      AS med_count,
+        COALESCE(ni.low_count,  0)      AS low_count,
         CASE WHEN rs.ticker IS NOT NULL THEN TRUE ELSE FALSE END AS has_spike
     FROM latest l
-    LEFT JOIN ticker_prices p  ON l.ticker = p.ticker
-    LEFT JOIN recent_spikes rs ON l.ticker = rs.ticker
+    LEFT JOIN ticker_prices p   ON l.ticker = p.ticker
+    LEFT JOIN recent_spikes rs  ON l.ticker = rs.ticker
+    LEFT JOIN news_intel ni     ON l.ticker = ni.ticker
     WHERE l.article_count >= :min_articles
 """
 
@@ -639,20 +371,40 @@ def _pct(num, denom) -> str:
         return "—"
 
 
+def _render_news_intel(high: int, med: int) -> html.Span:
+    if high == 0 and med == 0:
+        return html.Span("—", style={"color": "#3a3a3a", "fontSize": "11px"})
+    parts: list = []
+    if high:
+        parts.append(html.Span(
+            f"🔴 {high}",
+            style={"color": "#c84040", "fontSize": "11px", "whiteSpace": "nowrap"},
+        ))
+    if med:
+        if parts:
+            parts.append(html.Span(" · ", style={"color": "#444", "fontSize": "11px"}))
+        parts.append(html.Span(
+            f"🟡 {med}",
+            style={"color": "#907820", "fontSize": "11px", "whiteSpace": "nowrap"},
+        ))
+    return html.Span(parts, style={"whiteSpace": "nowrap"})
+
+
 # ── Table column definitions ──────────────────────────────────────────────
 # (label, width, text-align)
 _OV_COLS = [
     ("#",         "35px",  "right"),
     ("Ticker",    "70px",  "left"),
-    ("Company",   "160px", "left"),
-    ("Country",   "62px",  "center"),
-    ("Mkt Cap",   "88px",  "right"),
+    ("Company",   "150px", "left"),
+    ("Country",   "58px",  "center"),
+    ("Mkt Cap",   "82px",  "right"),
     ("Price",     "80px",  "right"),
-    ("Chg %",     "72px",  "right"),
-    ("Volume",    "88px",  "right"),
-    ("Articles",  "70px",  "right"),
-    ("Sentiment", "160px", "center"),
-    ("Score",     "66px",  "right"),
+    ("Chg %",     "68px",  "right"),
+    ("Volume",    "82px",  "right"),
+    ("Articles",  "64px",  "right"),
+    ("News",      "74px",  "center"),
+    ("Sentiment", "150px", "center"),
+    ("Score",     "60px",  "right"),
 ]
 
 _SENT_COLS = [
@@ -690,12 +442,17 @@ def _render_overview_rows(df: pd.DataFrame, page: int) -> list:
     for local_i, (_, r) in enumerate(page_df.iterrows()):
         global_i = offset + local_i
         ticker   = r["ticker"]
-        company  = COMPANY_NAMES.get(ticker, "")
-        _cntry   = _COUNTRY_MAP.get(ticker, "USA")
-        country  = _COUNTRY_CODE.get(_cntry, _cntry[:2].upper())
+        company  = str(r.get("company_name") or "") or ticker
+        raw_ctry = str(r.get("country") or "USA")
+        country  = _COUNTRY_DISPLAY.get(
+            raw_ctry,
+            raw_ctry[:3].upper() if len(raw_ctry) > 3 else raw_ctry,
+        )
         score    = _safe(r.get("avg_sentiment"))
         color    = _score_color(score)
         chg_text, chg_color = _fmt_chg(r.get("change_pct"))
+        high     = int(_safe(r.get("high_count")) or 0)
+        med      = int(_safe(r.get("med_count")) or 0)
 
         price_children: list = [
             html.Span(_fmt_price(r.get("price")),
@@ -709,14 +466,16 @@ def _render_overview_rows(df: pd.DataFrame, page: int) -> list:
             if ext and lbl:
                 price_children.append(
                     html.Span(f"{lbl}: {_fmt_price(ext)}",
-                              style={"fontSize": "10px", "color": "#666", "display": "block",
-                                     "lineHeight": "1.1"}),
+                              style={"fontSize": "10px", "color": "#666",
+                                     "display": "block", "lineHeight": "1.1"}),
                 )
 
         rows.append(html.Tr([
             html.Td(str(global_i + 1), className="scr-td scr-td-num scr-dim"),
-            html.Td(html.A(ticker, href=f"/?keyword={ticker}", className="scr-ticker"),
-                    className="scr-td"),
+            html.Td(
+                dcc.Link(ticker, href=f"/stock/{ticker}", className="scr-ticker"),
+                className="scr-td",
+            ),
             html.Td(company, className="scr-td scr-company"),
             html.Td(country, className="scr-td scr-td-center scr-dim"),
             html.Td(_fmt_mktcap(r.get("market_cap")), className="scr-td scr-td-num"),
@@ -725,6 +484,7 @@ def _render_overview_rows(df: pd.DataFrame, page: int) -> list:
                     style={"color": chg_color}),
             html.Td(_fmt_volume(r.get("volume")), className="scr-td scr-td-num"),
             html.Td(str(int(r.get("article_count", 0))), className="scr-td scr-td-num"),
+            html.Td(_render_news_intel(high, med), className="scr-td scr-td-center"),
             html.Td(_badge(score), className="scr-td",
                     style={"textAlign": "center", "paddingLeft": "20px"}),
             html.Td(
@@ -761,8 +521,10 @@ def _render_sentiment_rows(df: pd.DataFrame, page: int) -> list:
 
         rows.append(html.Tr([
             html.Td(str(global_i + 1), className="scr-td scr-td-num scr-dim"),
-            html.Td(html.A(ticker, href=f"/?keyword={ticker}", className="scr-ticker"),
-                    className="scr-td"),
+            html.Td(
+                dcc.Link(ticker, href=f"/stock/{ticker}", className="scr-ticker"),
+                className="scr-td",
+            ),
             html.Td(_badge(score), className="scr-td"),
             html.Td(
                 f"{score:+.2f}" if score is not None else "—",
@@ -805,7 +567,6 @@ def _render_pagination(current_page: int, total_pages: int) -> list:
         ),
     ]
 
-    # Sliding window: up to 5 numbered buttons
     n       = total_pages
     start_p = max(1, min(current_page - 2, n - 4))
     end_p   = min(n, start_p + 4)
@@ -842,21 +603,23 @@ def _apply_signal(df: pd.DataFrame, signal: str) -> pd.DataFrame:
         return df[df["volume"].fillna(0) > median_v * 2] if median_v else df
     if signal == "spike":
         return df[df["has_spike"] == True]
+    if signal == "hot":
+        if "high_count" in df.columns:
+            return df[df["high_count"].fillna(0) >= 1]
+        return df
     return df
 
 
 def _apply_sector_filter(df: pd.DataFrame, sector: str) -> pd.DataFrame:
-    if not sector or sector == "all":
+    if not sector or sector == "all" or "sector" not in df.columns:
         return df
-    mapped = df["ticker"].map(_SECTOR_MAP).fillna("")
-    return df[mapped == sector]
+    return df[df["sector"].fillna("") == sector]
 
 
 def _apply_country_filter(df: pd.DataFrame, country: str) -> pd.DataFrame:
-    if not country or country == "all":
+    if not country or country == "all" or "country" not in df.columns:
         return df
-    mapped = df["ticker"].map(_COUNTRY_MAP).fillna("USA")
-    return df[mapped == country]
+    return df[df["country"].fillna("USA") == country]
 
 
 def _apply_mktcap_filter(df: pd.DataFrame, mktcap: str) -> pd.DataFrame:
@@ -1041,7 +804,7 @@ layout = html.Div(
                     options=SIGNAL_OPTIONS,
                     value="all",
                     className="filter-select",
-                    style={"minWidth": "165px", **_SH},
+                    style={"minWidth": "205px", **_SH},
                 ),
                 dbc.Select(
                     id="screener-order",
@@ -1103,236 +866,136 @@ layout = html.Div(
                            "borderRadius": "6px", "padding": "14px 18px 10px",
                            "marginBottom": "10px"},
                     children=[
-                        # ── Filter tab buttons ────────────────────────────
                         html.Div(
                             style={"display": "flex", "gap": "0",
                                    "borderBottom": "1px solid #252525",
                                    "marginBottom": "12px"},
                             children=[
-                                html.Button(
-                                    "Descriptive",
-                                    id="screener-ftab-desc",
-                                    n_clicks=0,
-                                    className="scr-ftab scr-ftab-active",
-                                ),
-                                html.Button(
-                                    "Sentiment",
-                                    id="screener-ftab-sent",
-                                    n_clicks=0,
-                                    className="scr-ftab",
-                                ),
+                                html.Button("Descriptive", id="screener-ftab-desc",
+                                            n_clicks=0, className="scr-ftab scr-ftab-active"),
+                                html.Button("Sentiment",   id="screener-ftab-sent",
+                                            n_clicks=0, className="scr-ftab"),
                             ],
                         ),
 
-                        # ── Descriptive panel (always in DOM) ─────────────
-                        html.Div(
-                            id="screener-ftab-desc-panel",
-                            children=[
-                                # Row 1: Sector · Market Cap · Country
-                                html.Div(
-                                    className="filter-row",
-                                    children=[
-                                        html.Div([
-                                            html.Label("Sector",
-                                                       className="filter-label"),
-                                            dbc.Select(
-                                                id="screener-sector",
-                                                options=SECTOR_OPTIONS,
-                                                value="all",
-                                                className="filter-select",
-                                                style={**_SH},
-                                            ),
-                                        ], className="filter-item"),
-                                        html.Div([
-                                            html.Label("Market Cap",
-                                                       className="filter-label"),
-                                            dbc.Select(
-                                                id="screener-mktcap",
-                                                options=MKTCAP_OPTIONS,
-                                                value="all",
-                                                className="filter-select",
-                                                style={**_SH},
-                                            ),
-                                        ], className="filter-item"),
-                                        html.Div([
-                                            html.Label("Country",
-                                                       className="filter-label"),
-                                            dbc.Select(
-                                                id="screener-country",
-                                                options=COUNTRY_OPTIONS,
-                                                value="all",
-                                                className="filter-select",
-                                                style={**_SH},
-                                            ),
-                                        ], className="filter-item"),
-                                    ],
-                                ),
-                                # Row 2: Price · Change% · Volume
-                                html.Div(
-                                    className="filter-row",
-                                    children=[
-                                        html.Div([
-                                            html.Label("Price ($)",
-                                                       className="filter-label"),
-                                            dbc.Select(
-                                                id="screener-price",
-                                                options=PRICE_OPTIONS,
-                                                value="all",
-                                                className="filter-select",
-                                                style={**_SH},
-                                            ),
-                                        ], className="filter-item"),
-                                        html.Div([
-                                            html.Label("Change %",
-                                                       className="filter-label"),
-                                            dbc.Select(
-                                                id="screener-chg-pct",
-                                                options=CHG_OPTIONS,
-                                                value="all",
-                                                className="filter-select",
-                                                style={**_SH},
-                                            ),
-                                        ], className="filter-item"),
-                                        html.Div([
-                                            html.Label("Volume",
-                                                       className="filter-label"),
-                                            dbc.Select(
-                                                id="screener-volume",
-                                                options=VOLUME_OPTIONS,
-                                                value="all",
-                                                className="filter-select",
-                                                style={**_SH},
-                                            ),
-                                        ], className="filter-item"),
-                                    ],
-                                ),
-                                # Row 3: Average Volume
-                                html.Div(
-                                    className="filter-row",
-                                    children=[
-                                        html.Div([
-                                            html.Label("Average Volume",
-                                                       className="filter-label"),
-                                            dbc.Select(
-                                                id="screener-avg-volume",
-                                                options=AVG_VOL_OPTIONS,
-                                                value="all",
-                                                className="filter-select",
-                                                style={**_SH},
-                                            ),
-                                        ], className="filter-item"),
-                                    ],
-                                ),
-                            ],
-                        ),
+                        # ── Descriptive panel ─────────────────────────────
+                        html.Div(id="screener-ftab-desc-panel", children=[
+                            html.Div(className="filter-row", children=[
+                                html.Div([
+                                    html.Label("Sector", className="filter-label"),
+                                    dbc.Select(id="screener-sector", options=SECTOR_OPTIONS,
+                                               value="all", className="filter-select",
+                                               style={**_SH}),
+                                ], className="filter-item"),
+                                html.Div([
+                                    html.Label("Market Cap", className="filter-label"),
+                                    dbc.Select(id="screener-mktcap", options=MKTCAP_OPTIONS,
+                                               value="all", className="filter-select",
+                                               style={**_SH}),
+                                ], className="filter-item"),
+                                html.Div([
+                                    html.Label("Country", className="filter-label"),
+                                    dbc.Select(id="screener-country", options=COUNTRY_OPTIONS,
+                                               value="all", className="filter-select",
+                                               style={**_SH}),
+                                ], className="filter-item"),
+                            ]),
+                            html.Div(className="filter-row", children=[
+                                html.Div([
+                                    html.Label("Price ($)", className="filter-label"),
+                                    dbc.Select(id="screener-price", options=PRICE_OPTIONS,
+                                               value="all", className="filter-select",
+                                               style={**_SH}),
+                                ], className="filter-item"),
+                                html.Div([
+                                    html.Label("Change %", className="filter-label"),
+                                    dbc.Select(id="screener-chg-pct", options=CHG_OPTIONS,
+                                               value="all", className="filter-select",
+                                               style={**_SH}),
+                                ], className="filter-item"),
+                                html.Div([
+                                    html.Label("Volume", className="filter-label"),
+                                    dbc.Select(id="screener-volume", options=VOLUME_OPTIONS,
+                                               value="all", className="filter-select",
+                                               style={**_SH}),
+                                ], className="filter-item"),
+                            ]),
+                            html.Div(className="filter-row", children=[
+                                html.Div([
+                                    html.Label("Average Volume", className="filter-label"),
+                                    dbc.Select(id="screener-avg-volume", options=AVG_VOL_OPTIONS,
+                                               value="all", className="filter-select",
+                                               style={**_SH}),
+                                ], className="filter-item"),
+                            ]),
+                        ]),
 
-                        # ── Sentiment panel (always in DOM, hidden by default) ─
-                        html.Div(
-                            id="screener-ftab-sent-panel",
-                            style={"display": "none"},
-                            children=[
-                                # Row 1: Sentiment label · Score · Time Window
-                                html.Div(
-                                    className="filter-row",
-                                    children=[
-                                        html.Div([
-                                            html.Label("Sentiment",
-                                                       className="filter-label"),
-                                            dbc.Select(
-                                                id="screener-sent-label",
-                                                options=SENT_LABEL_OPTIONS,
-                                                value="all",
-                                                className="filter-select",
-                                                style={**_SH},
-                                            ),
-                                        ], className="filter-item"),
-                                        html.Div([
-                                            html.Label("Sentiment Score",
-                                                       className="filter-label"),
-                                            dbc.Select(
-                                                id="screener-sent-score",
-                                                options=SENT_SCORE_OPTIONS,
-                                                value="all",
-                                                className="filter-select",
-                                                style={**_SH},
-                                            ),
-                                        ], className="filter-item"),
-                                        html.Div([
-                                            html.Label("Time Window",
-                                                       className="filter-label"),
-                                            dbc.Select(
-                                                id="screener-window",
-                                                options=TIME_WINDOW_OPTIONS,
-                                                value="4hr",
-                                                className="filter-select",
-                                                style={**_SH},
-                                            ),
-                                        ], className="filter-item"),
-                                    ],
-                                ),
-                                # Row 2: Min Articles · Trend · Spike Alert
-                                html.Div(
-                                    className="filter-row",
-                                    children=[
-                                        html.Div([
-                                            html.Label("Min Articles",
-                                                       className="filter-label"),
-                                            dbc.Select(
-                                                id="screener-min-articles",
-                                                options=MIN_ARTICLES_OPTIONS,
-                                                value=0,
-                                                className="filter-select",
-                                                style={**_SH},
-                                            ),
-                                        ], className="filter-item"),
-                                        html.Div([
-                                            html.Label("Trend",
-                                                       className="filter-label"),
-                                            dbc.Select(
-                                                id="screener-trend",
-                                                options=TREND_OPTIONS,
-                                                value="all",
-                                                className="filter-select",
-                                                style={**_SH},
-                                            ),
-                                        ], className="filter-item"),
-                                        html.Div([
-                                            html.Label("Spike Alert",
-                                                       className="filter-label"),
-                                            dbc.Select(
-                                                id="screener-spike",
-                                                options=SPIKE_OPTIONS,
-                                                value="all",
-                                                className="filter-select",
-                                                style={**_SH},
-                                            ),
-                                        ], className="filter-item"),
-                                    ],
-                                ),
-                            ],
-                        ),
-                        # ── Reset button ──────────────────────────────────
+                        # ── Sentiment panel ───────────────────────────────
+                        html.Div(id="screener-ftab-sent-panel",
+                                 style={"display": "none"}, children=[
+                            html.Div(className="filter-row", children=[
+                                html.Div([
+                                    html.Label("Sentiment", className="filter-label"),
+                                    dbc.Select(id="screener-sent-label",
+                                               options=SENT_LABEL_OPTIONS,
+                                               value="all", className="filter-select",
+                                               style={**_SH}),
+                                ], className="filter-item"),
+                                html.Div([
+                                    html.Label("Sentiment Score", className="filter-label"),
+                                    dbc.Select(id="screener-sent-score",
+                                               options=SENT_SCORE_OPTIONS,
+                                               value="all", className="filter-select",
+                                               style={**_SH}),
+                                ], className="filter-item"),
+                                html.Div([
+                                    html.Label("Time Window", className="filter-label"),
+                                    dbc.Select(id="screener-window",
+                                               options=TIME_WINDOW_OPTIONS,
+                                               value="4hr", className="filter-select",
+                                               style={**_SH}),
+                                ], className="filter-item"),
+                            ]),
+                            html.Div(className="filter-row", children=[
+                                html.Div([
+                                    html.Label("Min Articles", className="filter-label"),
+                                    dbc.Select(id="screener-min-articles",
+                                               options=MIN_ARTICLES_OPTIONS,
+                                               value=0, className="filter-select",
+                                               style={**_SH}),
+                                ], className="filter-item"),
+                                html.Div([
+                                    html.Label("Trend", className="filter-label"),
+                                    dbc.Select(id="screener-trend", options=TREND_OPTIONS,
+                                               value="all", className="filter-select",
+                                               style={**_SH}),
+                                ], className="filter-item"),
+                                html.Div([
+                                    html.Label("Spike Alert", className="filter-label"),
+                                    dbc.Select(id="screener-spike", options=SPIKE_OPTIONS,
+                                               value="all", className="filter-select",
+                                               style={**_SH}),
+                                ], className="filter-item"),
+                            ]),
+                        ]),
+
                         html.Div(
                             style={"display": "flex", "justifyContent": "flex-end",
                                    "marginTop": "12px"},
-                            children=[
-                                html.Button(
-                                    "Reset Filters",
-                                    id="screener-reset-btn",
-                                    n_clicks=0,
-                                    style={
-                                        "background":   "transparent",
-                                        "border":       "1px solid #2e2e2e",
-                                        "color":        "#666",
-                                        "fontSize":     "12px",
-                                        "padding":      "5px 14px",
-                                        "borderRadius": "4px",
-                                        "cursor":       "pointer",
-                                        "fontFamily":   "inherit",
-                                        "transition":   "border-color 0.12s, color 0.12s",
-                                    },
-                                ),
-                            ],
+                            children=[html.Button(
+                                "Reset Filters", id="screener-reset-btn", n_clicks=0,
+                                style={
+                                    "background":   "transparent",
+                                    "border":       "1px solid #2e2e2e",
+                                    "color":        "#666",
+                                    "fontSize":     "12px",
+                                    "padding":      "5px 14px",
+                                    "borderRadius": "4px",
+                                    "cursor":       "pointer",
+                                    "fontFamily":   "inherit",
+                                    "transition":   "border-color 0.12s, color 0.12s",
+                                },
+                            )],
                         ),
                     ],
                 ),
@@ -1341,7 +1004,6 @@ layout = html.Div(
 
         html.Hr(style={"borderColor": "#1c1c1c", "margin": "0 0 10px", "opacity": "1"}),
 
-        # ── Info bar: count (left) + pagination (right) ────────────────────
         html.Div(
             style={"display": "flex", "justifyContent": "space-between",
                    "alignItems": "center", "marginBottom": "10px", "padding": "0 2px"},
@@ -1352,7 +1014,6 @@ layout = html.Div(
             ],
         ),
 
-        # ── Results tabs ───────────────────────────────────────────────────
         dbc.Tabs(
             id="screener-result-tabs",
             active_tab="tab-overview",
@@ -1365,8 +1026,10 @@ layout = html.Div(
                             className="scr-table",
                             children=[
                                 html.Thead(html.Tr([
-                                    html.Th(lbl, style={"width": w, "textAlign": a,
-                                                        **({"paddingLeft": "20px"} if lbl == "Sentiment" else {})})
+                                    html.Th(lbl, style={
+                                        "width": w, "textAlign": a,
+                                        **({"paddingLeft": "20px"} if lbl == "Sentiment" else {}),
+                                    })
                                     for lbl, w, a in _OV_COLS
                                 ])),
                                 html.Tbody(id="screener-overview-rows"),
@@ -1382,8 +1045,10 @@ layout = html.Div(
                             className="scr-table",
                             children=[
                                 html.Thead(html.Tr([
-                                    html.Th(lbl, style={"width": w, "textAlign": a,
-                                                        **({"paddingLeft": "20px"} if lbl == "Sentiment" else {})})
+                                    html.Th(lbl, style={
+                                        "width": w, "textAlign": a,
+                                        **({"paddingLeft": "20px"} if lbl == "Sentiment" else {}),
+                                    })
                                     for lbl, w, a in _SENT_COLS
                                 ])),
                                 html.Tbody(id="screener-sentiment-rows"),
@@ -1416,8 +1081,7 @@ def _update_interval(_):
 )
 def _toggle_sort_dir(_, current):
     new_dir = "asc" if current == "desc" else "desc"
-    icon    = "↑" if new_dir == "asc" else "↓"
-    return new_dir, icon
+    return new_dir, "↑" if new_dir == "asc" else "↓"
 
 
 @callback(
@@ -1429,8 +1093,7 @@ def _toggle_sort_dir(_, current):
 )
 def _toggle_filter_panel(_, is_open):
     new_open = not is_open
-    label    = "▴ Filters" if new_open else "▾ Filters"
-    return new_open, label
+    return new_open, "▴ Filters" if new_open else "▾ Filters"
 
 
 @callback(
@@ -1443,8 +1106,7 @@ def _toggle_filter_panel(_, is_open):
     prevent_initial_call=True,
 )
 def _switch_filter_tab(_, __):
-    triggered = ctx.triggered_id
-    if triggered == "screener-ftab-sent":
+    if ctx.triggered_id == "screener-ftab-sent":
         return (
             {"display": "none"}, {"display": "block"},
             "scr-ftab", "scr-ftab scr-ftab-active",
@@ -1456,23 +1118,23 @@ def _switch_filter_tab(_, __):
 
 
 _ALL_FILTER_INPUTS = [
-    Input("screener-signal",      "value"),
-    Input("screener-order",       "value"),
-    Input("screener-sort-dir",    "data"),
-    Input("screener-search",      "value"),
-    Input("screener-sector",      "value"),
-    Input("screener-mktcap",      "value"),
-    Input("screener-country",     "value"),
-    Input("screener-price",       "value"),
-    Input("screener-chg-pct",     "value"),
-    Input("screener-volume",      "value"),
-    Input("screener-avg-volume",  "value"),
-    Input("screener-sent-label",  "value"),
-    Input("screener-sent-score",  "value"),
-    Input("screener-window",      "value"),
-    Input("screener-min-articles","value"),
-    Input("screener-trend",       "value"),
-    Input("screener-spike",       "value"),
+    Input("screener-signal",       "value"),
+    Input("screener-order",        "value"),
+    Input("screener-sort-dir",     "data"),
+    Input("screener-search",       "value"),
+    Input("screener-sector",       "value"),
+    Input("screener-mktcap",       "value"),
+    Input("screener-country",      "value"),
+    Input("screener-price",        "value"),
+    Input("screener-chg-pct",      "value"),
+    Input("screener-volume",       "value"),
+    Input("screener-avg-volume",   "value"),
+    Input("screener-sent-label",   "value"),
+    Input("screener-sent-score",   "value"),
+    Input("screener-window",       "value"),
+    Input("screener-min-articles", "value"),
+    Input("screener-trend",        "value"),
+    Input("screener-spike",        "value"),
 ]
 
 
@@ -1568,7 +1230,6 @@ def _update_screener(n, refresh_clicks,
         )]
         return empty_msg, empty_msg, "0 tickers", []
 
-    # ── Apply filters ──────────────────────────────────────────────────────
     df = _apply_signal(df, signal)
 
     if search:
@@ -1586,11 +1247,9 @@ def _update_screener(n, refresh_clicks,
     df = _apply_trend_filter(df, trend or "all")
     df = _apply_spike_filter(df, spike or "all")
 
-    # ── Sort ───────────────────────────────────────────────────────────────
     df = _apply_sort(df, signal, order, sort_dir)
     df = df.reset_index(drop=True)
 
-    # ── Pagination ─────────────────────────────────────────────────────────
     total       = len(df)
     total_pages = max(1, math.ceil(total / PAGE_SIZE))
     page        = min(page, total_pages)
@@ -1607,8 +1266,9 @@ def _update_screener(n, refresh_clicks,
             html.Span(f"  ·  Updated {time_str}", style={"color": "#3a3a3a"}),
         ])
 
-    overview_rows  = _render_overview_rows(df, page)
-    sentiment_rows = _render_sentiment_rows(df, page)
-    pagination     = _render_pagination(page, total_pages)
-
-    return overview_rows, sentiment_rows, count_el, pagination
+    return (
+        _render_overview_rows(df, page),
+        _render_sentiment_rows(df, page),
+        count_el,
+        _render_pagination(page, total_pages),
+    )

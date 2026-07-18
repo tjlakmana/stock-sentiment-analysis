@@ -21,6 +21,33 @@ from loguru import logger
 
 _ET = pytz.timezone("America/New_York")
 
+# Finviz sector names → internal names used in SECTOR_OPTIONS / ticker_prices.sector
+_SECTOR_NORMALIZE: dict[str, str] = {
+    "Financial":              "Finance",
+    "Consumer Defensive":     "Consumer",
+    "Consumer Cyclical":      "Consumer",
+    "Industrials":            "Industrial",
+    "Basic Materials":        "Materials",
+    "Communication Services": "Communication",
+}
+
+
+def _parse_market_cap(s: object) -> int | None:
+    """Convert Finviz market-cap strings like '1.23B', '456.7M' to integers."""
+    text = str(s).strip() if s is not None else ""
+    if not text or text in ("-", "nan", "None"):
+        return None
+    try:
+        if text.endswith("B"):
+            return int(float(text[:-1]) * 1_000_000_000)
+        if text.endswith("M"):
+            return int(float(text[:-1]) * 1_000_000)
+        if text.endswith("K"):
+            return int(float(text[:-1]) * 1_000)
+        return int(float(text))
+    except (ValueError, TypeError):
+        return None
+
 # Single-letter tickers and known SEC filing artifacts (not tradeable equities).
 _INVALID_TICKERS: frozenset[str] = frozenset({
     "K", "C", "A", "T", "F", "M", "R", "L", "V", "D", "W", "N", "X", "S",
@@ -82,12 +109,17 @@ class FinvizIngestor:
         results: list[dict] = []
         for _, row in df.iterrows():
             try:
+                raw_sector = str(row.get("Sector", "") or "")
                 results.append({
                     "ticker":            str(row["Ticker"]),
+                    "company_name":      str(row.get("Company", "") or "") or None,
                     "price":             float(row["Price"]),
                     "change_pct":        float(str(row["Change"]).replace("%", "")),
                     "volume":            int(row["Volume"]),
-                    "market_cap":        None,
+                    "market_cap":        _parse_market_cap(row.get("Market Cap")),
+                    "sector":            _SECTOR_NORMALIZE.get(raw_sector, raw_sector) or None,
+                    "country":           str(row.get("Country", "") or "") or None,
+                    "exchange":          str(row.get("Exchange", "") or "") or None,
                     "pre_market_price":  None,
                     "post_market_price": None,
                     "updated_at":        datetime.now(_ET),

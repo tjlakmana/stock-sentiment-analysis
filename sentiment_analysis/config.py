@@ -66,6 +66,19 @@ class Settings:
     )
 
     # ------------------------------------------------------------------ #
+    # FinBERT sentiment thresholds                                         #
+    # score = positive_prob − negative_prob  (range −1 … +1)              #
+    # score ≥  pos_threshold  → "Bullish"                                 #
+    # score ≤ −neg_threshold  → "Bearish"                                 #
+    # ------------------------------------------------------------------ #
+    finbert_positive_threshold: float = field(
+        default_factory=lambda: float(os.getenv("FINBERT_POSITIVE_THRESHOLD", "0.35"))
+    )
+    finbert_negative_threshold: float = field(
+        default_factory=lambda: float(os.getenv("FINBERT_NEGATIVE_THRESHOLD", "0.35"))
+    )
+
+    # ------------------------------------------------------------------ #
     # Scheduler intervals (minutes)                                        #
     # ------------------------------------------------------------------ #
     rss_poll_interval: int = field(
