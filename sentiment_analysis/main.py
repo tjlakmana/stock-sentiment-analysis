@@ -51,6 +51,33 @@ async def _init_db() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Schema patch — idempotent column additions for Railway cold starts
+# ---------------------------------------------------------------------------
+
+def run_migrations() -> None:
+    from sqlalchemy import create_engine, text
+
+    sync_url = settings.database_url.replace("+asyncpg", "+psycopg2")
+    engine = create_engine(sync_url)
+
+    with engine.connect() as conn:
+        conn.execute(text(
+            "ALTER TABLE ticker_prices ADD COLUMN IF NOT EXISTS company_name VARCHAR;"
+        ))
+        conn.execute(text(
+            "ALTER TABLE ticker_prices ADD COLUMN IF NOT EXISTS sector VARCHAR;"
+        ))
+        conn.execute(text(
+            "ALTER TABLE ticker_prices ADD COLUMN IF NOT EXISTS country VARCHAR;"
+        ))
+        conn.execute(text(
+            "ALTER TABLE ticker_prices ADD COLUMN IF NOT EXISTS exchange VARCHAR;"
+        ))
+        conn.commit()
+    logger.info("[startup] ticker_prices columns verified/added")
+
+
+# ---------------------------------------------------------------------------
 # Pipeline
 # ---------------------------------------------------------------------------
 
@@ -130,6 +157,8 @@ def main() -> None:
     logger.info(f"  Log level: {settings.log_level}")
     logger.info(f"  Watchlist: {', '.join(settings.ticker_watchlist)}")
     logger.info("=" * 60)
+
+    run_migrations()
 
     dashboard_proc: subprocess.Popen | None = None
 
