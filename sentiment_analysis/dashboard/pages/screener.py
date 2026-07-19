@@ -771,8 +771,10 @@ _RESET_BTN_STYLE = {
     "fontFamily":   "inherit",
 }
 
-_FTAB_IDS    = ["desc", "fund", "tech", "sent", "news", "ai"]
-_FTAB_LABELS = ["Descriptive", "Fundamental", "Technical", "Sentiment", "News", "AI"]
+_FTAB_IDS    = ["desc", "fund", "tech", "sent", "news"]
+_FTAB_LABELS = ["Descriptive", "Fundamental", "Technical", "Sentiment", "News"]
+# "ai" tab is intentionally excluded until AI filtering is ready for users.
+# To re-enable: append "ai" to _FTAB_IDS and "AI" to _FTAB_LABELS above.
 
 
 def _fi(label: str, select_id: str, options: list, value) -> html.Div:
