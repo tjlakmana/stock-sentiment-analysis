@@ -192,7 +192,7 @@ _SCREENER_SQL = """
         SELECT DISTINCT ticker
         FROM sentiment_spikes
         WHERE detected_at > NOW() - INTERVAL '2 hours'
-    ),
+    )
     SELECT
         l.ticker,
         COALESCE(l.avg_sentiment,  0)   AS avg_sentiment,
@@ -206,9 +206,6 @@ _SCREENER_SQL = """
         p.change_pct,
         p.volume,
         p.market_cap,
-        p.company_name,
-        p.sector,
-        p.country,
         p.pre_market_price,
         p.post_market_price,
         CASE WHEN rs.ticker IS NOT NULL THEN TRUE ELSE FALSE END AS has_spike
