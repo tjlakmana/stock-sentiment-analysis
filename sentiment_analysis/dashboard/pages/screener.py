@@ -49,7 +49,6 @@ SIGNAL_OPTIONS = [
     {"label": "Unusual Volume",             "value": "unusual_volume"},
     {"label": "Most Articles",              "value": "most_articles"},
     {"label": "Sentiment Spike",            "value": "spike"},
-    {"label": "Hot News (High Importance)", "value": "hot"},
 ]
 
 ORDER_OPTIONS = [
@@ -194,19 +193,6 @@ _SCREENER_SQL = """
         FROM sentiment_spikes
         WHERE detected_at > NOW() - INTERVAL '2 hours'
     ),
-    news_intel AS (
-        SELECT
-            unnest(tickers)                                      AS ticker,
-            COUNT(*) FILTER (WHERE importance_label = 'High')   AS high_count,
-            COUNT(*) FILTER (WHERE importance_label = 'Medium') AS med_count,
-            COUNT(*) FILTER (WHERE importance_label = 'Low')    AS low_count
-        FROM rss_articles
-        WHERE ingested_at > NOW() - INTERVAL '24 hours'
-          AND importance_label IS NOT NULL
-          AND tickers IS NOT NULL
-          AND cardinality(tickers) > 0
-        GROUP BY ticker
-    )
     SELECT
         l.ticker,
         COALESCE(l.avg_sentiment,  0)   AS avg_sentiment,
@@ -225,14 +211,10 @@ _SCREENER_SQL = """
         p.country,
         p.pre_market_price,
         p.post_market_price,
-        COALESCE(ni.high_count, 0)      AS high_count,
-        COALESCE(ni.med_count,  0)      AS med_count,
-        COALESCE(ni.low_count,  0)      AS low_count,
         CASE WHEN rs.ticker IS NOT NULL THEN TRUE ELSE FALSE END AS has_spike
     FROM latest l
     LEFT JOIN ticker_prices p   ON l.ticker = p.ticker
     LEFT JOIN recent_spikes rs  ON l.ticker = rs.ticker
-    LEFT JOIN news_intel ni     ON l.ticker = ni.ticker
     WHERE l.article_count >= :min_articles
 """
 
@@ -371,25 +353,6 @@ def _pct(num, denom) -> str:
         return "—"
 
 
-def _render_news_intel(high: int, med: int) -> html.Span:
-    if high == 0 and med == 0:
-        return html.Span("—", style={"color": "#3a3a3a", "fontSize": "11px"})
-    parts: list = []
-    if high:
-        parts.append(html.Span(
-            f"🔴 {high}",
-            style={"color": "#c84040", "fontSize": "11px", "whiteSpace": "nowrap"},
-        ))
-    if med:
-        if parts:
-            parts.append(html.Span(" · ", style={"color": "#444", "fontSize": "11px"}))
-        parts.append(html.Span(
-            f"🟡 {med}",
-            style={"color": "#907820", "fontSize": "11px", "whiteSpace": "nowrap"},
-        ))
-    return html.Span(parts, style={"whiteSpace": "nowrap"})
-
-
 # ── Table column definitions ──────────────────────────────────────────────
 # (label, width, text-align)
 _OV_COLS = [
@@ -402,7 +365,6 @@ _OV_COLS = [
     ("Chg %",     "68px",  "right"),
     ("Volume",    "82px",  "right"),
     ("Articles",  "64px",  "right"),
-    ("News",      "74px",  "center"),
     ("Sentiment", "150px", "center"),
     ("Score",     "60px",  "right"),
 ]
@@ -451,8 +413,6 @@ def _render_overview_rows(df: pd.DataFrame, page: int) -> list:
         score    = _safe(r.get("avg_sentiment"))
         color    = _score_color(score)
         chg_text, chg_color = _fmt_chg(r.get("change_pct"))
-        high     = int(_safe(r.get("high_count")) or 0)
-        med      = int(_safe(r.get("med_count")) or 0)
 
         price_children: list = [
             html.Span(_fmt_price(r.get("price")),
@@ -484,7 +444,6 @@ def _render_overview_rows(df: pd.DataFrame, page: int) -> list:
                     style={"color": chg_color}),
             html.Td(_fmt_volume(r.get("volume")), className="scr-td scr-td-num"),
             html.Td(str(int(r.get("article_count", 0))), className="scr-td scr-td-num"),
-            html.Td(_render_news_intel(high, med), className="scr-td scr-td-center"),
             html.Td(_badge(score), className="scr-td",
                     style={"textAlign": "center", "paddingLeft": "20px"}),
             html.Td(
@@ -603,10 +562,6 @@ def _apply_signal(df: pd.DataFrame, signal: str) -> pd.DataFrame:
         return df[df["volume"].fillna(0) > median_v * 2] if median_v else df
     if signal == "spike":
         return df[df["has_spike"] == True]
-    if signal == "hot":
-        if "high_count" in df.columns:
-            return df[df["high_count"].fillna(0) >= 1]
-        return df
     return df
 
 

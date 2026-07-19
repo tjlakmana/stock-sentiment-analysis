@@ -45,7 +45,7 @@ _SENTIMENT_SQL = """
 """
 
 _RECENT_NEWS_SQL = """
-    SELECT title, source_name, ingested_at, sentiment_label, url, importance_label
+    SELECT title, source_name, ingested_at, sentiment_label, url
     FROM rss_articles
     WHERE :ticker = ANY(tickers)
       AND ingested_at > NOW() - INTERVAL '3 days'
@@ -103,9 +103,6 @@ _SENT_COLOR: dict[str, str] = {
     "Somewhat Bearish": "#ff8a80",
     "Bearish":          "#ff5252",
 }
-
-_IMP_DOT: dict[str, str] = {"High": "🔴", "Medium": "🟡", "Low": "⚪"}
-
 
 # ── Panel renderers ───────────────────────────────────────────────────────
 
@@ -188,8 +185,6 @@ def _render_overview_panel(ticker: str) -> html.Div:
     # Recent news preview
     news_rows: list = []
     for _, n in news_df.iterrows():
-        imp       = str(n.get("importance_label") or "")
-        dot       = _IMP_DOT.get(imp, "")
         title     = str(n.get("title") or "")
         url       = str(n.get("url") or "#")
         sent_lbl  = str(n.get("sentiment_label") or "")
@@ -203,7 +198,6 @@ def _render_overview_panel(ticker: str) -> html.Div:
         news_rows.append(html.Div([
             html.Span(ts,  style={"color": "#3a3a3a", "fontSize": "10px",
                                   "fontFamily": "monospace", "flexShrink": "0"}),
-            html.Span(f"{dot} ", style={"fontSize": "10px", "flexShrink": "0"}),
             html.A(title, href=url, target="_blank", className="stock-news-title"),
             html.Span(sent_lbl, style={"color": sent_color, "fontSize": "10px",
                                        "marginLeft": "auto", "flexShrink": "0"}),
@@ -293,7 +287,7 @@ def layout(ticker: str = "", **kwargs) -> html.Div:
                      children=_placeholder_panel(
                          "📰", "News Feed",
                          "Filtered live feed for this ticker — headline, "
-                         "importance badge, sentiment, and source.",
+                         "sentiment label and source.",
                      )),
 
             html.Div(id="stock-panel-charts", style={"display": "none"},

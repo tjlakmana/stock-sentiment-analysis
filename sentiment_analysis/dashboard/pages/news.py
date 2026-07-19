@@ -389,32 +389,8 @@ def _rel_time(ts) -> str:
         return "—"
 
 
-_IMP_META: dict[str, tuple[str, str]] = {
-    "High":   ("🔴", "#c84040"),
-    "Medium": ("🟡", "#907820"),
-    "Low":    ("⚪", "#2c2c3e"),
-}
-
-
-def _imp_badge(imp_label: str) -> html.Span:
-    if not imp_label:
-        return html.Span("—", className="col-unscored")
-    dot, color = _IMP_META.get(imp_label, ("⚪", "#2c2c3e"))
-    return html.Span(
-        f"{dot} {imp_label}",
-        style={
-            "fontSize":      "10px",
-            "color":         color,
-            "whiteSpace":    "nowrap",
-            "fontWeight":    "600",
-            "letterSpacing": "0.1px",
-        },
-    )
-
-
 def _render_row(i: int, row: dict) -> html.Div:
     label     = row.get("sentiment_label", "")
-    imp_label = row.get("importance_label", "")
     title     = (row.get("title") or "")[:160]
     url       = row.get("url") or "#"
     source    = row.get("source_name", "")
@@ -431,7 +407,6 @@ def _render_row(i: int, row: dict) -> html.Div:
             _source_chip(source),
             html.Span(rel_t, className="col-time"),
             _cat_badge(cat_label),
-            _imp_badge(imp_label),
             html.A(
                 title,
                 href=url,
@@ -595,7 +570,7 @@ _TABLE_HEADER = html.Div(
     className="table-header",
     children=[
         html.Span(c, className="th")
-        for c in ["Source", "Time", "Category", "Imp", "Headline", "Sentiment", ""]
+        for c in ["Source", "Time", "Category", "Headline", "Sentiment", ""]
     ],
 )
 
@@ -918,9 +893,7 @@ def _update_feed(n, category, keyword, source, sentiment, time_range, page,
                 ''
             ) AS title,
             COALESCE(url,            '#') AS url,
-            COALESCE(sentiment_label, '') AS sentiment_label,
-            importance_score,
-            COALESCE(importance_label, '') AS importance_label
+            COALESCE(sentiment_label, '') AS sentiment_label
         FROM rss_articles
         WHERE {where}
         ORDER BY ingested_at DESC NULLS LAST

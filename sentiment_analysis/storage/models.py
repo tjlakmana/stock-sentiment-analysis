@@ -77,15 +77,12 @@ class RSSArticle(Base):
     sentiment_score = Column(Float, nullable=True)
     sentiment_confidence = Column(Float, nullable=True)
     sentiment_analyzed_at = Column(DateTime(timezone=True), nullable=True)
-    importance_score = Column(Integer, nullable=True)
-    importance_label = Column(String(10), nullable=True)
 
     __table_args__ = (
         Index("ix_rss_articles_tickers", "tickers", postgresql_using="gin"),
         Index("ix_rss_articles_ingested_at", "ingested_at"),
         Index("ix_rss_articles_source_name", "source_name"),
         Index("ix_rss_articles_sentiment_analyzed_at", "sentiment_analyzed_at"),
-        Index("ix_rss_articles_importance_score", "importance_score"),
     )
 
     def __repr__(self) -> str:

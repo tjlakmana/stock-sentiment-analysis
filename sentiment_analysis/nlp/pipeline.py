@@ -21,14 +21,12 @@ from sqlalchemy import select, update
 from sentiment_analysis.entity_resolution.pipeline import EntityResolutionPipeline
 from sentiment_analysis.nlp.entity_queue import add_or_increment
 from sentiment_analysis.nlp.text_preprocessor import TextPreprocessor
-from sentiment_analysis.scoring.scorer import ImportanceScorer
 from sentiment_analysis.storage.database import get_async_session
 from sentiment_analysis.storage.models import ExtractedEntity, RSSArticle
 
 # Module-level singletons — loaded once, reused across scheduler invocations
 _preprocessor: Optional[TextPreprocessor] = None
 _extractor: Optional[EntityResolutionPipeline] = None
-_scorer: Optional[ImportanceScorer] = None
 
 
 def _get_preprocessor() -> TextPreprocessor:
@@ -43,13 +41,6 @@ def _get_extractor() -> EntityResolutionPipeline:
     if _extractor is None:
         _extractor = EntityResolutionPipeline()
     return _extractor
-
-
-def _get_scorer() -> ImportanceScorer:
-    global _scorer
-    if _scorer is None:
-        _scorer = ImportanceScorer()
-    return _scorer
 
 
 async def run_nlp_pipeline(batch_size: int = 50) -> None:
@@ -75,7 +66,6 @@ async def run_nlp_pipeline(batch_size: int = 50) -> None:
 
     preprocessor = _get_preprocessor()
     extractor    = _get_extractor()
-    scorer       = _get_scorer()
     processed    = 0
     errors       = 0
 
@@ -102,15 +92,6 @@ async def run_nlp_pipeline(batch_size: int = 50) -> None:
                     continue
 
                 db_article.cleaned_text  = cleaned or ""
-
-                # Importance scoring — runs on raw title + summary (not cleaned)
-                imp = scorer.score(
-                    title=article.title or "",
-                    source_name=article.source_name or "",
-                    summary=article.summary or "",
-                )
-                db_article.importance_score = imp.score
-                db_article.importance_label = imp.label
 
                 # Merge newly found tickers into the existing tickers array
                 existing_tickers = set(db_article.tickers or [])
