@@ -52,9 +52,7 @@ _NAV = [
     ("📰", "News",         "/"),
     ("🔍", "Screener",    "/screener"),
     ("📈", "Charts",      "/charts"),
-    ("⚡", "Momentum",    "/momentum"),
     ("🚨", "Alerts",      "/alerts"),
-    ("🧩", "Entity Queue", "/entity-queue"),
 ]
 
 # Stable IDs derived from label text

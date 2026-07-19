@@ -42,15 +42,6 @@ _COUNTRY_DISPLAY: dict[str, str] = {
 
 # ── Options ────────────────────────────────────────────────────────────────
 
-SIGNAL_OPTIONS = [
-    {"label": "All",                        "value": "all"},
-    {"label": "Bullish Sentiment",          "value": "bullish"},
-    {"label": "Bearish Sentiment",          "value": "bearish"},
-    {"label": "Unusual Volume",             "value": "unusual_volume"},
-    {"label": "Most Articles",              "value": "most_articles"},
-    {"label": "Sentiment Spike",            "value": "spike"},
-]
-
 ORDER_OPTIONS = [
     {"label": "Avg Sentiment",  "value": "avg_sentiment"},
     {"label": "Price",          "value": "price"},
@@ -124,6 +115,17 @@ AVG_VOL_OPTIONS = [
     {"label": "Under 1M",    "value": "u1m"},
     {"label": "1M – 5M",     "value": "1m_5m"},
     {"label": "Over 5M",     "value": "o5m"},
+]
+
+INDUSTRY_OPTIONS = [
+    {"label": "Any Industry", "value": "all"},
+]
+
+EXCHANGE_OPTIONS = [
+    {"label": "Any Exchange", "value": "all"},
+    {"label": "NYSE",         "value": "NYSE"},
+    {"label": "NASDAQ",       "value": "NASDAQ"},
+    {"label": "AMEX",         "value": "AMEX"},
 ]
 
 SENT_LABEL_OPTIONS = [
@@ -202,6 +204,9 @@ _SCREENER_SQL = """
         COALESCE(l.neutral_count,  0)   AS neutral_count,
         l.momentum,
         l.calculated_at,
+        p.company_name,
+        p.sector,
+        p.country,
         p.price,
         p.change_pct,
         p.volume,
@@ -735,29 +740,55 @@ _REFRESH_BTN_STYLE = {
     "color": "#00d4ff",
 }
 
+_RESET_BTN_STYLE = {
+    "background":   "transparent",
+    "border":       "1px solid #2e2e2e",
+    "color":        "#666",
+    "fontSize":     "12px",
+    "padding":      "5px 14px",
+    "borderRadius": "4px",
+    "cursor":       "pointer",
+    "fontFamily":   "inherit",
+}
+
+_FTAB_IDS    = ["desc", "fund", "tech", "sent", "news", "ai"]
+_FTAB_LABELS = ["Descriptive", "Fundamental", "Technical", "Sentiment", "News", "AI"]
+
+
+def _fi(label: str, select_id: str, options: list, value) -> html.Div:
+    return html.Div([
+        html.Label(label, className="filter-label"),
+        dbc.Select(id=select_id, options=options, value=value,
+                   className="filter-select", style={**_SH}),
+    ], className="filter-item")
+
+
+def _ph(label: str) -> html.Div:
+    return html.Div([
+        html.Label(label, className="filter-label scr-ph-label"),
+        dbc.Select(
+            options=[{"label": "Coming Soon", "value": "all"}],
+            value="all", disabled=True,
+            className="filter-select scr-ph-select",
+            style={**_SH},
+        ),
+    ], className="filter-item")
+
 # ── Layout ────────────────────────────────────────────────────────────────
 
 layout = html.Div(
     className="page-content",
     children=[
-        # ── Intervals & stores ─────────────────────────────────────────────
+        # ── Stores ────────────────────────────────────────────────────────
         dcc.Interval(id="screener-interval", interval=60_000, n_intervals=0),
-        dcc.Store(id="screener-sort-dir",    data="desc"),
-        dcc.Store(id="screener-page",        data=1),
-        dcc.Store(id="screener-filter-tab",  data="descriptive"),
+        dcc.Store(id="screener-sort-dir", data="desc"),
+        dcc.Store(id="screener-page",     data=1),
 
-        # ── Top filter bar ─────────────────────────────────────────────────
+        # ── Top toolbar: Sort By | ↓ | Search | ↻ ─────────────────────────
         html.Div(
             className="filter-bar",
             style={"flexWrap": "nowrap", "marginBottom": "8px"},
             children=[
-                dbc.Select(
-                    id="screener-signal",
-                    options=SIGNAL_OPTIONS,
-                    value="all",
-                    className="filter-select",
-                    style={"minWidth": "205px", **_SH},
-                ),
                 dbc.Select(
                     id="screener-order",
                     options=ORDER_OPTIONS,
@@ -765,13 +796,8 @@ layout = html.Div(
                     className="filter-select",
                     style={"minWidth": "150px", **_SH},
                 ),
-                html.Button(
-                    "↓",
-                    id="screener-sort-dir-btn",
-                    n_clicks=0,
-                    style=_SORT_BTN_STYLE,
-                    title="Toggle sort direction",
-                ),
+                html.Button("↓", id="screener-sort-dir-btn", n_clicks=0,
+                            style=_SORT_BTN_STYLE, title="Toggle sort direction"),
                 dcc.Input(
                     id="screener-search",
                     placeholder="🔍  Search ticker…",
@@ -779,180 +805,127 @@ layout = html.Div(
                     className="filter-input",
                     style={"height": "36px", "flex": "1", "minWidth": "120px"},
                 ),
+                html.Button("↻", id="screener-refresh-btn", n_clicks=0,
+                            style=_REFRESH_BTN_STYLE, title="Refresh now"),
+            ],
+        ),
+
+        # ── Filter panel (always visible) ─────────────────────────────────
+        html.Div(className="scr-filter-panel", children=[
+
+            # Tab strip
+            html.Div(className="scr-ftab-strip", children=[
                 html.Button(
-                    "↻",
-                    id="screener-refresh-btn",
+                    lbl,
+                    id=f"screener-ftab-{sid}",
                     n_clicks=0,
-                    style=_REFRESH_BTN_STYLE,
-                    title="Refresh now",
-                ),
-            ],
-        ),
+                    className=("scr-ftab scr-ftab-active"
+                               if sid == "desc" else "scr-ftab"),
+                )
+                for sid, lbl in zip(_FTAB_IDS, _FTAB_LABELS)
+            ]),
 
-        # ── Collapsible filter panel ───────────────────────────────────────
-        html.Div(
-            style={"marginBottom": "8px"},
-            children=[
-                html.Button(
-                    "▾ Filters",
-                    id="screener-filter-btn",
-                    n_clicks=0,
-                    style={
-                        "background":  "transparent",
-                        "border":      "none",
-                        "color":       "#888888",
-                        "fontSize":    "12px",
-                        "cursor":      "pointer",
-                        "fontFamily":  "inherit",
-                        "padding":     "4px 0",
-                    },
-                ),
-            ],
-        ),
-        dbc.Collapse(
-            id="screener-filter-collapse",
-            is_open=False,
-            children=[
-                html.Div(
-                    style={"background": "#101010", "border": "1px solid #1c1c1c",
-                           "borderRadius": "6px", "padding": "14px 18px 10px",
-                           "marginBottom": "10px"},
-                    children=[
-                        html.Div(
-                            style={"display": "flex", "gap": "0",
-                                   "borderBottom": "1px solid #252525",
-                                   "marginBottom": "12px"},
-                            children=[
-                                html.Button("Descriptive", id="screener-ftab-desc",
-                                            n_clicks=0, className="scr-ftab scr-ftab-active"),
-                                html.Button("Sentiment",   id="screener-ftab-sent",
-                                            n_clicks=0, className="scr-ftab"),
-                            ],
-                        ),
+            # ── Descriptive ───────────────────────────────────────────────
+            html.Div(id="screener-ftab-desc-panel", children=[
+                html.Div(className="filter-row", children=[
+                    _fi("Sector",   "screener-sector",   SECTOR_OPTIONS,   "all"),
+                    _fi("Industry", "screener-industry", INDUSTRY_OPTIONS, "all"),
+                    _fi("Country",  "screener-country",  COUNTRY_OPTIONS,  "all"),
+                    _fi("Exchange", "screener-exchange", EXCHANGE_OPTIONS, "all"),
+                ]),
+                html.Div(className="filter-row", children=[
+                    _fi("Market Cap", "screener-mktcap",    MKTCAP_OPTIONS, "all"),
+                    _fi("Price ($)",  "screener-price",     PRICE_OPTIONS,  "all"),
+                    _fi("Change %",   "screener-chg-pct",   CHG_OPTIONS,    "all"),
+                    _fi("Volume",     "screener-volume",    VOLUME_OPTIONS, "all"),
+                ]),
+                html.Div(className="filter-row", children=[
+                    _fi("Avg Volume", "screener-avg-volume", AVG_VOL_OPTIONS, "all"),
+                ]),
+            ]),
 
-                        # ── Descriptive panel ─────────────────────────────
-                        html.Div(id="screener-ftab-desc-panel", children=[
-                            html.Div(className="filter-row", children=[
-                                html.Div([
-                                    html.Label("Sector", className="filter-label"),
-                                    dbc.Select(id="screener-sector", options=SECTOR_OPTIONS,
-                                               value="all", className="filter-select",
-                                               style={**_SH}),
-                                ], className="filter-item"),
-                                html.Div([
-                                    html.Label("Market Cap", className="filter-label"),
-                                    dbc.Select(id="screener-mktcap", options=MKTCAP_OPTIONS,
-                                               value="all", className="filter-select",
-                                               style={**_SH}),
-                                ], className="filter-item"),
-                                html.Div([
-                                    html.Label("Country", className="filter-label"),
-                                    dbc.Select(id="screener-country", options=COUNTRY_OPTIONS,
-                                               value="all", className="filter-select",
-                                               style={**_SH}),
-                                ], className="filter-item"),
-                            ]),
-                            html.Div(className="filter-row", children=[
-                                html.Div([
-                                    html.Label("Price ($)", className="filter-label"),
-                                    dbc.Select(id="screener-price", options=PRICE_OPTIONS,
-                                               value="all", className="filter-select",
-                                               style={**_SH}),
-                                ], className="filter-item"),
-                                html.Div([
-                                    html.Label("Change %", className="filter-label"),
-                                    dbc.Select(id="screener-chg-pct", options=CHG_OPTIONS,
-                                               value="all", className="filter-select",
-                                               style={**_SH}),
-                                ], className="filter-item"),
-                                html.Div([
-                                    html.Label("Volume", className="filter-label"),
-                                    dbc.Select(id="screener-volume", options=VOLUME_OPTIONS,
-                                               value="all", className="filter-select",
-                                               style={**_SH}),
-                                ], className="filter-item"),
-                            ]),
-                            html.Div(className="filter-row", children=[
-                                html.Div([
-                                    html.Label("Average Volume", className="filter-label"),
-                                    dbc.Select(id="screener-avg-volume", options=AVG_VOL_OPTIONS,
-                                               value="all", className="filter-select",
-                                               style={**_SH}),
-                                ], className="filter-item"),
-                            ]),
-                        ]),
+            # ── Fundamental (placeholders) ────────────────────────────────
+            html.Div(id="screener-ftab-fund-panel", style={"display": "none"}, children=[
+                html.Div(className="filter-row", children=[
+                    _ph("P/E"), _ph("Forward P/E"), _ph("PEG"), _ph("EPS Growth"),
+                ]),
+                html.Div(className="filter-row", children=[
+                    _ph("Revenue Growth"), _ph("ROE"), _ph("ROA"), _ph("Gross Margin"),
+                ]),
+                html.Div(className="filter-row", children=[
+                    _ph("Operating Margin"), _ph("Debt / Equity"),
+                    _ph("Current Ratio"),    _ph("Dividend Yield"),
+                ]),
+            ]),
 
-                        # ── Sentiment panel ───────────────────────────────
-                        html.Div(id="screener-ftab-sent-panel",
-                                 style={"display": "none"}, children=[
-                            html.Div(className="filter-row", children=[
-                                html.Div([
-                                    html.Label("Sentiment", className="filter-label"),
-                                    dbc.Select(id="screener-sent-label",
-                                               options=SENT_LABEL_OPTIONS,
-                                               value="all", className="filter-select",
-                                               style={**_SH}),
-                                ], className="filter-item"),
-                                html.Div([
-                                    html.Label("Sentiment Score", className="filter-label"),
-                                    dbc.Select(id="screener-sent-score",
-                                               options=SENT_SCORE_OPTIONS,
-                                               value="all", className="filter-select",
-                                               style={**_SH}),
-                                ], className="filter-item"),
-                                html.Div([
-                                    html.Label("Time Window", className="filter-label"),
-                                    dbc.Select(id="screener-window",
-                                               options=TIME_WINDOW_OPTIONS,
-                                               value="4hr", className="filter-select",
-                                               style={**_SH}),
-                                ], className="filter-item"),
-                            ]),
-                            html.Div(className="filter-row", children=[
-                                html.Div([
-                                    html.Label("Min Articles", className="filter-label"),
-                                    dbc.Select(id="screener-min-articles",
-                                               options=MIN_ARTICLES_OPTIONS,
-                                               value=0, className="filter-select",
-                                               style={**_SH}),
-                                ], className="filter-item"),
-                                html.Div([
-                                    html.Label("Trend", className="filter-label"),
-                                    dbc.Select(id="screener-trend", options=TREND_OPTIONS,
-                                               value="all", className="filter-select",
-                                               style={**_SH}),
-                                ], className="filter-item"),
-                                html.Div([
-                                    html.Label("Spike Alert", className="filter-label"),
-                                    dbc.Select(id="screener-spike", options=SPIKE_OPTIONS,
-                                               value="all", className="filter-select",
-                                               style={**_SH}),
-                                ], className="filter-item"),
-                            ]),
-                        ]),
+            # ── Technical (placeholders) ──────────────────────────────────
+            html.Div(id="screener-ftab-tech-panel", style={"display": "none"}, children=[
+                html.Div(className="filter-row", children=[
+                    _ph("RSI"), _ph("SMA 20"), _ph("SMA 50"), _ph("SMA 200"),
+                ]),
+                html.Div(className="filter-row", children=[
+                    _ph("52W High"), _ph("52W Low"), _ph("ATR"), _ph("Beta"),
+                ]),
+                html.Div(className="filter-row", children=[
+                    _ph("Gap Up"), _ph("Gap Down"),
+                ]),
+            ]),
 
-                        html.Div(
-                            style={"display": "flex", "justifyContent": "flex-end",
-                                   "marginTop": "12px"},
-                            children=[html.Button(
-                                "Reset Filters", id="screener-reset-btn", n_clicks=0,
-                                style={
-                                    "background":   "transparent",
-                                    "border":       "1px solid #2e2e2e",
-                                    "color":        "#666",
-                                    "fontSize":     "12px",
-                                    "padding":      "5px 14px",
-                                    "borderRadius": "4px",
-                                    "cursor":       "pointer",
-                                    "fontFamily":   "inherit",
-                                    "transition":   "border-color 0.12s, color 0.12s",
-                                },
-                            )],
-                        ),
-                    ],
-                ),
-            ],
-        ),
+            # ── Sentiment ─────────────────────────────────────────────────
+            html.Div(id="screener-ftab-sent-panel", style={"display": "none"}, children=[
+                html.Div(className="filter-row", children=[
+                    _fi("Sentiment",    "screener-sent-label",   SENT_LABEL_OPTIONS,   "all"),
+                    _fi("Score Range",  "screener-sent-score",   SENT_SCORE_OPTIONS,   "all"),
+                    _fi("Time Window",  "screener-window",       TIME_WINDOW_OPTIONS,  "4hr"),
+                    _fi("Min Articles", "screener-min-articles", MIN_ARTICLES_OPTIONS, 0),
+                ]),
+                html.Div(className="filter-row", children=[
+                    _fi("Trend",       "screener-trend", TREND_OPTIONS, "all"),
+                    _fi("Spike Alert", "screener-spike", SPIKE_OPTIONS, "all"),
+                    _ph("Most Bullish"),
+                    _ph("Most Bearish"),
+                ]),
+                html.Div(className="filter-row", children=[
+                    _ph("Highest Article Count"),
+                    _ph("Largest Sentiment Change"),
+                ]),
+            ]),
+
+            # ── News (placeholders) ───────────────────────────────────────
+            html.Div(id="screener-ftab-news-panel", style={"display": "none"}, children=[
+                html.Div(className="filter-row", children=[
+                    _ph("Breaking News"), _ph("Earnings"),
+                    _ph("SEC Filings"),   _ph("Press Releases"),
+                ]),
+                html.Div(className="filter-row", children=[
+                    _ph("FDA"),              _ph("Insider Trading"),
+                    _ph("Analyst Upgrades"), _ph("Analyst Downgrades"),
+                ]),
+                html.Div(className="filter-row", children=[
+                    _ph("M&A"), _ph("IPO"), _ph("Macro"), _ph("Crypto"),
+                ]),
+            ]),
+
+            # ── AI (placeholders) ─────────────────────────────────────────
+            html.Div(id="screener-ftab-ai-panel", style={"display": "none"}, children=[
+                html.Div(className="filter-row", children=[
+                    _ph("AI Rating"), _ph("AI Confidence"),
+                    _ph("Catalyst Type"), _ph("Catalyst Strength"),
+                ]),
+                html.Div(className="filter-row", children=[
+                    _ph("High Conviction"),      _ph("Watchlist Candidate"),
+                    _ph("Momentum Opportunity"), _ph("Risk Level"),
+                ]),
+            ]),
+
+            # Reset button
+            html.Div(
+                style={"display": "flex", "justifyContent": "flex-end",
+                       "marginTop": "12px"},
+                children=[html.Button("Reset Filters", id="screener-reset-btn",
+                                      n_clicks=0, style=_RESET_BTN_STYLE)],
+            ),
+        ]),
 
         html.Hr(style={"borderColor": "#1c1c1c", "margin": "0 0 10px", "opacity": "1"}),
 
@@ -1037,40 +1010,20 @@ def _toggle_sort_dir(_, current):
 
 
 @callback(
-    Output("screener-filter-collapse", "is_open"),
-    Output("screener-filter-btn",      "children"),
-    Input("screener-filter-btn",       "n_clicks"),
-    State("screener-filter-collapse",  "is_open"),
+    *[Output(f"screener-ftab-{t}-panel", "style") for t in _FTAB_IDS],
+    *[Output(f"screener-ftab-{t}", "className") for t in _FTAB_IDS],
+    *[Input(f"screener-ftab-{t}", "n_clicks") for t in _FTAB_IDS],
     prevent_initial_call=True,
 )
-def _toggle_filter_panel(_, is_open):
-    new_open = not is_open
-    return new_open, "▴ Filters" if new_open else "▾ Filters"
-
-
-@callback(
-    Output("screener-ftab-desc-panel", "style"),
-    Output("screener-ftab-sent-panel", "style"),
-    Output("screener-ftab-desc",       "className"),
-    Output("screener-ftab-sent",       "className"),
-    Input("screener-ftab-desc",        "n_clicks"),
-    Input("screener-ftab-sent",        "n_clicks"),
-    prevent_initial_call=True,
-)
-def _switch_filter_tab(_, __):
-    if ctx.triggered_id == "screener-ftab-sent":
-        return (
-            {"display": "none"}, {"display": "block"},
-            "scr-ftab", "scr-ftab scr-ftab-active",
-        )
-    return (
-        {"display": "block"}, {"display": "none"},
-        "scr-ftab scr-ftab-active", "scr-ftab",
-    )
+def _switch_filter_tab(*_):
+    active  = (ctx.triggered_id or "screener-ftab-desc").replace("screener-ftab-", "")
+    styles  = [{} if t == active else {"display": "none"} for t in _FTAB_IDS]
+    classes = ["scr-ftab scr-ftab-active" if t == active else "scr-ftab"
+               for t in _FTAB_IDS]
+    return styles + classes
 
 
 _ALL_FILTER_INPUTS = [
-    Input("screener-signal",       "value"),
     Input("screener-order",        "value"),
     Input("screener-sort-dir",     "data"),
     Input("screener-search",       "value"),
@@ -1113,7 +1066,8 @@ def _reset_screener_page(*_):
     Output("screener-min-articles", "value"),
     Output("screener-trend",        "value"),
     Output("screener-spike",        "value"),
-    Output("screener-signal",       "value"),
+    Output("screener-industry",     "value"),
+    Output("screener-exchange",     "value"),
     Output("screener-order",        "value"),
     Output("screener-search",       "value"),
     Input("screener-reset-btn",     "n_clicks"),
@@ -1122,7 +1076,7 @@ def _reset_screener_page(*_):
 def _reset_filters(_):
     return ("all", "all", "all", "all", "all", "all", "all",
             "all", "all", "4hr", 0, "all", "all",
-            "all", "avg_sentiment", "")
+            "all", "all", "avg_sentiment", "")
 
 
 @callback(
@@ -1158,17 +1112,16 @@ def _handle_screener_page_click(n_clicks_list, current_page):
     Input("url",                      "pathname"),
 )
 def _update_screener(n, refresh_clicks,
-                     signal, order, sort_dir, search,
+                     order, sort_dir, search,
                      sector, mktcap, country, price, chg_pct, volume, avg_volume,
                      sent_label, sent_score, window, min_articles, trend, spike,
                      page, pathname):
     if pathname not in (None, "/screener"):
         raise PreventUpdate
 
-    signal       = signal    or "all"
-    order        = order     or "avg_sentiment"
-    sort_dir     = sort_dir  or "desc"
-    window       = window    or "4hr"
+    order        = order    or "avg_sentiment"
+    sort_dir     = sort_dir or "desc"
+    window       = window   or "4hr"
     min_articles = int(min_articles or 0)
     page         = max(1, int(page or 1))
 
@@ -1181,8 +1134,6 @@ def _update_screener(n, refresh_clicks,
                    "color": "#555", "fontSize": "14px"},
         )]
         return empty_msg, empty_msg, "0 tickers", []
-
-    df = _apply_signal(df, signal)
 
     if search:
         df = df[df["ticker"].str.upper().str.startswith(search.strip().upper())]
@@ -1199,7 +1150,7 @@ def _update_screener(n, refresh_clicks,
     df = _apply_trend_filter(df, trend or "all")
     df = _apply_spike_filter(df, spike or "all")
 
-    df = _apply_sort(df, signal, order, sort_dir)
+    df = _apply_sort(df, "all", order, sort_dir)
     df = df.reset_index(drop=True)
 
     total       = len(df)

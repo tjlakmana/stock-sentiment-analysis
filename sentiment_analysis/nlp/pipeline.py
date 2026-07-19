@@ -16,17 +16,19 @@ import asyncio
 from typing import Optional
 
 from loguru import logger
-from sqlalchemy import select, update
+from sqlalchemy import select
 
 from sentiment_analysis.entity_resolution.pipeline import EntityResolutionPipeline
 from sentiment_analysis.nlp.entity_queue import add_or_increment
+from sentiment_analysis.nlp.primary_company_scorer import PrimaryCompanyScorer
 from sentiment_analysis.nlp.text_preprocessor import TextPreprocessor
 from sentiment_analysis.storage.database import get_async_session
-from sentiment_analysis.storage.models import ExtractedEntity, RSSArticle
+from sentiment_analysis.storage.models import ExtractedEntity, RSSArticle, TickerPrice
 
 # Module-level singletons — loaded once, reused across scheduler invocations
 _preprocessor: Optional[TextPreprocessor] = None
 _extractor: Optional[EntityResolutionPipeline] = None
+_scorer: Optional[PrimaryCompanyScorer] = None
 
 
 def _get_preprocessor() -> TextPreprocessor:
@@ -43,6 +45,33 @@ def _get_extractor() -> EntityResolutionPipeline:
     return _extractor
 
 
+def _get_scorer() -> PrimaryCompanyScorer:
+    global _scorer
+    if _scorer is None:
+        _scorer = PrimaryCompanyScorer()
+    return _scorer
+
+
+def _log_scoring(title: str, scores: dict[str, int], primary_ticker, winner_score: int, reason: str) -> None:
+    lines = [
+        "----------------------------------------",
+        f"Title:\n{title}",
+        "",
+        "Candidates",
+    ]
+    for t, s in sorted(scores.items(), key=lambda x: -x[1]):
+        lines.append(f"  {t} = {s}")
+    lines.append("")
+    if primary_ticker:
+        lines.append(f"Winner\n  {primary_ticker}")
+        lines.append(f"\nConfidence\n  {winner_score}")
+    else:
+        lines.append("Winner\n  NULL")
+        lines.append(f"\nReason\n  {reason}")
+    lines.append("----------------------------------------")
+    logger.debug("[primary_scorer]\n" + "\n".join(lines))
+
+
 async def run_nlp_pipeline(batch_size: int = 50) -> None:
     """
     Entry point called by the scheduler every 10 minutes.
@@ -50,7 +79,7 @@ async def run_nlp_pipeline(batch_size: int = 50) -> None:
     Fetches up to ``batch_size`` articles where cleaned_text IS NULL,
     processes each, and writes results back to the database.
     """
-    # ── Fetch unprocessed articles ─────────────────────────────────────────
+    # ── Fetch unprocessed articles + company name lookup ───────────────────
     async with get_async_session() as session:
         result = await session.execute(
             select(RSSArticle)
@@ -60,12 +89,24 @@ async def run_nlp_pipeline(batch_size: int = 50) -> None:
         )
         articles = result.scalars().all()
 
+        # Load ticker → company_name for the primary company scorer
+        price_result = await session.execute(
+            select(TickerPrice.ticker, TickerPrice.company_name)
+            .where(TickerPrice.company_name != None)  # noqa: E711
+        )
+        company_names: dict[str, str] = {
+            row.ticker: row.company_name
+            for row in price_result
+            if row.company_name
+        }
+
     if not articles:
         logger.debug("[nlp] No unprocessed articles.")
         return
 
     preprocessor = _get_preprocessor()
     extractor    = _get_extractor()
+    scorer       = _get_scorer()
     processed    = 0
     errors       = 0
 
@@ -84,7 +125,24 @@ async def run_nlp_pipeline(batch_size: int = 50) -> None:
                 article.id,
             )
 
-            # ── Step 3: Write results ──────────────────────────────────────
+            # ── Step 3: Primary company scoring (CPU-bound → thread) ──────
+            scoring_result = await asyncio.to_thread(
+                scorer.score,
+                article.title or "",
+                article.summary or "",
+                new_tickers,
+                resolved_dicts,
+                company_names,
+            )
+            _log_scoring(
+                article.title or "",
+                scoring_result.all_scores,
+                scoring_result.primary_ticker,
+                scoring_result.winner_score,
+                scoring_result.reason,
+            )
+
+            # ── Step 4: Write results ──────────────────────────────────────
             async with get_async_session() as session:
                 # Re-fetch article within this session to get a managed object
                 db_article = await session.get(RSSArticle, article.id)
@@ -92,6 +150,7 @@ async def run_nlp_pipeline(batch_size: int = 50) -> None:
                     continue
 
                 db_article.cleaned_text  = cleaned or ""
+                db_article.primary_ticker = scoring_result.primary_ticker
 
                 # Merge newly found tickers into the existing tickers array
                 existing_tickers = set(db_article.tickers or [])

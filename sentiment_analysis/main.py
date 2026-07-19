@@ -73,8 +73,11 @@ def run_migrations() -> None:
         conn.execute(text(
             "ALTER TABLE ticker_prices ADD COLUMN IF NOT EXISTS exchange VARCHAR;"
         ))
+        conn.execute(text(
+            "ALTER TABLE rss_articles ADD COLUMN IF NOT EXISTS primary_ticker VARCHAR(20);"
+        ))
         conn.commit()
-    logger.info("[startup] ticker_prices columns verified/added")
+    logger.info("[startup] schema columns verified/added")
 
 
 # ---------------------------------------------------------------------------
