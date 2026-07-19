@@ -76,6 +76,17 @@ def run_migrations() -> None:
         conn.execute(text(
             "ALTER TABLE rss_articles ADD COLUMN IF NOT EXISTS primary_ticker VARCHAR(20);"
         ))
+        conn.execute(text("""
+            CREATE TABLE IF NOT EXISTS watchlist (
+                id         SERIAL PRIMARY KEY,
+                ticker     VARCHAR(20) NOT NULL,
+                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                CONSTRAINT uq_watchlist_ticker UNIQUE (ticker)
+            );
+        """))
+        conn.execute(text(
+            "CREATE INDEX IF NOT EXISTS ix_watchlist_ticker ON watchlist (ticker);"
+        ))
         conn.commit()
     logger.info("[startup] schema columns verified/added")
 

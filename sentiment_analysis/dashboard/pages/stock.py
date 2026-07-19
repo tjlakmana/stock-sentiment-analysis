@@ -12,7 +12,12 @@ import pandas as pd
 from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 
-from sentiment_analysis.dashboard.db import query_df
+from sentiment_analysis.dashboard.db import (
+    query_df,
+    watchlist_add,
+    watchlist_remove,
+    watchlist_tickers,
+)
 
 dash.register_page(
     __name__,
@@ -235,13 +240,25 @@ def _render_page(ticker: str) -> html.Div:
 
     tags = [t for t in [sector, exchange_val, country] if t]
 
+    in_watchlist = ticker in set(watchlist_tickers())
+    wl_label = "⭐ Watching" if in_watchlist else "☆ Watch"
+    wl_cls   = "sw-wl-btn sw-wl-btn-active" if in_watchlist else "sw-wl-btn"
+
     header = html.Div(className="sw-header", children=[
         html.Div(className="sw-header-top", children=[
             dcc.Link("← Screener", href="/screener", className="stock-back-link"),
-            html.Div(className="sw-price-block", children=[
-                html.Span(_fmt_price(price), className="sw-price"),
-                html.Span(chg_str, className="sw-chg",
-                          style={"color": chg_color}),
+            html.Div(className="sw-header-top-right", children=[
+                html.Button(
+                    wl_label,
+                    id="stock-wl-btn",
+                    className=wl_cls,
+                    n_clicks=0,
+                ),
+                html.Div(className="sw-price-block", children=[
+                    html.Span(_fmt_price(price), className="sw-price"),
+                    html.Span(chg_str, className="sw-chg",
+                              style={"color": chg_color}),
+                ]),
             ]),
         ]),
         html.Div(className="sw-header-body", children=[
@@ -456,3 +473,22 @@ def _refresh_page(_, ticker, pathname):
     if not ticker:
         raise PreventUpdate
     return _render_page(ticker)
+
+
+@callback(
+    Output("stock-wl-btn", "children"),
+    Output("stock-wl-btn", "className"),
+    Input("stock-wl-btn",          "n_clicks"),
+    State("stock-ticker-store",    "data"),
+    prevent_initial_call=True,
+)
+def _toggle_watchlist(_, ticker):
+    if not ticker:
+        raise PreventUpdate
+    watched = set(watchlist_tickers())
+    if ticker in watched:
+        watchlist_remove(ticker)
+        return "☆ Watch", "sw-wl-btn"
+    else:
+        watchlist_add(ticker)
+        return "⭐ Watching", "sw-wl-btn sw-wl-btn-active"

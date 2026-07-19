@@ -234,6 +234,23 @@ class TickerPrice(Base):
         return f"<TickerPrice {self.ticker} ${self.price}>"
 
 
+class Watchlist(Base):
+    """Single-user watchlist — one row per tracked ticker."""
+
+    __tablename__ = "watchlist"
+
+    id         = Column(Integer, primary_key=True, autoincrement=True)
+    ticker     = Column(String(20), nullable=False, unique=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    __table_args__ = (
+        Index("ix_watchlist_ticker", "ticker"),
+    )
+
+    def __repr__(self) -> str:
+        return f"<Watchlist {self.ticker}>"
+
+
 class SentimentSpike(Base):
     """Recorded when a ticker's 15-min article volume exceeds 2× its rolling avg."""
 

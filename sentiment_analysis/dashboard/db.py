@@ -60,6 +60,39 @@ def query_df(sql: str, params: Optional[dict] = None) -> pd.DataFrame:
         return pd.DataFrame()
 
 
+def execute_write(sql: str, params: dict | None = None) -> bool:
+    """Execute a write statement (INSERT/UPDATE/DELETE); returns True on success."""
+    try:
+        with _get_engine().begin() as conn:
+            conn.execute(text(sql).bindparams(**(params or {})))
+        return True
+    except Exception as exc:
+        logger.error(f"[db] write error: {exc}")
+        return False
+
+
+def watchlist_tickers() -> list[str]:
+    """Return all watched tickers in insertion order."""
+    df = query_df("SELECT ticker FROM watchlist ORDER BY created_at ASC")
+    return df["ticker"].tolist() if not df.empty else []
+
+
+def watchlist_add(ticker: str) -> bool:
+    """Add a ticker; silently ignores duplicates. Returns True on success."""
+    return execute_write(
+        "INSERT INTO watchlist (ticker) VALUES (:ticker) ON CONFLICT (ticker) DO NOTHING",
+        {"ticker": ticker.upper()},
+    )
+
+
+def watchlist_remove(ticker: str) -> bool:
+    """Remove a ticker from the watchlist. Returns True on success."""
+    return execute_write(
+        "DELETE FROM watchlist WHERE ticker = :ticker",
+        {"ticker": ticker.upper()},
+    )
+
+
 def query_status() -> str:
     """Return 'Running', 'Degraded', or 'Error' based on recent ingestion logs."""
     df = query_df(f"""

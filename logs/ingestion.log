@@ -8170,3 +8170,76 @@ Reason
 2026-07-19 15:02:05 | DEBUG    | sentiment_analysis.ingestion.scheduler:97 — [price] Upserted 11497 price records.
 2026-07-19 15:02:19 | INFO     | __main__:102 — Pipeline stopped cleanly.
 2026-07-19 15:02:19 | INFO     | __main__:180 — Dashboard process terminated.
+2026-07-19 15:42:22 | INFO     | __main__:168 — ============================================================
+2026-07-19 15:42:22 | INFO     | __main__:169 — Stock Sentiment Analysis — Phase 2 starting
+2026-07-19 15:42:22 | INFO     | __main__:170 —   DB URL   : postgresql+asyncpg://postgres:1074@localhost:5432/…
+2026-07-19 15:42:22 | INFO     | __main__:171 —   Log level: INFO
+2026-07-19 15:42:22 | INFO     | __main__:172 —   Watchlist: A, AAL, AAP, AAPL, ABBV, ABC, ABMD, ABT, ACN, ACGL, ADBE, ADI, ADM, ADP, ADSK, AEE, AEP, AES, AFL, AIG, AIZ, AJG, AKAM, ALB, ALGN, ALK, ALL, ALLE, AMAT, AMCR, AMD, AME, AMGN, AMP, AMT, AMZN, ANET, ANSS, AON, AOS, APA, APD, APH, APTV, ARE, ATO, AVB, AVGO, AVY, AWK, AXP, AXON, AZO, BA, BAC, BALL, BAX, BBWI, BBY, BCR, BDX, BEN, BF.B, BG, BIIB, BIO, BK, BKNG, BKR, BLK, BLDR, BMY, BR, BRO, BSX, BWA, BX, BXP, C, CAG, CAH, CARR, CAT, CB, CBOE, CBRE, CCI, CCL, CDNS, CDW, CE, CEG, CF, CFG, CHD, CHRW, CHTR, CI, CINF, CL, CLX, CMA, CMCSA, CME, CMG, CMI, CMS, CNC, CNP, COF, COO, COP, COR, COST, CPB, CPRT, CPT, CRL, CRM, CSCO, CSGP, CSX, CTAS, CTLT, CTRA, CTSH, CTVA, CVS, CVX, CZR, D, DAL, DAY, DD, DE, DECK, DFS, DG, DGX, DHI, DHR, DIS, DISH, DLR, DLTR, DOC, DOV, DOW, DPZ, DRI, DTE, DUK, DVA, DVN, DXC, DXCM, EA, EBAY, ECL, ED, EFX, EG, EIX, EL, ELV, EMN, EMR, ENPH, EOG, EPAM, EQIX, EQR, EQT, ES, ESS, ETN, ETR, ETSY, EVRG, EW, EXC, EXPD, EXPE, EXR, F, FANG, FAST, FCX, FDS, FDX, FE, FFIV, FI, FICO, FIS, FISV, FITB, FLT, FMC, FOX, FOXA, FRT, FSLR, FTNT, FTV, GD, GE, GDDY, GEHC, GEN, GEV, GILD, GIS, GL, GLW, GM, GNRC, GOOG, GOOGL, GPC, GPN, GPS, GRMN, GS, GWW, HAL, HAS, HBAN, HCA, HD, HES, HIG, HII, HLT, HOLX, HON, HPE, HPQ, HRL, HSIC, HST, HSY, HUBB, HUM, HWM, IBM, ICE, IDXX, IEX, IFF, ILMN, INCY, INTC, INTU, INVH, IP, IPG, IQV, IR, IRM, ISRG, IT, ITW, IVZ, J, JBL, JBHT, JCI, JKHY, JNJ, JNPR, JPM, K, KDP, KEY, KEYS, KHC, KIM, KLAC, KMB, KMI, KMX, KO, KR, KVUE, L, LDOS, LEN, LH, LHX, LIN, LKQ, LLY, LMT, LNC, LNT, LOW, LRCX, LULU, LUMN, LUV, LVS, LW, LYB, LYV, MA, MAA, MAR, MAS, MCD, MCHP, MCK, MCO, MDLZ, MDT, MET, META, MGM, MHK, MKC, MKTX, MLM, MMC, MMM, MNST, MO, MOH, MOS, MPC, MPWR, MRK, MRO, MRNA, MS, MSCI, MSFT, MSI, MTB, MTCH, MTD, MU, NCLH, NDAQ, NDSN, NEE, NEM, NFLX, NI, NKE, NOC, NOW, NRG, NSC, NTAP, NTRS, NUE, NVDA, NVR, NWL, NWS, NWSA, NXPI, O, ODFL, OKE, OMC, ON, ORCL, ORLY, OTIS, OXY, PANW, PARA, PAYC, PAYX, PCAR, PCG, PEAK, PEG, PEP, PFE, PFG, PG, PGR, PH, PHM, PKG, PKI, PLD, PM, PNC, PNR, PNW, PODD, POOL, PPG, PPL, PRU, PSA, PSX, PTC, PTVE, PWR, PXD, PYPL, QCOM, QRVO, RCL, RE, REG, REGN, RF, RHI, RJF, RL, RMD, ROK, ROL, ROP, ROST, RSG, RTX, RVTY, SBAC, SBUX, SCHW, SEE, SHW, SJM, SLB, SNA, SNPS, SO, SOLV, SPG, SPGI, SRE, STE, STLD, STT, STX, STZ, SWK, SWKS, SYF, SYK, SYY, T, TAP, TDG, TDY, TECH, TEL, TER, TFC, TFX, TGT, TJX, TMO, TMUS, TPR, TRGP, TRMB, TROW, TRV, TSCO, TSLA, TSN, TT, TTWO, TXN, TXT, TYL, UA, UAA, UAL, UDR, UHS, ULTA, UNH, UNP, UPS, URI, USB, V, VFC, VICI, VLO, VMC, VNO, VRSK, VRSN, VRTX, VST, VTR, VTRS, VZ, WAB, WAT, WBA, WBD, WDAY, WDC, WEC, WELL, WFC, WHR, WLK, WM, WMB, WMT, WRB, WRK, WST, WTW, WY, WYNN, XEL, XOM, XRAY, XYL, YUM, ZBH, ZBRA, ZION, ZTS, SPY, QQQ, IWM, DIA, GLD, SLV, TLT, HYG, LQD, VTI, VOO, VEA, VWO, EFA, EEM, XLF, XLK, XLE, XLV, XLI, XLY, XLP, XLU, XLB, XLRE, PLTR, RIVN, LCID, SOFI, GME, AMC, BB, NOK, COIN, HOOD, ROKU, SNAP, UBER, LYFT, ABNB, DASH, PINS, TWTR, SHOP, SQ, PYPL, AFRM, UPST
+2026-07-19 15:42:22 | INFO     | __main__:173 — ============================================================
+2026-07-19 15:42:23 | INFO     | __main__:91 — [startup] schema columns verified/added
+2026-07-19 15:42:23 | INFO     | __main__:128 — Dashboard started (PID 31544)  →  http://localhost:8050
+2026-07-19 15:42:23 | INFO     | __main__:50 — Database schema verified / created.
+2026-07-19 15:42:23 | INFO     | sentiment_analysis.ingestion.scheduler:183 — Scheduler configured — RSS every 5m, NLP every 10m, Sentiment every 5m, Finviz prices every 1m, Cleanup daily at midnight ET
+2026-07-19 15:42:23 | INFO     | sentiment_analysis.ingestion.scheduler:195 — Scheduler started — running initial pass.
+2026-07-19 15:42:23 | INFO     | sentiment_analysis.ingestion.scheduler:122 — [cleanup] Deleted 188 rows older than 2 days.
+2026-07-19 15:42:23 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-19 15:42:23 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:pr_newswire] Stored 2/20 new articles.
+2026-07-19 15:42:23 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-19 15:42:23 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-19 15:42:23 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-19 15:42:24 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-19 15:42:24 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-19 15:42:24 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-19 15:42:24 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-19 15:42:24 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:sec_form4] Stored 0/40 new articles.
+2026-07-19 15:42:24 | INFO     | sentiment_analysis.ingestion.rss_ingestor:296 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-19 15:42:24 | INFO     | sentiment_analysis.ingestion.rss_ingestor:416 — [rss:fda] Stored 0/20 new articles.
+2026-07-19 15:42:31 | INFO     | sentiment_analysis.entity_resolution.ner:48 — [ner] spaCy model loaded: en_core_web_sm
+2026-07-19 15:42:31 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'NEWTOWN' → Country (skipped — not ticker-eligible)
+2026-07-19 15:42:31 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Pa.' → Country (skipped — not ticker-eligible)
+2026-07-19 15:42:31 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article a95d85ca-f13d-4fad-96b3-f577d1bdadf4: 0 tickers, 3 unresolved
+2026-07-19 15:42:31 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Ernst &amp; Young Data Breach Exposes Client Tax Records: Edelson Lechtzin LLP Investigates Class Action Claims
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-19 15:42:31 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'globální distribuční centrum náhradních' → Person (skipped — not ticker-eligible)
+2026-07-19 15:42:31 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Farizon CHANG-ČOU' → Person (skipped — not ticker-eligible)
+2026-07-19 15:42:31 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Čína' → Country (skipped — not ticker-eligible)
+2026-07-19 15:42:31 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 3bd3561f-ba0b-4aa2-b0a0-54e561f536c3: 0 tickers, 2 unresolved
+2026-07-19 15:42:31 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Farizon otevírá globální distribuční centrum náhradních dílů s cílem posílit mezinárodní poprodejní podporu
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-19 15:42:31 | INFO     | sentiment_analysis.nlp.pipeline:188 — [nlp] Batch complete — processed 2/2 articles
+2026-07-19 15:42:31 | INFO     | sentiment_analysis.sentiment.pipeline:141 — [sentiment] Analyzing 2 articles via FinBERT.
+2026-07-19 15:42:36 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:148 — [finbert] Loading model 'peyterho/finbert-macro-sentiment'...
+2026-07-19 15:42:37 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:160 — [finbert] No GPU detected — using CPU
+2026-07-19 15:42:37 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:172 — [finbert] Model loaded successfully in 1.3s  | labels=['positive', 'negative', 'neutral']
+2026-07-19 15:42:38 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:182 — [finbert] Warm-up complete.
+2026-07-19 15:42:38 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:126 — [finbert] Scored 2 articles in 0.4s
+2026-07-19 15:42:38 | INFO     | sentiment_analysis.sentiment.pipeline:205 — [sentiment] Stored 2 results.
+2026-07-19 15:42:39 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Bulk fetch: 11497 tickers updated
+2026-07-19 15:42:54 | DEBUG    | sentiment_analysis.ingestion.scheduler:97 — [price] Upserted 11497 price records.
+2026-07-19 15:42:54 | INFO     | __main__:103 — Ingestion pipeline running.  Press Ctrl+C to stop.
+2026-07-19 15:43:24 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Bulk fetch: 11497 tickers updated
+2026-07-19 15:43:37 | DEBUG    | sentiment_analysis.ingestion.scheduler:97 — [price] Upserted 11497 price records.
+2026-07-19 15:44:02 | INFO     | __main__:113 — Pipeline stopped cleanly.
+2026-07-19 15:44:02 | INFO     | __main__:191 — Dashboard process terminated.

@@ -13,7 +13,13 @@ from dash.exceptions import PreventUpdate
 
 from loguru import logger
 
-from sentiment_analysis.dashboard.db import now_et, query_df
+from sentiment_analysis.dashboard.db import (
+    now_et,
+    query_df,
+    watchlist_add,
+    watchlist_remove,
+    watchlist_tickers,
+)
 from sentiment_analysis.ingestion.finviz_ingestor import is_market_hours
 
 dash.register_page(__name__, path="/screener", name="Screener", title="Screener")
@@ -358,6 +364,7 @@ def _pct(num, denom) -> str:
 # ── Table column definitions ──────────────────────────────────────────────
 # (label, width, text-align)
 _OV_COLS = [
+    ("★",         "32px",  "center"),
     ("#",         "35px",  "right"),
     ("Ticker",    "70px",  "left"),
     ("Company",   "150px", "left"),
@@ -395,25 +402,28 @@ def _no_results(colspan: int) -> list:
     )])]
 
 
-def _render_overview_rows(df: pd.DataFrame, page: int) -> list:
+def _render_overview_rows(df: pd.DataFrame, page: int,
+                          watched: set[str] | None = None) -> list:
     if df.empty:
         return _no_results(len(_OV_COLS))
 
-    offset  = (page - 1) * PAGE_SIZE
-    page_df = df.iloc[offset : offset + PAGE_SIZE]
+    watched  = watched or set()
+    offset   = (page - 1) * PAGE_SIZE
+    page_df  = df.iloc[offset : offset + PAGE_SIZE]
     rows: list = []
 
     for local_i, (_, r) in enumerate(page_df.iterrows()):
-        global_i = offset + local_i
-        ticker   = r["ticker"]
-        company  = str(r.get("company_name") or "") or ticker
-        raw_ctry = str(r.get("country") or "USA")
-        country  = _COUNTRY_DISPLAY.get(
+        global_i   = offset + local_i
+        ticker     = r["ticker"]
+        is_watched = ticker in watched
+        company    = str(r.get("company_name") or "") or ticker
+        raw_ctry   = str(r.get("country") or "USA")
+        country    = _COUNTRY_DISPLAY.get(
             raw_ctry,
             raw_ctry[:3].upper() if len(raw_ctry) > 3 else raw_ctry,
         )
-        score    = _safe(r.get("avg_sentiment"))
-        color    = _score_color(score)
+        score      = _safe(r.get("avg_sentiment"))
+        color      = _score_color(score)
         chg_text, chg_color = _fmt_chg(r.get("change_pct"))
 
         price_children: list = [
@@ -433,6 +443,16 @@ def _render_overview_rows(df: pd.DataFrame, page: int) -> list:
                 )
 
         rows.append(html.Tr([
+            html.Td(
+                html.Button(
+                    "⭐" if is_watched else "☆",
+                    id={"type": "scr-star", "ticker": ticker},
+                    className="scr-star-btn" + (" scr-star-active" if is_watched else ""),
+                    n_clicks=0,
+                    title=f"{'Remove from' if is_watched else 'Add to'} watchlist",
+                ),
+                className="scr-td scr-td-center",
+            ),
             html.Td(str(global_i + 1), className="scr-td scr-td-num scr-dim"),
             html.Td(
                 dcc.Link(ticker, href=f"/stock/{ticker}", className="scr-ticker"),
@@ -781,8 +801,9 @@ layout = html.Div(
     children=[
         # ── Stores ────────────────────────────────────────────────────────
         dcc.Interval(id="screener-interval", interval=60_000, n_intervals=0),
-        dcc.Store(id="screener-sort-dir", data="desc"),
-        dcc.Store(id="screener-page",     data=1),
+        dcc.Store(id="screener-sort-dir",  data="desc"),
+        dcc.Store(id="screener-page",      data=1),
+        dcc.Store(id="watchlist-store",    data=0),
 
         # ── Top toolbar: Sort By | ↓ | Search | ↻ ─────────────────────────
         html.Div(
@@ -1101,6 +1122,27 @@ def _handle_screener_page_click(n_clicks_list, current_page):
 
 
 @callback(
+    Output("watchlist-store", "data"),
+    Input({"type": "scr-star", "ticker": ALL}, "n_clicks"),
+    State("watchlist-store", "data"),
+    prevent_initial_call=True,
+)
+def _toggle_screener_star(n_clicks_list, version):
+    if not any(n for n in (n_clicks_list or [])):
+        raise PreventUpdate
+    triggered = ctx.triggered_id
+    if triggered is None:
+        raise PreventUpdate
+    ticker  = triggered["ticker"]
+    watched = set(watchlist_tickers())
+    if ticker in watched:
+        watchlist_remove(ticker)
+    else:
+        watchlist_add(ticker)
+    return (version or 0) + 1
+
+
+@callback(
     Output("screener-overview-rows",  "children"),
     Output("screener-sentiment-rows", "children"),
     Output("screener-count",          "children"),
@@ -1110,12 +1152,13 @@ def _handle_screener_page_click(n_clicks_list, current_page):
     *_ALL_FILTER_INPUTS,
     Input("screener-page",            "data"),
     Input("url",                      "pathname"),
+    Input("watchlist-store",          "data"),
 )
 def _update_screener(n, refresh_clicks,
                      order, sort_dir, search,
                      sector, mktcap, country, price, chg_pct, volume, avg_volume,
                      sent_label, sent_score, window, min_articles, trend, spike,
-                     page, pathname):
+                     page, pathname, _wl_version):
     if pathname not in (None, "/screener"):
         raise PreventUpdate
 
@@ -1169,8 +1212,9 @@ def _update_screener(n, refresh_clicks,
             html.Span(f"  ·  Updated {time_str}", style={"color": "#3a3a3a"}),
         ])
 
+    watched = set(watchlist_tickers())
     return (
-        _render_overview_rows(df, page),
+        _render_overview_rows(df, page, watched),
         _render_sentiment_rows(df, page),
         count_el,
         _render_pagination(page, total_pages),

@@ -52,6 +52,7 @@ _NAV = [
     ("📰", "News",         "/"),
     ("🔍", "Screener",    "/screener"),
     ("📈", "Charts",      "/charts"),
+    ("⭐", "Watchlist",   "/watchlist"),
     ("🚨", "Alerts",      "/alerts"),
 ]
 

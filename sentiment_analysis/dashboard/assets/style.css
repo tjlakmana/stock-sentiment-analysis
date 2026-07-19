@@ -1347,3 +1347,149 @@ body {
     margin:     0 auto;
     line-height: 1.6;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Stock Workspace — Watchlist button (sw-wl-*)
+═══════════════════════════════════════════════════════════ */
+
+.sw-header-top-right {
+    display:     flex;
+    align-items: center;
+    gap:         12px;
+}
+
+.sw-wl-btn {
+    background:    #141414;
+    border:        1px solid #2a2a2a;
+    border-radius: 5px;
+    color:         #666;
+    cursor:        pointer;
+    font-family:   inherit;
+    font-size:     12px;
+    font-weight:   600;
+    letter-spacing: 0.03em;
+    padding:       6px 14px;
+    transition:    color 0.15s, border-color 0.15s, background 0.15s;
+    white-space:   nowrap;
+}
+.sw-wl-btn:hover { border-color: #444; color: #aaa; }
+.sw-wl-btn-active {
+    background:    #1a2e1a;
+    border-color:  #2e5a2e;
+    color:         #69f0ae;
+}
+.sw-wl-btn-active:hover { border-color: #3a8a3a; color: #a5d6a7; }
+
+/* ═══════════════════════════════════════════════════════════
+   Screener — watchlist star button (scr-star-*)
+═══════════════════════════════════════════════════════════ */
+
+.scr-star-btn {
+    background:  transparent;
+    border:      none;
+    color:       #2a2a2a;
+    cursor:      pointer;
+    font-size:   14px;
+    line-height: 1;
+    padding:     2px 4px;
+    transition:  color 0.12s;
+}
+.scr-star-btn:hover    { color: #888; }
+.scr-star-active       { color: #f4c542 !important; }
+.scr-star-active:hover { color: #f9d86a !important; }
+
+/* ═══════════════════════════════════════════════════════════
+   Watchlist page (wl-*)
+═══════════════════════════════════════════════════════════ */
+
+.wl-header {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     baseline;
+    padding:         18px 0 14px;
+    border-bottom:   1px solid #1a1a1a;
+    margin-bottom:   16px;
+}
+.wl-header-left { display: flex; align-items: baseline; gap: 12px; }
+.wl-title {
+    color:       #e0e0e0;
+    font-size:   18px;
+    font-weight: 700;
+}
+.wl-count {
+    color:     #444;
+    font-size: 12px;
+}
+.wl-updated {
+    color:     #2e2e2e;
+    font-size: 11px;
+}
+
+/* Table */
+.wl-table {
+    width:           100%;
+    border-collapse: collapse;
+    font-size:       12px;
+}
+.wl-th {
+    border-bottom:  1px solid #1c1c1c;
+    color:          #404040;
+    font-size:      10px;
+    font-weight:    700;
+    letter-spacing: 0.06em;
+    padding:        6px 10px;
+    text-transform: uppercase;
+    white-space:    nowrap;
+}
+.wl-td {
+    border-bottom: 1px solid #111;
+    color:         #c0c0c0;
+    padding:       10px 10px;
+    white-space:   nowrap;
+    vertical-align: middle;
+}
+.wl-tr:hover .wl-td { background: #0e0e0e; }
+.wl-td-center { text-align: center; }
+.wl-company {
+    color:     #888;
+    max-width: 220px;
+    overflow:  hidden;
+    text-overflow: ellipsis;
+}
+.wl-mono  { font-family: monospace; text-align: right; }
+.wl-dim   { color: #444; font-size: 11px; }
+
+/* Ticker link */
+.wl-ticker {
+    color:           #00d4ff;
+    font-family:     monospace;
+    font-size:       13px;
+    font-weight:     700;
+    text-decoration: none;
+    letter-spacing:  0.04em;
+}
+.wl-ticker:hover { color: #33ddff; }
+
+/* Star / remove button */
+.wl-star-btn {
+    background:  transparent;
+    border:      none;
+    color:       #2a2a2a;
+    cursor:      pointer;
+    font-size:   15px;
+    line-height: 1;
+    padding:     2px 4px;
+    transition:  color 0.12s;
+}
+.wl-star-btn:hover   { color: #888; }
+.wl-star-active      { color: #f4c542; }
+.wl-star-active:hover { color: #aaa; }
+
+/* Empty state */
+.wl-empty {
+    padding:    80px 24px;
+    text-align: center;
+}
+.wl-empty-icon  { font-size: 32px; margin-bottom: 16px; opacity: 0.3; }
+.wl-empty-title { color: #555; font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.wl-empty-sub   { color: #333; font-size: 13px; max-width: 360px; margin: 0 auto; line-height: 1.6; }
