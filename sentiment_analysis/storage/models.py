@@ -230,6 +230,63 @@ class TickerPrice(Base):
     country           = Column(String(50),  nullable=True)
     exchange          = Column(String(20),  nullable=True)
 
+    # ── Fundamental ───────────────────────────────────────────────────────
+    pe_ratio        = Column(Float, nullable=True)
+    forward_pe      = Column(Float, nullable=True)
+    peg_ratio       = Column(Float, nullable=True)
+    price_to_sales  = Column(Float, nullable=True)
+    price_to_book   = Column(Float, nullable=True)
+    dividend_yield  = Column(Float, nullable=True)   # stored as percent, e.g. 3.5
+    eps_ttm         = Column(Float, nullable=True)
+    roe             = Column(Float, nullable=True)   # stored as percent, e.g. 15.0
+    debt_to_equity  = Column(Float, nullable=True)
+    current_ratio   = Column(Float, nullable=True)
+    quick_ratio     = Column(Float, nullable=True)
+
+    # ── Technical ─────────────────────────────────────────────────────────
+    avg_volume      = Column(BigInteger, nullable=True)
+    rel_volume      = Column(Float,      nullable=True)
+    rsi_14          = Column(Float,      nullable=True)
+    sma_20_pct      = Column(Float,      nullable=True)   # % current price above(+)/below(-) SMA20
+    sma_50_pct      = Column(Float,      nullable=True)
+    sma_200_pct     = Column(Float,      nullable=True)
+    week_52_high_pct = Column(Float,     nullable=True)   # % below 52W high (negative)
+    week_52_low_pct  = Column(Float,     nullable=True)   # % above 52W low (positive)
+    roa              = Column(Float,     nullable=True)   # Return on Assets (%)
+    gross_margin     = Column(Float,     nullable=True)   # Gross Margin (%)
+    operating_margin = Column(Float,     nullable=True)   # Operating Margin (%)
+    net_margin       = Column(Float,     nullable=True)   # Net Profit Margin (%)
+    beta             = Column(Float,     nullable=True)
+
+    # ── Short Interest ────────────────────────────────────────────────────
+    float_short      = Column(Float,     nullable=True)   # % of float sold short
+    short_ratio      = Column(Float,     nullable=True)   # days to cover
+
+    # ── Price Performance (stored as %) ───────────────────────────────────
+    perf_week        = Column(Float,     nullable=True)
+    perf_month       = Column(Float,     nullable=True)
+    perf_quart       = Column(Float,     nullable=True)
+    perf_year        = Column(Float,     nullable=True)
+    perf_ytd         = Column(Float,     nullable=True)
+
+    # ── Analyst ───────────────────────────────────────────────────────────
+    analyst_recom    = Column(Float,     nullable=True)   # 1=Strong Buy … 5=Strong Sell
+    target_price     = Column(Float,     nullable=True)   # consensus price target ($)
+
+    # ── EPS & Sales Growth (stored as %) ──────────────────────────────────
+    eps_growth_this_year = Column(Float, nullable=True)
+    eps_growth_next_year = Column(Float, nullable=True)
+    eps_growth_5y        = Column(Float, nullable=True)
+    eps_growth_qoq       = Column(Float, nullable=True)
+    sales_growth_qoq     = Column(Float, nullable=True)
+
+    # ── Volatility ────────────────────────────────────────────────────────
+    atr              = Column(Float,     nullable=True)   # Average True Range ($)
+
+    # ── Ownership (stored as %) ───────────────────────────────────────────
+    insider_own      = Column(Float,     nullable=True)
+    inst_own         = Column(Float,     nullable=True)
+
     def __repr__(self) -> str:
         return f"<TickerPrice {self.ticker} ${self.price}>"
 

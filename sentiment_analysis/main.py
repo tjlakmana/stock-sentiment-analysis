@@ -87,6 +87,39 @@ def run_migrations() -> None:
         conn.execute(text(
             "CREATE INDEX IF NOT EXISTS ix_watchlist_ticker ON watchlist (ticker);"
         ))
+        # ── Fundamental & Technical columns (migration 015) ───────────────
+        _float_cols = [
+            "pe_ratio", "forward_pe", "peg_ratio", "price_to_sales", "price_to_book",
+            "dividend_yield", "eps_ttm", "roe", "debt_to_equity",
+            "current_ratio", "quick_ratio", "rel_volume", "rsi_14",
+            "sma_20_pct", "sma_50_pct", "sma_200_pct",
+            "week_52_high_pct", "week_52_low_pct",
+        ]
+        for col in _float_cols:
+            conn.execute(text(
+                f"ALTER TABLE ticker_prices ADD COLUMN IF NOT EXISTS {col} FLOAT;"
+            ))
+        conn.execute(text(
+            "ALTER TABLE ticker_prices ADD COLUMN IF NOT EXISTS avg_volume BIGINT;"
+        ))
+        # ── Profitability & Beta columns (migration 016) ──────────────────
+        for col in ("roa", "gross_margin", "operating_margin", "net_margin", "beta"):
+            conn.execute(text(
+                f"ALTER TABLE ticker_prices ADD COLUMN IF NOT EXISTS {col} FLOAT;"
+            ))
+        # ── Tier 1 screener fields (migration 017) ────────────────────────
+        _tier1_cols = [
+            "float_short", "short_ratio",
+            "perf_week", "perf_month", "perf_quart", "perf_year", "perf_ytd",
+            "analyst_recom", "target_price",
+            "eps_growth_this_year", "eps_growth_next_year", "eps_growth_5y",
+            "eps_growth_qoq", "sales_growth_qoq",
+            "atr", "insider_own", "inst_own",
+        ]
+        for col in _tier1_cols:
+            conn.execute(text(
+                f"ALTER TABLE ticker_prices ADD COLUMN IF NOT EXISTS {col} FLOAT;"
+            ))
         conn.commit()
     logger.info("[startup] schema columns verified/added")
 

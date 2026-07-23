@@ -1,10 +1,13 @@
 """
-Screener page — Finviz-style dense ticker table with real-time price/sentiment.
+Screener page — Finviz-style dense ticker table with real-time price data.
 """
 from __future__ import annotations
 
 import math
+import re
+from datetime import datetime, timedelta
 
+import pytz
 import dash
 import dash_bootstrap_components as dbc
 import pandas as pd
@@ -49,12 +52,11 @@ _COUNTRY_DISPLAY: dict[str, str] = {
 # ── Options ────────────────────────────────────────────────────────────────
 
 ORDER_OPTIONS = [
-    {"label": "Avg Sentiment",  "value": "avg_sentiment"},
-    {"label": "Price",          "value": "price"},
-    {"label": "Change %",       "value": "change_pct"},
-    {"label": "Volume",         "value": "volume"},
-    {"label": "Market Cap",     "value": "market_cap"},
-    {"label": "Article Count",  "value": "article_count"},
+    {"label": "Market Cap", "value": "market_cap"},
+    {"label": "P/E Ratio",  "value": "pe_ratio"},
+    {"label": "Price",      "value": "price"},
+    {"label": "Change %",   "value": "change_pct"},
+    {"label": "Volume",     "value": "volume"},
 ]
 
 SECTOR_OPTIONS = [
@@ -134,174 +136,118 @@ EXCHANGE_OPTIONS = [
     {"label": "AMEX",         "value": "AMEX"},
 ]
 
-SENT_LABEL_OPTIONS = [
-    {"label": "Any Sentiment",    "value": "all"},
-    {"label": "Bullish",          "value": "Bullish"},
-    {"label": "Somewhat Bullish", "value": "Somewhat Bullish"},
-    {"label": "Neutral",          "value": "Neutral"},
-    {"label": "Somewhat Bearish", "value": "Somewhat Bearish"},
-    {"label": "Bearish",          "value": "Bearish"},
+NEWS_TIME_OPTIONS = [
+    {"label": "Any Time",                "value": "any"},
+    {"label": "Today",                   "value": "today"},
+    {"label": "Today (After Market)",    "value": "today_aft"},
+    {"label": "Since Yesterday",         "value": "since_yesterday"},
+    {"label": "Since Yesterday's Close", "value": "since_yest_close"},
+    {"label": "Yesterday",               "value": "yesterday"},
+    {"label": "Yesterday (After Market)","value": "yesterday_aft"},
+    {"label": "Last 5 Minutes",          "value": "5min"},
+    {"label": "Last 30 Minutes",         "value": "30min"},
+    {"label": "Last Hour",               "value": "1hr"},
+    {"label": "Last 24 Hours",           "value": "24hr"},
+    {"label": "Last Month",              "value": "1mo"},
+    {"label": "Custom...",               "value": "custom"},
 ]
 
-SENT_SCORE_OPTIONS = [
-    {"label": "Any Score",           "value": "all"},
-    {"label": "Strong Bull  (>0.6)", "value": "sbull"},
-    {"label": "Bull  (0.3–0.6)",     "value": "bull"},
-    {"label": "Neutral  (−0.3–0.3)", "value": "neut"},
-    {"label": "Bear  (−0.6–−0.3)",   "value": "bear"},
-    {"label": "Strong Bear  (<−0.6)","value": "sbear"},
+_NEWS_CAT_LABELS = [
+    ("breaking",   "Breaking News"),
+    ("earnings",   "Earnings"),
+    ("sec",        "SEC Filings"),
+    ("press",      "Press Releases"),
+    ("fda",        "FDA"),
+    ("insider",    "Insider Trading"),
+    ("upgrade",    "Analyst Upgrades"),
+    ("downgrade",  "Analyst Downgrades"),
+    ("ma",         "M&A"),
+    ("ipo",        "IPO"),
+    ("macro",      "Macro"),
+    ("crypto",     "Crypto"),
 ]
 
-TIME_WINDOW_OPTIONS = [
-    {"label": "1 Hour",   "value": "1hr"},
-    {"label": "4 Hours",  "value": "4hr"},
-    {"label": "24 Hours", "value": "24hr"},
-]
-
-MIN_ARTICLES_OPTIONS = [
-    {"label": "Any",    "value": 0},
-    {"label": "2+",     "value": 2},
-    {"label": "5+",     "value": 5},
-    {"label": "10+",    "value": 10},
-    {"label": "25+",    "value": 25},
-]
-
-TREND_OPTIONS = [
-    {"label": "Any Trend", "value": "all"},
-    {"label": "Improving", "value": "improving"},
-    {"label": "Declining", "value": "declining"},
-    {"label": "Stable",    "value": "stable"},
-]
-
-SPIKE_OPTIONS = [
-    {"label": "Any",       "value": "all"},
-    {"label": "Has Spike", "value": "spike"},
-    {"label": "No Spike",  "value": "no_spike"},
-]
+_NEWS_CAT_KEYWORDS: dict[str, str] = {
+    "breaking":  "breaking",
+    "earnings":  "earnings",
+    "sec":       "SEC filing",
+    "press":     "press release",
+    "fda":       "FDA",
+    "insider":   "insider",
+    "upgrade":   "upgrade",
+    "downgrade": "downgrade",
+    "ma":        "acquisition",
+    "ipo":       "IPO",
+    "macro":     "federal reserve",
+    "crypto":    "crypto",
+}
 
 # ── SQL ───────────────────────────────────────────────────────────────────
 
 _SCREENER_SQL = """
-    WITH latest AS (
-        SELECT DISTINCT ON (ticker)
-            ticker,
-            avg_sentiment,
-            article_count,
-            bullish_count,
-            bearish_count,
-            neutral_count,
-            momentum,
-            calculated_at
-        FROM ticker_sentiment_summary
-        WHERE "window" = :window
-        ORDER BY ticker, calculated_at DESC
-    ),
-    recent_spikes AS (
-        SELECT DISTINCT ticker
-        FROM sentiment_spikes
-        WHERE detected_at > NOW() - INTERVAL '2 hours'
-    )
     SELECT
-        l.ticker,
-        COALESCE(l.avg_sentiment,  0)   AS avg_sentiment,
-        COALESCE(l.article_count,  0)   AS article_count,
-        COALESCE(l.bullish_count,  0)   AS bullish_count,
-        COALESCE(l.bearish_count,  0)   AS bearish_count,
-        COALESCE(l.neutral_count,  0)   AS neutral_count,
-        l.momentum,
-        l.calculated_at,
-        p.company_name,
-        p.sector,
-        p.country,
-        p.price,
-        p.change_pct,
-        p.volume,
-        p.market_cap,
-        p.pre_market_price,
-        p.post_market_price,
-        CASE WHEN rs.ticker IS NOT NULL THEN TRUE ELSE FALSE END AS has_spike
-    FROM latest l
-    LEFT JOIN ticker_prices p   ON l.ticker = p.ticker
-    LEFT JOIN recent_spikes rs  ON l.ticker = rs.ticker
-    WHERE l.article_count >= :min_articles
+        ticker,
+        company_name,
+        sector,
+        country,
+        price,
+        change_pct,
+        volume,
+        market_cap,
+        pre_market_price,
+        post_market_price,
+        pe_ratio,
+        forward_pe,
+        peg_ratio,
+        price_to_sales,
+        price_to_book,
+        dividend_yield,
+        eps_ttm,
+        roe,
+        debt_to_equity,
+        current_ratio,
+        quick_ratio,
+        avg_volume,
+        rel_volume,
+        rsi_14,
+        sma_20_pct,
+        sma_50_pct,
+        sma_200_pct,
+        week_52_high_pct,
+        week_52_low_pct,
+        roa,
+        gross_margin,
+        operating_margin,
+        net_margin,
+        beta,
+        float_short,
+        short_ratio,
+        perf_week,
+        perf_month,
+        perf_quart,
+        perf_year,
+        perf_ytd,
+        analyst_recom,
+        target_price,
+        eps_growth_this_year,
+        eps_growth_next_year,
+        eps_growth_5y,
+        eps_growth_qoq,
+        sales_growth_qoq,
+        atr,
+        insider_own,
+        inst_own
+    FROM ticker_prices
 """
 
 
-def _fetch_data(window: str, min_articles: int) -> pd.DataFrame:
-    diag = query_df("""
-        SELECT
-            (SELECT COUNT(*) FROM ticker_sentiment_summary)                 AS tss_total,
-            (SELECT COUNT(DISTINCT "window") FROM ticker_sentiment_summary) AS tss_windows,
-            (SELECT string_agg(DISTINCT "window", ', ' ORDER BY "window")
-               FROM ticker_sentiment_summary)                               AS tss_window_values,
-            (SELECT COUNT(*) FROM ticker_sentiment_summary
-               WHERE "window" = :window)                                    AS tss_for_window,
-            (SELECT COUNT(*) FROM ticker_prices)                            AS price_rows
-    """, {"window": window})
-    if not diag.empty:
-        r = diag.iloc[0]
-        logger.info(
-            f"[screener] DB snapshot — tss_total={r.tss_total}, "
-            f"windows={r.tss_window_values!r}, "
-            f"tss_for_window({window!r})={r.tss_for_window}, "
-            f"price_rows={r.price_rows}"
-        )
-
-    df = query_df(_SCREENER_SQL, {"window": window, "min_articles": min_articles})
-    logger.info(
-        f"[screener] _fetch_data(window={window!r}, min_articles={min_articles}) "
-        f"→ {len(df)} rows"
-    )
+def _fetch_data() -> pd.DataFrame:
+    df = query_df(_SCREENER_SQL)
+    logger.info(f"[screener] _fetch_data → {len(df)} rows")
     return df
 
 
 # ── Render helpers ────────────────────────────────────────────────────────
-
-_SENT_STYLE: dict[str, dict] = {
-    "Bullish":          {"bg": "#0d3324", "color": "#00e676", "bd": "#00c853"},
-    "Somewhat Bullish": {"bg": "#092b18", "color": "#69f0ae", "bd": "#00e676"},
-    "Neutral":          {"bg": "#131c38", "color": "#82b1ff", "bd": "#3d5afe"},
-    "Somewhat Bearish": {"bg": "#351212", "color": "#ff8a80", "bd": "#ff5252"},
-    "Bearish":          {"bg": "#280808", "color": "#ff5252", "bd": "#d50000"},
-}
-
-
-def _score_to_label(score: float | None) -> str:
-    if score is None or math.isnan(float(score)):
-        return "Neutral"
-    s = float(score)
-    if s >= 0.35:    return "Bullish"
-    elif s >= 0.15:  return "Somewhat Bullish"
-    elif s > -0.15:  return "Neutral"
-    elif s > -0.35:  return "Somewhat Bearish"
-    return "Bearish"
-
-
-def _score_color(score: float | None) -> str:
-    label = _score_to_label(score)
-    return _SENT_STYLE.get(label, {}).get("color", "#888888")
-
-
-def _badge(score) -> html.Span:
-    label = _score_to_label(score)
-    s = _SENT_STYLE.get(label, {})
-    return html.Span(
-        label,
-        style={
-            "background":   s.get("bg",    "#141414"),
-            "color":        s.get("color", "#444"),
-            "border":       f"1px solid {s.get('bd', '#282828')}",
-            "borderRadius": "12px",
-            "padding":      "2px 8px",
-            "fontSize":     "11px",
-            "fontWeight":   "600",
-            "whiteSpace":   "nowrap",
-            "maxWidth":     "130px",
-            "overflow":     "hidden",
-            "textOverflow": "ellipsis",
-            "display":      "inline-block",
-        },
-    )
 
 
 def _safe(v) -> float | None:
@@ -346,49 +292,27 @@ def _fmt_mktcap(v) -> str:
     return f"${v:,.0f}"
 
 
-def _trend_icon(momentum) -> html.Span:
-    m = str(momentum or "").lower()
-    if m == "improving": return html.Span("↑", style={"color": "#00e676", "fontWeight": "700"})
-    if m == "declining": return html.Span("↓", style={"color": "#ff5252", "fontWeight": "700"})
-    return html.Span("→", style={"color": "#555555"})
-
-
-def _pct(num, denom) -> str:
-    try:
-        n, d = int(num), int(denom)
-        return f"{n/d*100:.0f}%" if d else "—"
-    except (TypeError, ValueError):
+def _fmt_pe(v) -> str:
+    v = _safe(v)
+    if v is None or v <= 0:
         return "—"
+    return f"{v:.2f}"
 
 
 # ── Table column definitions ──────────────────────────────────────────────
 # (label, width, text-align)
 _OV_COLS = [
-    ("★",         "32px",  "center"),
-    ("#",         "35px",  "right"),
-    ("Ticker",    "70px",  "left"),
-    ("Company",   "150px", "left"),
-    ("Country",   "58px",  "center"),
-    ("Mkt Cap",   "82px",  "right"),
-    ("Price",     "80px",  "right"),
-    ("Chg %",     "68px",  "right"),
-    ("Volume",    "82px",  "right"),
-    ("Articles",  "64px",  "right"),
-    ("Sentiment", "150px", "center"),
-    ("Score",     "60px",  "right"),
-]
-
-_SENT_COLS = [
-    ("#",          "36px",  "right"),
-    ("Ticker",     "70px",  "left"),
-    ("Sentiment",  "130px", "left"),
-    ("Score",      "60px",  "right"),
-    ("Bull %",     "64px",  "right"),
-    ("Bear %",     "64px",  "right"),
-    ("Neutral %",  "78px",  "right"),
-    ("Articles",   "66px",  "right"),
-    ("Last Upd",   "108px", "center"),
-    ("Trend",      "56px",  "center"),
+    ("★",       "32px",  "center"),
+    ("#",       "35px",  "right"),
+    ("Ticker",  "72px",  "left"),
+    ("Company", "200px", "left"),
+    ("Sector",  "140px", "left"),
+    ("Country", "64px",  "center"),
+    ("Mkt Cap", "100px", "right"),
+    ("P/E",     "64px",  "right"),
+    ("Price",   "90px",  "right"),
+    ("Chg %",   "76px",  "right"),
+    ("Volume",  "100px", "right"),
 ]
 
 # ── Table renderers ───────────────────────────────────────────────────────
@@ -417,13 +341,12 @@ def _render_overview_rows(df: pd.DataFrame, page: int,
         ticker     = r["ticker"]
         is_watched = ticker in watched
         company    = str(r.get("company_name") or "") or ticker
+        sector     = str(r.get("sector") or "") or "—"
         raw_ctry   = str(r.get("country") or "USA")
         country    = _COUNTRY_DISPLAY.get(
             raw_ctry,
             raw_ctry[:3].upper() if len(raw_ctry) > 3 else raw_ctry,
         )
-        score      = _safe(r.get("avg_sentiment"))
-        color      = _score_color(score)
         chg_text, chg_color = _fmt_chg(r.get("change_pct"))
 
         price_children: list = [
@@ -459,70 +382,14 @@ def _render_overview_rows(df: pd.DataFrame, page: int,
                 className="scr-td",
             ),
             html.Td(company, className="scr-td scr-company"),
+            html.Td(sector,  className="scr-td scr-dim", style={"fontSize": "12px"}),
             html.Td(country, className="scr-td scr-td-center scr-dim"),
             html.Td(_fmt_mktcap(r.get("market_cap")), className="scr-td scr-td-num"),
+            html.Td(_fmt_pe(r.get("pe_ratio")),       className="scr-td scr-td-num scr-dim"),
             html.Td(price_children, className="scr-td scr-td-num"),
             html.Td(chg_text, className="scr-td scr-td-num",
                     style={"color": chg_color}),
             html.Td(_fmt_volume(r.get("volume")), className="scr-td scr-td-num"),
-            html.Td(str(int(r.get("article_count", 0))), className="scr-td scr-td-num"),
-            html.Td(_badge(score), className="scr-td",
-                    style={"textAlign": "center", "paddingLeft": "20px"}),
-            html.Td(
-                f"{score:+.2f}" if score is not None else "—",
-                className="scr-td scr-td-num scr-mono",
-                style={"color": color},
-            ),
-        ], className="scr-tr"))
-    return rows
-
-
-def _render_sentiment_rows(df: pd.DataFrame, page: int) -> list:
-    if df.empty:
-        return _no_results(len(_SENT_COLS))
-
-    offset  = (page - 1) * PAGE_SIZE
-    page_df = df.iloc[offset : offset + PAGE_SIZE]
-    rows: list = []
-
-    for local_i, (_, r) in enumerate(page_df.iterrows()):
-        global_i = offset + local_i
-        cnt      = int(r.get("article_count", 0))
-        score    = _safe(r.get("avg_sentiment"))
-        color    = _score_color(score)
-        ticker   = r["ticker"]
-
-        last_upd = ""
-        try:
-            ts = pd.Timestamp(r.get("calculated_at"))
-            if ts is not pd.NaT:
-                last_upd = ts.strftime("%m-%d %H:%M")
-        except Exception:
-            pass
-
-        rows.append(html.Tr([
-            html.Td(str(global_i + 1), className="scr-td scr-td-num scr-dim"),
-            html.Td(
-                dcc.Link(ticker, href=f"/stock/{ticker}", className="scr-ticker"),
-                className="scr-td",
-            ),
-            html.Td(_badge(score), className="scr-td"),
-            html.Td(
-                f"{score:+.2f}" if score is not None else "—",
-                className="scr-td scr-td-num scr-mono",
-                style={"color": color},
-            ),
-            html.Td(_pct(r.get("bullish_count"), cnt),
-                    className="scr-td scr-td-num", style={"color": "#00e676"}),
-            html.Td(_pct(r.get("bearish_count"), cnt),
-                    className="scr-td scr-td-num", style={"color": "#ff5252"}),
-            html.Td(_pct(r.get("neutral_count"), cnt),
-                    className="scr-td scr-td-num", style={"color": "#888888"}),
-            html.Td(str(cnt), className="scr-td scr-td-num"),
-            html.Td(last_upd, className="scr-td scr-td-center scr-dim"),
-            html.Td(_trend_icon(r.get("momentum")),
-                    className="scr-td scr-td-center",
-                    style={"fontSize": "15px"}),
         ], className="scr-tr"))
     return rows
 
@@ -571,21 +438,6 @@ def _render_pagination(current_page: int, total_pages: int) -> list:
 
 
 # ── Filter / sort helpers ─────────────────────────────────────────────────
-
-def _apply_signal(df: pd.DataFrame, signal: str) -> pd.DataFrame:
-    if signal == "bullish":
-        return df[df["avg_sentiment"] >= 0.15]
-    if signal == "bearish":
-        return df[df["avg_sentiment"] <= -0.15]
-    if signal == "unusual_volume":
-        if df["volume"].isna().all():
-            return df
-        median_v = df["volume"].median()
-        return df[df["volume"].fillna(0) > median_v * 2] if median_v else df
-    if signal == "spike":
-        return df[df["has_spike"] == True]
-    return df
-
 
 def _apply_sector_filter(df: pd.DataFrame, sector: str) -> pd.DataFrame:
     if not sector or sector == "all" or "sector" not in df.columns:
@@ -673,67 +525,148 @@ def _apply_avg_volume_filter(df: pd.DataFrame, avg_vol: str) -> pd.DataFrame:
     return df[mask] if mask is not None else df
 
 
-def _apply_sent_label_filter(df: pd.DataFrame, label: str) -> pd.DataFrame:
-    if not label or label == "all":
+def _apply_range_filter(
+    df: pd.DataFrame,
+    col: str,
+    min_val,
+    max_val,
+    scale: float = 1.0,
+) -> pd.DataFrame:
+    """Filter df so col >= min_val and col <= max_val (either can be None = no bound).
+    scale multiplies the user-entered values before comparison (e.g. M → raw for volume)."""
+    if col not in df.columns:
         return df
-    df2 = df.copy()
-    df2["_lbl"] = df2["avg_sentiment"].apply(_score_to_label)
-    return df2[df2["_lbl"] == label].drop(columns=["_lbl"])
+    v = pd.to_numeric(df[col], errors="coerce")
+    if min_val is not None:
+        try:
+            df = df[v >= float(min_val) * scale]
+            v = pd.to_numeric(df[col], errors="coerce")
+        except (TypeError, ValueError):
+            pass
+    if max_val is not None:
+        try:
+            df = df[v <= float(max_val) * scale]
+        except (TypeError, ValueError):
+            pass
+    return df
 
 
-def _apply_sent_score_filter(df: pd.DataFrame, score: str) -> pd.DataFrame:
-    if not score or score == "all":
+def _apply_dd_filter(
+    df: pd.DataFrame,
+    col: str,
+    val: str | None,
+    range_map: dict,
+) -> pd.DataFrame:
+    """Apply a dropdown-based range filter using a predefined (lo, hi) map."""
+    if not val or val == "any" or val not in range_map:
         return df
-    v = df["avg_sentiment"].fillna(0)
-    masks = {
-        "sbull": v > 0.6,
-        "bull":  (v >= 0.3)  & (v <= 0.6),
-        "neut":  (v > -0.3)  & (v < 0.3),
-        "bear":  (v >= -0.6) & (v <= -0.3),
-        "sbear": v < -0.6,
+    lo, hi = range_map[val]
+    return _apply_range_filter(df, col, lo, hi)
+
+
+_ET = pytz.timezone("America/New_York")
+
+
+def _time_bounds(value: str) -> tuple[datetime, datetime] | None:
+    now = datetime.now(_ET)
+    today_4am  = now.replace(hour=4,  minute=0, second=0, microsecond=0)
+    today_4pm  = now.replace(hour=16, minute=0, second=0, microsecond=0)
+    yest       = now - timedelta(days=1)
+    yest_4am   = yest.replace(hour=4,  minute=0, second=0, microsecond=0)
+    yest_4pm   = yest.replace(hour=16, minute=0, second=0, microsecond=0)
+    yest_start = yest.replace(hour=0,  minute=0, second=0, microsecond=0)
+    bounds: dict[str, tuple[datetime, datetime]] = {
+        "today":            (today_4am, now),
+        "today_aft":        (today_4pm, now),
+        "since_yesterday":  (yest_start, now),
+        "since_yest_close": (yest_4pm,  now),
+        "yesterday":        (yest_4am,  today_4am),
+        "yesterday_aft":    (yest_4pm,  today_4am),
+        "5min":             (now - timedelta(minutes=5),  now),
+        "30min":            (now - timedelta(minutes=30), now),
+        "1hr":              (now - timedelta(hours=1),    now),
+        "24hr":             (now - timedelta(hours=24),   now),
+        "1mo":              (now - timedelta(days=30),    now),
     }
-    mask = masks.get(score)
-    return df[mask] if mask is not None else df
+    return bounds.get(value)
 
 
-def _apply_trend_filter(df: pd.DataFrame, trend: str) -> pd.DataFrame:
-    if not trend or trend == "all":
-        return df
-    m = df["momentum"].fillna("").str.lower()
-    if trend == "improving":
-        return df[m == "improving"]
-    if trend == "declining":
-        return df[m == "declining"]
-    if trend == "stable":
-        return df[~m.isin(["improving", "declining"])]
-    return df
+def _fetch_news_tickers(
+    time_val: str,
+    keywords_raw: str,
+    custom_state: dict,
+) -> set[str] | None:
+    """Returns set of primary_ticker values matching the news filter, or None (no filter)."""
+    cs = custom_state or {}
+    has_cats = bool(cs.get("cats"))
+    has_dates = bool(cs.get("date_from") or cs.get("date_to"))
+    has_kw = bool(keywords_raw and keywords_raw.strip())
+    has_time = bool(time_val and time_val not in ("any", "custom"))
+
+    if not has_time and not has_kw and not has_cats and not has_dates:
+        return None
+
+    conditions: list[str] = ["primary_ticker IS NOT NULL"]
+    params: dict = {}
+
+    if time_val == "custom":
+        if cs.get("date_from"):
+            conditions.append("published_at >= :news_start")
+            params["news_start"] = cs["date_from"]
+        if cs.get("date_to"):
+            conditions.append("published_at < :news_end")
+            try:
+                end_d = datetime.strptime(cs["date_to"], "%Y-%m-%d").date()
+                params["news_end"] = (datetime.combine(end_d, datetime.min.time())
+                                      + timedelta(days=1)).isoformat()
+            except ValueError:
+                params["news_end"] = cs["date_to"]
+    elif has_time:
+        bounds = _time_bounds(time_val)
+        if bounds:
+            start, end = bounds
+            conditions.append("published_at >= :news_start AND published_at <= :news_end")
+            params["news_start"] = start.isoformat()
+            params["news_end"]   = end.isoformat()
+
+    if has_kw:
+        kw = keywords_raw.strip()
+        kw_safe = re.sub(r"[%_]", r"\\\g<0>", kw)
+        conditions.append("(title ILIKE :kw OR summary ILIKE :kw)")
+        params["kw"] = f"%{kw_safe}%"
+
+    if has_cats:
+        cat_parts: list[str] = []
+        for i, cat in enumerate(cs["cats"]):
+            kw = _NEWS_CAT_KEYWORDS.get(cat)
+            if kw:
+                pkey = f"cat_kw_{i}"
+                cat_parts.append(f"(title ILIKE :{pkey} OR summary ILIKE :{pkey})")
+                params[pkey] = f"%{kw}%"
+        if cat_parts:
+            conditions.append(f"({' OR '.join(cat_parts)})")
+
+    where = " AND ".join(conditions)
+    sql = f"SELECT DISTINCT primary_ticker FROM rss_articles WHERE {where}"
+    try:
+        df = query_df(sql, params)
+        return set(df["primary_ticker"].dropna().str.upper())
+    except Exception:
+        logger.exception("[screener] _fetch_news_tickers failed")
+        return None
 
 
-def _apply_spike_filter(df: pd.DataFrame, spike: str) -> pd.DataFrame:
-    if not spike or spike == "all":
-        return df
-    if spike == "spike":
-        return df[df["has_spike"] == True]
-    if spike == "no_spike":
-        return df[df["has_spike"] != True]
-    return df
-
-
-def _apply_sort(df: pd.DataFrame, signal: str, order: str, sort_dir: str) -> pd.DataFrame:
-    asc = (sort_dir == "asc")
-    if signal == "most_articles":
-        return df.sort_values("article_count", ascending=False, na_position="last")
+def _apply_sort(df: pd.DataFrame, order: str, sort_dir: str) -> pd.DataFrame:
     col_map = {
-        "avg_sentiment": "avg_sentiment",
-        "price":         "price",
-        "change_pct":    "change_pct",
-        "volume":        "volume",
-        "market_cap":    "market_cap",
-        "article_count": "article_count",
+        "price":      "price",
+        "change_pct": "change_pct",
+        "volume":     "volume",
+        "market_cap": "market_cap",
+        "pe_ratio":   "pe_ratio",
     }
-    col = col_map.get(order, "avg_sentiment")
+    col = col_map.get(order, "market_cap")
     if col in df.columns:
-        return df.sort_values(col, ascending=asc, na_position="last")
+        return df.sort_values(col, ascending=(sort_dir == "asc"), na_position="last")
     return df
 
 
@@ -771,10 +704,8 @@ _RESET_BTN_STYLE = {
     "fontFamily":   "inherit",
 }
 
-_FTAB_IDS    = ["desc", "fund", "tech", "sent", "news"]
-_FTAB_LABELS = ["Descriptive", "Fundamental", "Technical", "Sentiment", "News"]
-# "ai" tab is intentionally excluded until AI filtering is ready for users.
-# To re-enable: append "ai" to _FTAB_IDS and "AI" to _FTAB_LABELS above.
+_FTAB_IDS    = ["desc", "fund", "tech", "news"]
+_FTAB_LABELS = ["Descriptive", "Fundamental", "Technical", "News"]
 
 
 def _fi(label: str, select_id: str, options: list, value) -> html.Div:
@@ -785,16 +716,388 @@ def _fi(label: str, select_id: str, options: list, value) -> html.Div:
     ], className="filter-item")
 
 
-def _ph(label: str) -> html.Div:
+# ── Screener dropdown option sets & range maps ────────────────────────────
+
+def _dd(label: str, value: str, disabled: bool = False) -> dict:
+    d: dict = {"label": label, "value": value}
+    if disabled:
+        d["disabled"] = True
+    return d
+
+def _soon(*rows: tuple[str, str]) -> list[dict]:
+    """Option list where all non-Any entries are disabled (backend pending)."""
+    return [_dd("Any", "any")] + [_dd(l, v, disabled=True) for l, v in rows]
+
+# P/E Ratio (and Forward P/E share the same options/map)
+_OPT_PE: list[dict] = [
+    _dd("Any","any"), _dd("Under 5","u5"), _dd("Under 10","u10"),
+    _dd("Under 15","u15"), _dd("Under 20","u20"), _dd("Under 30","u30"),
+    _dd("Under 50","u50"), _dd("Over 5","o5"), _dd("Over 10","o10"),
+    _dd("Over 20","o20"), _dd("Over 30","o30"),
+    _dd("5 – 10","5t10"), _dd("10 – 20","10t20"),
+    _dd("20 – 30","20t30"), _dd("30 – 50","30t50"), _dd("50 +","50p"),
+]
+_MAP_PE: dict = {
+    "u5":(None,5),"u10":(None,10),"u15":(None,15),"u20":(None,20),
+    "u30":(None,30),"u50":(None,50),
+    "o5":(5,None),"o10":(10,None),"o20":(20,None),"o30":(30,None),
+    "5t10":(5,10),"10t20":(10,20),"20t30":(20,30),"30t50":(30,50),"50p":(50,None),
+}
+
+_OPT_PEG: list[dict] = [
+    _dd("Any","any"), _dd("Under 0.5","u05"), _dd("Under 1","u1"),
+    _dd("Under 2","u2"), _dd("Under 3","u3"),
+    _dd("1 – 2","1t2"), _dd("2 – 3","2t3"),
+    _dd("Over 1","o1"), _dd("Over 2","o2"), _dd("Over 3","o3"),
+]
+_MAP_PEG: dict = {
+    "u05":(None,.5),"u1":(None,1),"u2":(None,2),"u3":(None,3),
+    "1t2":(1,2),"2t3":(2,3),"o1":(1,None),"o2":(2,None),"o3":(3,None),
+}
+
+_OPT_PS: list[dict] = [
+    _dd("Any","any"), _dd("Under 1","u1"), _dd("Under 2","u2"),
+    _dd("Under 5","u5"), _dd("Under 10","u10"),
+    _dd("1 – 2","1t2"), _dd("2 – 5","2t5"), _dd("5 – 10","5t10"),
+    _dd("Over 1","o1"), _dd("Over 2","o2"), _dd("Over 5","o5"), _dd("Over 10","o10"),
+]
+_MAP_PS: dict = {
+    "u1":(None,1),"u2":(None,2),"u5":(None,5),"u10":(None,10),
+    "1t2":(1,2),"2t5":(2,5),"5t10":(5,10),
+    "o1":(1,None),"o2":(2,None),"o5":(5,None),"o10":(10,None),
+}
+
+_OPT_PB: list[dict] = [
+    _dd("Any","any"), _dd("Under 1","u1"), _dd("Under 2","u2"),
+    _dd("Under 3","u3"), _dd("Under 5","u5"),
+    _dd("1 – 2","1t2"), _dd("2 – 5","2t5"),
+    _dd("Over 1","o1"), _dd("Over 2","o2"), _dd("Over 5","o5"),
+]
+_MAP_PB: dict = {
+    "u1":(None,1),"u2":(None,2),"u3":(None,3),"u5":(None,5),
+    "1t2":(1,2),"2t5":(2,5),"o1":(1,None),"o2":(2,None),"o5":(5,None),
+}
+
+_OPT_EPS: list[dict] = [
+    _dd("Any","any"), _dd("Positive","pos"), _dd("Negative","neg"),
+    _dd("Over $1","o1"), _dd("Over $5","o5"),
+    _dd("Over $10","o10"), _dd("Over $20","o20"),
+    _dd("Under $0","u0"),
+]
+_MAP_EPS: dict = {
+    "pos":(0,None),"neg":(None,0),"u0":(None,0),
+    "o1":(1,None),"o5":(5,None),"o10":(10,None),"o20":(20,None),
+}
+
+_OPT_ROE: list[dict] = [
+    _dd("Any","any"), _dd("Positive","pos"),
+    _dd("Over 5%","o5"), _dd("Over 10%","o10"),
+    _dd("Over 15%","o15"), _dd("Over 20%","o20"),
+    _dd("Over 25%","o25"), _dd("Over 30%","o30"),
+    _dd("Negative","neg"),
+]
+_MAP_ROE: dict = {
+    "pos":(0,None),"neg":(None,0),
+    "o5":(5,None),"o10":(10,None),"o15":(15,None),
+    "o20":(20,None),"o25":(25,None),"o30":(30,None),
+}
+
+_OPT_DE: list[dict] = [
+    _dd("Any","any"), _dd("Under 0.25","u025"), _dd("Under 0.5","u05"),
+    _dd("Under 1","u1"), _dd("Under 2","u2"),
+    _dd("Over 1","o1"), _dd("Over 2","o2"), _dd("Over 3","o3"),
+]
+_MAP_DE: dict = {
+    "u025":(None,.25),"u05":(None,.5),"u1":(None,1),"u2":(None,2),
+    "o1":(1,None),"o2":(2,None),"o3":(3,None),
+}
+
+_OPT_CR: list[dict] = [
+    _dd("Any","any"), _dd("Under 1","u1"),
+    _dd("1 – 2","1t2"), _dd("2 – 3","2t3"),
+    _dd("Over 1","o1"), _dd("Over 1.5","o15"),
+    _dd("Over 2","o2"), _dd("Over 3","o3"),
+]
+_MAP_CR: dict = {
+    "u1":(None,1),"1t2":(1,2),"2t3":(2,3),
+    "o1":(1,None),"o15":(1.5,None),"o2":(2,None),"o3":(3,None),
+}
+
+_OPT_QR: list[dict] = [
+    _dd("Any","any"), _dd("Under 1","u1"),
+    _dd("Over 1","o1"), _dd("Over 1.5","o15"), _dd("Over 2","o2"),
+]
+_MAP_QR: dict = {
+    "u1":(None,1),"o1":(1,None),"o15":(1.5,None),"o2":(2,None),
+}
+
+_OPT_DY: list[dict] = [
+    _dd("Any","any"), _dd("Over 0.5%","o05"), _dd("Over 1%","o1"),
+    _dd("Over 2%","o2"), _dd("Over 3%","o3"),
+    _dd("Over 4%","o4"), _dd("Over 5%","o5"),
+    _dd("Over 8%","o8"), _dd("Over 10%","o10"),
+]
+_MAP_DY: dict = {
+    "o05":(.5,None),"o1":(1,None),"o2":(2,None),"o3":(3,None),
+    "o4":(4,None),"o5":(5,None),"o8":(8,None),"o10":(10,None),
+}
+
+# Disabled-only options (data not yet available)
+_OPT_EV = _soon(
+    ("Under 5","u5"),("Under 10","u10"),("Under 15","u15"),
+    ("Over 5","o5"),("Over 10","o10"),("Over 20","o20"),
+)
+_OPT_MACD = _soon(
+    ("Bullish Crossover","bc"),("Bearish Crossover","brc"),
+    ("Above Signal","abs"),("Below Signal","bls"),
+    ("Positive","pos"),("Negative","neg"),
+)
+
+# ROA — sourced from Finviz bulk export "ROA" column (%)
+_OPT_ROA: list[dict] = [
+    _dd("Any","any"), _dd("Positive","pos"), _dd("Negative","neg"),
+    _dd("Over 5%","o5"), _dd("Over 10%","o10"),
+    _dd("Over 15%","o15"), _dd("Over 20%","o20"),
+]
+_MAP_ROA: dict = {
+    "pos":(0,None),"neg":(None,0),
+    "o5":(5,None),"o10":(10,None),"o15":(15,None),"o20":(20,None),
+}
+
+# Shared margin options — used by Gross Margin, Op. Margin, Net Margin (all in %)
+_OPT_MARGIN: list[dict] = [
+    _dd("Any","any"), _dd("Positive","pos"), _dd("Negative","neg"),
+    _dd("Over 5%","o5"), _dd("Over 10%","o10"), _dd("Over 15%","o15"),
+    _dd("Over 20%","o20"), _dd("Over 30%","o30"), _dd("Over 40%","o40"),
+]
+_MAP_MARGIN: dict = {
+    "pos":(0,None),"neg":(None,0),
+    "o5":(5,None),"o10":(10,None),"o15":(15,None),
+    "o20":(20,None),"o30":(30,None),"o40":(40,None),
+}
+
+# Beta — sourced from Finviz bulk export "Beta" column
+_OPT_BETA: list[dict] = [
+    _dd("Any","any"),
+    _dd("Under 0.5","u05"), _dd("Under 1","u1"),
+    _dd("1 – 1.5","1t15"),
+    _dd("Over 1","o1"), _dd("Over 1.5","o15"), _dd("Over 2","o2"),
+]
+_MAP_BETA: dict = {
+    "u05":(None,0.5),"u1":(None,1),
+    "1t15":(1,1.5),
+    "o1":(1,None),"o15":(1.5,None),"o2":(2,None),
+}
+
+# Technical
+_OPT_RSI: list[dict] = [
+    _dd("Any","any"),
+    _dd("Oversold (< 30)","os"),
+    _dd("30 – 50","30t50"),
+    _dd("50 – 70","50t70"),
+    _dd("Overbought (> 70)","ob"),
+    _dd("Not Extreme (30–70)","ne"),
+]
+_MAP_RSI: dict = {
+    "os":(None,30),"30t50":(30,50),"50t70":(50,70),"ob":(70,None),"ne":(30,70),
+}
+
+_OPT_SMA: list[dict] = [
+    _dd("Any","any"),
+    _dd("Price above SMA","abv"),
+    _dd("Price below SMA","blw"),
+    _dd("5%+ above SMA","a5"),
+    _dd("10%+ above SMA","a10"),
+    _dd("20%+ above SMA","a20"),
+    _dd("5%+ below SMA","b5"),
+    _dd("10%+ below SMA","b10"),
+    _dd("20%+ below SMA","b20"),
+]
+_MAP_SMA: dict = {
+    "abv":(0,None),"blw":(None,0),
+    "a5":(5,None),"a10":(10,None),"a20":(20,None),
+    "b5":(None,-5),"b10":(None,-10),"b20":(None,-20),
+}
+
+_OPT_AVGVOL: list[dict] = [
+    _dd("Any","any"),
+    _dd("Under 100K","u100k"), _dd("Under 500K","u500k"), _dd("Under 1M","u1m"),
+    _dd("Over 100K","o100k"), _dd("Over 500K","o500k"),
+    _dd("Over 1M","o1m"), _dd("Over 5M","o5m"), _dd("Over 10M","o10m"),
+]
+_MAP_AVGVOL: dict = {
+    "u100k":(None,100_000),"u500k":(None,500_000),"u1m":(None,1_000_000),
+    "o100k":(100_000,None),"o500k":(500_000,None),
+    "o1m":(1_000_000,None),"o5m":(5_000_000,None),"o10m":(10_000_000,None),
+}
+
+_OPT_RELVOL: list[dict] = [
+    _dd("Any","any"),
+    _dd("Under 0.5","u05"), _dd("Under 1","u1"),
+    _dd("Over 0.5","o05"), _dd("Over 1","o1"),
+    _dd("Over 1.5","o15"), _dd("Over 2","o2"), _dd("Over 3","o3"),
+]
+_MAP_RELVOL: dict = {
+    "u05":(None,.5),"u1":(None,1),
+    "o05":(.5,None),"o1":(1,None),"o15":(1.5,None),"o2":(2,None),"o3":(3,None),
+}
+
+# week_52_high_pct: negative = % below 52W high (−5 means 5% below high)
+_OPT_52H: list[dict] = [
+    _dd("Any","any"),
+    _dd("New 52W High","new"),
+    _dd("Within 5%","w5"), _dd("Within 10%","w10"), _dd("Within 20%","w20"),
+    _dd("10%+ Below High","d10"), _dd("20%+ Below High","d20"),
+    _dd("30%+ Below High","d30"), _dd("50%+ Below High","d50"),
+]
+_MAP_52H: dict = {
+    "new":(0,None),"w5":(-5,None),"w10":(-10,None),"w20":(-20,None),
+    "d10":(None,-10),"d20":(None,-20),"d30":(None,-30),"d50":(None,-50),
+}
+
+# week_52_low_pct: positive = % above 52W low (50 means 50% above low)
+_OPT_52L: list[dict] = [
+    _dd("Any","any"),
+    _dd("Near 52W Low (< 5%)","n5"), _dd("Within 10%","w10"), _dd("Within 20%","w20"),
+    _dd("10%+ Above Low","a10"), _dd("30%+ Above Low","a30"),
+    _dd("50%+ Above Low","a50"), _dd("100%+ Above Low","a100"),
+]
+_MAP_52L: dict = {
+    "n5":(None,5),"w10":(None,10),"w20":(None,20),
+    "a10":(10,None),"a30":(30,None),"a50":(50,None),"a100":(100,None),
+}
+
+# ── Tier 1 option sets ────────────────────────────────────────────────────
+
+_OPT_FLOAT_SHORT: list[dict] = [
+    _dd("Any","any"),
+    _dd("Under 5%","u5"), _dd("Under 10%","u10"),
+    _dd("Over 5%","o5"), _dd("Over 10%","o10"),
+    _dd("Over 15%","o15"), _dd("Over 20%","o20"),
+    _dd("Over 25%","o25"), _dd("Over 30%","o30"),
+]
+_MAP_FLOAT_SHORT: dict = {
+    "u5":(None,5),"u10":(None,10),
+    "o5":(5,None),"o10":(10,None),"o15":(15,None),
+    "o20":(20,None),"o25":(25,None),"o30":(30,None),
+}
+
+_OPT_SHORT_RATIO: list[dict] = [
+    _dd("Any","any"),
+    _dd("Under 1","u1"), _dd("Under 3","u3"),
+    _dd("Over 1","o1"), _dd("Over 3","o3"),
+    _dd("Over 5","o5"), _dd("Over 10","o10"),
+]
+_MAP_SHORT_RATIO: dict = {
+    "u1":(None,1),"u3":(None,3),
+    "o1":(1,None),"o3":(3,None),"o5":(5,None),"o10":(10,None),
+}
+
+# Shared by all five performance windows (week, month, quarter, year, YTD)
+_OPT_PERF: list[dict] = [
+    _dd("Any","any"),
+    _dd("Up 5%+","u5"), _dd("Up 10%+","u10"),
+    _dd("Up 20%+","u20"), _dd("Up 30%+","u30"), _dd("Up 50%+","u50"),
+    _dd("Down 5%+","d5"), _dd("Down 10%+","d10"), _dd("Down 20%+","d20"),
+    _dd("Flat (−5% to +5%)","flat"),
+]
+_MAP_PERF: dict = {
+    "u5":(5,None),"u10":(10,None),"u20":(20,None),"u30":(30,None),"u50":(50,None),
+    "d5":(None,-5),"d10":(None,-10),"d20":(None,-20),
+    "flat":(-5,5),
+}
+
+_OPT_RECOM: list[dict] = [
+    _dd("Any","any"),
+    _dd("Strong Buy","sb"),
+    _dd("Buy or Better","b"),
+    _dd("Hold or Better","boh"),
+    _dd("Sell or Worse","s"),
+    _dd("Strong Sell","ss"),
+]
+_MAP_RECOM: dict = {
+    "sb":(None,1.5),"b":(None,2.5),"boh":(None,3.5),
+    "s":(3.5,None),"ss":(4.5,None),
+}
+
+# target_upside is a computed column (target_price − price) / price * 100
+_OPT_TARGET: list[dict] = [
+    _dd("Any","any"),
+    _dd("Over 5% upside","o5"), _dd("Over 10% upside","o10"),
+    _dd("Over 20% upside","o20"), _dd("Over 30% upside","o30"),
+    _dd("Over 50% upside","o50"),
+    _dd("Downside risk","down"),
+]
+_MAP_TARGET: dict = {
+    "o5":(5,None),"o10":(10,None),"o20":(20,None),
+    "o30":(30,None),"o50":(50,None),
+    "down":(None,0),
+}
+
+# Shared by all five EPS/Sales growth metrics (stored as %)
+_OPT_GROWTH: list[dict] = [
+    _dd("Any","any"),
+    _dd("Positive","pos"), _dd("Negative","neg"),
+    _dd("Over 5%","o5"), _dd("Over 10%","o10"),
+    _dd("Over 15%","o15"), _dd("Over 20%","o20"),
+    _dd("Over 25%","o25"), _dd("Over 30%","o30"), _dd("Over 50%","o50"),
+    _dd("Under 0%","u0"),
+]
+_MAP_GROWTH: dict = {
+    "pos":(0,None),"neg":(None,0),"u0":(None,0),
+    "o5":(5,None),"o10":(10,None),"o15":(15,None),
+    "o20":(20,None),"o25":(25,None),"o30":(30,None),"o50":(50,None),
+}
+
+_OPT_ATR: list[dict] = [
+    _dd("Any","any"),
+    _dd("Under $0.50","u050"), _dd("Under $1","u1"),
+    _dd("Under $2","u2"), _dd("Under $5","u5"),
+    _dd("Over $0.50","o050"), _dd("Over $1","o1"),
+    _dd("Over $2","o2"), _dd("Over $5","o5"), _dd("Over $10","o10"),
+]
+_MAP_ATR: dict = {
+    "u050":(None,.5),"u1":(None,1),"u2":(None,2),"u5":(None,5),
+    "o050":(.5,None),"o1":(1,None),"o2":(2,None),"o5":(5,None),"o10":(10,None),
+}
+
+_OPT_INSIDER_OWN: list[dict] = [
+    _dd("Any","any"),
+    _dd("Over 5%","o5"), _dd("Over 10%","o10"),
+    _dd("Over 20%","o20"), _dd("Over 30%","o30"),
+    _dd("Under 5%","u5"),
+]
+_MAP_INSIDER_OWN: dict = {
+    "o5":(5,None),"o10":(10,None),"o20":(20,None),"o30":(30,None),
+    "u5":(None,5),
+}
+
+_OPT_INST_OWN: list[dict] = [
+    _dd("Any","any"),
+    _dd("Over 25%","o25"), _dd("Over 50%","o50"),
+    _dd("Over 60%","o60"), _dd("Over 70%","o70"), _dd("Over 80%","o80"),
+    _dd("Under 50%","u50"),
+]
+_MAP_INST_OWN: dict = {
+    "o25":(25,None),"o50":(50,None),"o60":(60,None),
+    "o70":(70,None),"o80":(80,None),"u50":(None,50),
+}
+
+
+def _scr_dd(label: str, dd_id: str, opts: list, soon: bool = False) -> html.Div:
+    """Compact label-over-dropdown cell for the screener filter grid."""
     return html.Div([
-        html.Label(label, className="filter-label scr-ph-label"),
+        html.Span(label, className="scr-dd-lbl"),
         dbc.Select(
-            options=[{"label": "Coming Soon", "value": "all"}],
-            value="all", disabled=True,
-            className="filter-select scr-ph-select",
-            style={**_SH},
+            id=dd_id, options=opts, value="any",
+            className="scr-dd-sel" + (" scr-dd-sel--soon" if soon else ""),
         ),
-    ], className="filter-item")
+    ], className="scr-dd-cell")
+
+
+def _scr_sep(label: str) -> html.Div:
+    """Full-width section divider for the screener filter grid."""
+    return html.Div(label, className="scr-dd-sep")
 
 # ── Layout ────────────────────────────────────────────────────────────────
 
@@ -803,9 +1106,10 @@ layout = html.Div(
     children=[
         # ── Stores ────────────────────────────────────────────────────────
         dcc.Interval(id="screener-interval", interval=60_000, n_intervals=0),
-        dcc.Store(id="screener-sort-dir",  data="desc"),
-        dcc.Store(id="screener-page",      data=1),
-        dcc.Store(id="watchlist-store",    data=0),
+        dcc.Store(id="screener-sort-dir",      data="desc"),
+        dcc.Store(id="screener-page",          data=1),
+        dcc.Store(id="watchlist-store",        data=0),
+        dcc.Store(id="scr-news-custom-state",  data={}),
 
         # ── Top toolbar: Sort By | ↓ | Search | ↻ ─────────────────────────
         html.Div(
@@ -815,7 +1119,7 @@ layout = html.Div(
                 dbc.Select(
                     id="screener-order",
                     options=ORDER_OPTIONS,
-                    value="avg_sentiment",
+                    value="market_cap",
                     className="filter-select",
                     style={"minWidth": "150px", **_SH},
                 ),
@@ -867,77 +1171,165 @@ layout = html.Div(
                 ]),
             ]),
 
-            # ── Fundamental (placeholders) ────────────────────────────────
-            html.Div(id="screener-ftab-fund-panel", style={"display": "none"}, children=[
-                html.Div(className="filter-row", children=[
-                    _ph("P/E"), _ph("Forward P/E"), _ph("PEG"), _ph("EPS Growth"),
-                ]),
-                html.Div(className="filter-row", children=[
-                    _ph("Revenue Growth"), _ph("ROE"), _ph("ROA"), _ph("Gross Margin"),
-                ]),
-                html.Div(className="filter-row", children=[
-                    _ph("Operating Margin"), _ph("Debt / Equity"),
-                    _ph("Current Ratio"),    _ph("Dividend Yield"),
-                ]),
-            ]),
+            # ── Fundamental ───────────────────────────────────────────────
+            html.Div(
+                id="screener-ftab-fund-panel",
+                style={"display": "none"},
+                className="scr-dd-grid",
+                children=[
+                    _scr_sep("Valuation"),
+                    _scr_dd("P/E Ratio",    "scr-pe",       _OPT_PE),
+                    _scr_dd("Forward P/E",  "scr-fpe",      _OPT_PE),
+                    _scr_dd("PEG Ratio",    "scr-peg",      _OPT_PEG),
+                    _scr_dd("Price / Sales","scr-ps",        _OPT_PS),
+                    _scr_dd("Price / Book", "scr-pb",        _OPT_PB),
+                    _scr_dd("EV / EBITDA",  "scr-evebitda",  _OPT_EV,      soon=True),
 
-            # ── Technical (placeholders) ──────────────────────────────────
-            html.Div(id="screener-ftab-tech-panel", style={"display": "none"}, children=[
-                html.Div(className="filter-row", children=[
-                    _ph("RSI"), _ph("SMA 20"), _ph("SMA 50"), _ph("SMA 200"),
-                ]),
-                html.Div(className="filter-row", children=[
-                    _ph("52W High"), _ph("52W Low"), _ph("ATR"), _ph("Beta"),
-                ]),
-                html.Div(className="filter-row", children=[
-                    _ph("Gap Up"), _ph("Gap Down"),
-                ]),
-            ]),
+                    _scr_sep("Profitability"),
+                    _scr_dd("EPS (ttm)",      "scr-eps", _OPT_EPS),
+                    _scr_dd("ROE",            "scr-roe", _OPT_ROE),
+                    _scr_dd("ROA",            "scr-roa", _OPT_ROA),
+                    _scr_dd("Gross Margin",   "scr-gm",  _OPT_MARGIN),
+                    _scr_dd("Op. Margin",     "scr-om",  _OPT_MARGIN),
+                    _scr_dd("Net Margin",     "scr-pm",  _OPT_MARGIN),
 
-            # ── Sentiment ─────────────────────────────────────────────────
-            html.Div(id="screener-ftab-sent-panel", style={"display": "none"}, children=[
-                html.Div(className="filter-row", children=[
-                    _fi("Sentiment",    "screener-sent-label",   SENT_LABEL_OPTIONS,   "all"),
-                    _fi("Score Range",  "screener-sent-score",   SENT_SCORE_OPTIONS,   "all"),
-                    _fi("Time Window",  "screener-window",       TIME_WINDOW_OPTIONS,  "4hr"),
-                    _fi("Min Articles", "screener-min-articles", MIN_ARTICLES_OPTIONS, 0),
-                ]),
-                html.Div(className="filter-row", children=[
-                    _fi("Trend",       "screener-trend", TREND_OPTIONS, "all"),
-                    _fi("Spike Alert", "screener-spike", SPIKE_OPTIONS, "all"),
-                    _ph("Most Bullish"),
-                    _ph("Most Bearish"),
-                ]),
-                html.Div(className="filter-row", children=[
-                    _ph("Highest Article Count"),
-                    _ph("Largest Sentiment Change"),
-                ]),
-            ]),
+                    _scr_sep("Financial Health"),
+                    _scr_dd("Debt / Equity", "scr-de", _OPT_DE),
+                    _scr_dd("Current Ratio", "scr-cr", _OPT_CR),
+                    _scr_dd("Quick Ratio",   "scr-qr", _OPT_QR),
 
-            # ── News (placeholders) ───────────────────────────────────────
+                    _scr_sep("Income"),
+                    _scr_dd("Dividend Yield", "scr-dy", _OPT_DY),
+
+                    _scr_sep("Growth"),
+                    _scr_dd("EPS Gr. This Yr",  "scr-eps-gy",      _OPT_GROWTH),
+                    _scr_dd("EPS Gr. Next Yr",  "scr-eps-gny",     _OPT_GROWTH),
+                    _scr_dd("EPS Gr. (5Y)",     "scr-eps-g5y",     _OPT_GROWTH),
+                    _scr_dd("EPS Gr. (QoQ)",    "scr-eps-gqoq",    _OPT_GROWTH),
+                    _scr_dd("Sales Gr. (QoQ)",  "scr-sales-gqoq",  _OPT_GROWTH),
+
+                    _scr_sep("Ownership"),
+                    _scr_dd("Insider Own",      "scr-insider-own",  _OPT_INSIDER_OWN),
+                    _scr_dd("Inst. Own",        "scr-inst-own",     _OPT_INST_OWN),
+
+                    _scr_sep("Analyst"),
+                    _scr_dd("Analyst Rec.",     "scr-recom",        _OPT_RECOM),
+                    _scr_dd("Target Upside",    "scr-target",       _OPT_TARGET),
+                ],
+            ),
+
+            # ── Technical ─────────────────────────────────────────────────
+            html.Div(
+                id="screener-ftab-tech-panel",
+                style={"display": "none"},
+                className="scr-dd-grid",
+                children=[
+                    _scr_sep("Trend  —  % price is above (+) / below (−) its moving average"),
+                    _scr_dd("SMA 20",  "scr-sma20",  _OPT_SMA),
+                    _scr_dd("SMA 50",  "scr-sma50",  _OPT_SMA),
+                    _scr_dd("SMA 200", "scr-sma200", _OPT_SMA),
+
+                    _scr_sep("Momentum"),
+                    _scr_dd("RSI (14)", "scr-rsi",  _OPT_RSI),
+                    _scr_dd("MACD",     "scr-macd", _OPT_MACD, soon=True),
+
+                    _scr_sep("Volume"),
+                    _scr_dd("Avg Volume",  "scr-avgvol", _OPT_AVGVOL),
+                    _scr_dd("Rel. Volume", "scr-relvol", _OPT_RELVOL),
+
+                    _scr_sep("Price"),
+                    _scr_dd("52W High", "scr-52h",  _OPT_52H),
+                    _scr_dd("52W Low",  "scr-52l",  _OPT_52L),
+                    _scr_dd("Beta",     "scr-beta", _OPT_BETA),
+                    _scr_dd("ATR ($)",  "scr-atr",  _OPT_ATR),
+
+                    _scr_sep("Short Interest"),
+                    _scr_dd("Float Short",  "scr-float-short",  _OPT_FLOAT_SHORT),
+                    _scr_dd("Short Ratio",  "scr-short-ratio",  _OPT_SHORT_RATIO),
+
+                    _scr_sep("Performance"),
+                    _scr_dd("Perf Week",    "scr-perf-w",   _OPT_PERF),
+                    _scr_dd("Perf Month",   "scr-perf-m",   _OPT_PERF),
+                    _scr_dd("Perf Quarter", "scr-perf-q",   _OPT_PERF),
+                    _scr_dd("Perf Year",    "scr-perf-y",   _OPT_PERF),
+                    _scr_dd("Perf YTD",     "scr-perf-ytd", _OPT_PERF),
+                ],
+            ),
+
+            # ── News ─────────────────────────────────────────────────────
             html.Div(id="screener-ftab-news-panel", style={"display": "none"}, children=[
                 html.Div(className="filter-row", children=[
-                    _ph("Breaking News"), _ph("Earnings"),
-                    _ph("SEC Filings"),   _ph("Press Releases"),
+                    # Latest News time range
+                    html.Div([
+                        html.Label("Latest News", className="filter-label"),
+                        dbc.Select(
+                            id="screener-news-time",
+                            options=NEWS_TIME_OPTIONS,
+                            value="any",
+                            className="filter-select",
+                            style={**_SH},
+                        ),
+                    ], className="filter-item"),
+                    # Keywords
+                    html.Div([
+                        html.Label("News Keywords", className="filter-label"),
+                        dcc.Input(
+                            id="screener-news-keywords",
+                            placeholder="Search headlines…",
+                            debounce=True,
+                            className="filter-input scr-news-kw-input",
+                            style={"height": "36px", "width": "100%"},
+                        ),
+                    ], className="filter-item scr-news-kw-item"),
                 ]),
-                html.Div(className="filter-row", children=[
-                    _ph("FDA"),              _ph("Insider Trading"),
-                    _ph("Analyst Upgrades"), _ph("Analyst Downgrades"),
-                ]),
-                html.Div(className="filter-row", children=[
-                    _ph("M&A"), _ph("IPO"), _ph("Macro"), _ph("Crypto"),
-                ]),
-            ]),
-
-            # ── AI (placeholders) ─────────────────────────────────────────
-            html.Div(id="screener-ftab-ai-panel", style={"display": "none"}, children=[
-                html.Div(className="filter-row", children=[
-                    _ph("AI Rating"), _ph("AI Confidence"),
-                    _ph("Catalyst Type"), _ph("Catalyst Strength"),
-                ]),
-                html.Div(className="filter-row", children=[
-                    _ph("High Conviction"),      _ph("Watchlist Candidate"),
-                    _ph("Momentum Opportunity"), _ph("Risk Level"),
+                # Custom time range panel
+                html.Div(id="scr-news-custom-panel", style={"display": "none"},
+                         className="scr-ncp", children=[
+                    html.Div(className="scr-ncp-header", children=[
+                        html.Span("Custom Date Range & Categories",
+                                  className="scr-ncp-title"),
+                    ]),
+                    html.Div(className="scr-ncp-body", children=[
+                        dcc.Checklist(
+                            id="scr-news-cats",
+                            options=[{"label": lbl, "value": val}
+                                     for val, lbl in _NEWS_CAT_LABELS],
+                            value=[],
+                            className="scr-ncp-checklist",
+                            labelClassName="scr-ncp-check-label",
+                            inputClassName="scr-ncp-check-input",
+                            inline=True,
+                        ),
+                    ]),
+                    html.Div(className="scr-ncp-dates", children=[
+                        html.Div([
+                            html.Label("From", className="filter-label"),
+                            dcc.DatePickerSingle(
+                                id="scr-news-date-from",
+                                display_format="YYYY-MM-DD",
+                                placeholder="YYYY-MM-DD",
+                                className="scr-ncp-dp",
+                            ),
+                        ], className="scr-ncp-date-item"),
+                        html.Div([
+                            html.Label("To", className="filter-label"),
+                            dcc.DatePickerSingle(
+                                id="scr-news-date-to",
+                                display_format="YYYY-MM-DD",
+                                placeholder="YYYY-MM-DD",
+                                className="scr-ncp-dp",
+                            ),
+                        ], className="scr-ncp-date-item"),
+                    ]),
+                    html.Div(className="scr-ncp-btns", children=[
+                        html.Button("Select All", id="scr-news-select-all", n_clicks=0,
+                                    className="scr-ncp-btn"),
+                        html.Div(style={"flex": "1"}),
+                        html.Button("Cancel", id="scr-news-cancel", n_clicks=0,
+                                    className="scr-ncp-btn scr-ncp-btn-cancel"),
+                        html.Button("Apply",  id="scr-news-apply",  n_clicks=0,
+                                    className="scr-ncp-btn scr-ncp-btn-apply"),
+                    ]),
                 ]),
             ]),
 
@@ -962,49 +1354,19 @@ layout = html.Div(
             ],
         ),
 
-        dbc.Tabs(
-            id="screener-result-tabs",
-            active_tab="tab-overview",
-            children=[
-                dbc.Tab(label="Overview", tab_id="tab-overview", children=[
-                    html.Div(
-                        className="articles-table",
-                        style={"overflowX": "auto", "padding": "0"},
-                        children=[html.Table(
-                            className="scr-table",
-                            children=[
-                                html.Thead(html.Tr([
-                                    html.Th(lbl, style={
-                                        "width": w, "textAlign": a,
-                                        **({"paddingLeft": "20px"} if lbl == "Sentiment" else {}),
-                                    })
-                                    for lbl, w, a in _OV_COLS
-                                ])),
-                                html.Tbody(id="screener-overview-rows"),
-                            ],
-                        )],
-                    ),
-                ]),
-                dbc.Tab(label="Sentiment Detail", tab_id="tab-sentiment", children=[
-                    html.Div(
-                        className="articles-table",
-                        style={"overflowX": "auto", "padding": "0"},
-                        children=[html.Table(
-                            className="scr-table",
-                            children=[
-                                html.Thead(html.Tr([
-                                    html.Th(lbl, style={
-                                        "width": w, "textAlign": a,
-                                        **({"paddingLeft": "20px"} if lbl == "Sentiment" else {}),
-                                    })
-                                    for lbl, w, a in _SENT_COLS
-                                ])),
-                                html.Tbody(id="screener-sentiment-rows"),
-                            ],
-                        )],
-                    ),
-                ]),
-            ],
+        html.Div(
+            className="articles-table",
+            style={"overflowX": "auto", "padding": "0"},
+            children=[html.Table(
+                className="scr-table",
+                children=[
+                    html.Thead(html.Tr([
+                        html.Th(lbl, style={"width": w, "textAlign": a})
+                        for lbl, w, a in _OV_COLS
+                    ])),
+                    html.Tbody(id="screener-overview-rows"),
+                ],
+            )],
         ),
     ],
 )
@@ -1047,22 +1409,46 @@ def _switch_filter_tab(*_):
 
 
 _ALL_FILTER_INPUTS = [
-    Input("screener-order",        "value"),
-    Input("screener-sort-dir",     "data"),
-    Input("screener-search",       "value"),
-    Input("screener-sector",       "value"),
-    Input("screener-mktcap",       "value"),
-    Input("screener-country",      "value"),
-    Input("screener-price",        "value"),
-    Input("screener-chg-pct",      "value"),
-    Input("screener-volume",       "value"),
-    Input("screener-avg-volume",   "value"),
-    Input("screener-sent-label",   "value"),
-    Input("screener-sent-score",   "value"),
-    Input("screener-window",       "value"),
-    Input("screener-min-articles", "value"),
-    Input("screener-trend",        "value"),
-    Input("screener-spike",        "value"),
+    Input("screener-order",         "value"),
+    Input("screener-sort-dir",      "data"),
+    Input("screener-search",        "value"),
+    Input("screener-sector",        "value"),
+    Input("screener-mktcap",        "value"),
+    Input("screener-country",       "value"),
+    Input("screener-price",         "value"),
+    Input("screener-chg-pct",       "value"),
+    Input("screener-volume",        "value"),
+    Input("screener-avg-volume",    "value"),
+    Input("screener-news-time",     "value"),
+    Input("screener-news-keywords", "value"),
+    Input("scr-news-custom-state",  "data"),
+    # Fundamental dropdowns
+    Input("scr-pe",  "value"), Input("scr-fpe", "value"),
+    Input("scr-peg", "value"), Input("scr-ps",  "value"),
+    Input("scr-pb",  "value"), Input("scr-eps", "value"),
+    Input("scr-roe", "value"), Input("scr-de",  "value"),
+    Input("scr-cr",  "value"), Input("scr-qr",  "value"),
+    Input("scr-dy",  "value"),
+    # Technical dropdowns
+    Input("scr-rsi",    "value"), Input("scr-sma20",  "value"),
+    Input("scr-sma50",  "value"), Input("scr-sma200", "value"),
+    Input("scr-avgvol", "value"), Input("scr-relvol", "value"),
+    Input("scr-52h",    "value"), Input("scr-52l",    "value"),
+    Input("scr-beta",   "value"),
+    # Profitability dropdowns (migration 016)
+    Input("scr-roa",    "value"), Input("scr-gm",     "value"),
+    Input("scr-om",     "value"), Input("scr-pm",     "value"),
+    # Tier 1 screener fields (migration 017)
+    Input("scr-float-short",  "value"), Input("scr-short-ratio",  "value"),
+    Input("scr-perf-w",       "value"), Input("scr-perf-m",       "value"),
+    Input("scr-perf-q",       "value"), Input("scr-perf-y",       "value"),
+    Input("scr-perf-ytd",     "value"),
+    Input("scr-recom",        "value"), Input("scr-target",       "value"),
+    Input("scr-eps-gy",       "value"), Input("scr-eps-gny",      "value"),
+    Input("scr-eps-g5y",      "value"), Input("scr-eps-gqoq",     "value"),
+    Input("scr-sales-gqoq",   "value"),
+    Input("scr-atr",          "value"),
+    Input("scr-insider-own",  "value"), Input("scr-inst-own",     "value"),
 ]
 
 
@@ -1076,30 +1462,57 @@ def _reset_screener_page(*_):
 
 
 @callback(
-    Output("screener-sector",       "value"),
-    Output("screener-mktcap",       "value"),
-    Output("screener-country",      "value"),
-    Output("screener-price",        "value"),
-    Output("screener-chg-pct",      "value"),
-    Output("screener-volume",       "value"),
-    Output("screener-avg-volume",   "value"),
-    Output("screener-sent-label",   "value"),
-    Output("screener-sent-score",   "value"),
-    Output("screener-window",       "value"),
-    Output("screener-min-articles", "value"),
-    Output("screener-trend",        "value"),
-    Output("screener-spike",        "value"),
-    Output("screener-industry",     "value"),
-    Output("screener-exchange",     "value"),
-    Output("screener-order",        "value"),
-    Output("screener-search",       "value"),
-    Input("screener-reset-btn",     "n_clicks"),
+    Output("screener-sector",        "value"),
+    Output("screener-mktcap",        "value"),
+    Output("screener-country",       "value"),
+    Output("screener-price",         "value"),
+    Output("screener-chg-pct",       "value"),
+    Output("screener-volume",        "value"),
+    Output("screener-avg-volume",    "value"),
+    Output("screener-industry",      "value"),
+    Output("screener-exchange",      "value"),
+    Output("screener-order",         "value"),
+    Output("screener-search",        "value"),
+    Output("screener-news-time",     "value"),
+    Output("screener-news-keywords", "value"),
+    Output("scr-news-custom-state",  "data"),
+    # Fundamental dropdowns
+    Output("scr-pe",  "value"), Output("scr-fpe", "value"),
+    Output("scr-peg", "value"), Output("scr-ps",  "value"),
+    Output("scr-pb",  "value"), Output("scr-eps", "value"),
+    Output("scr-roe", "value"), Output("scr-de",  "value"),
+    Output("scr-cr",  "value"), Output("scr-qr",  "value"),
+    Output("scr-dy",  "value"),
+    # Technical dropdowns
+    Output("scr-rsi",    "value"), Output("scr-sma20",  "value"),
+    Output("scr-sma50",  "value"), Output("scr-sma200", "value"),
+    Output("scr-avgvol", "value"), Output("scr-relvol", "value"),
+    Output("scr-52h",    "value"), Output("scr-52l",    "value"),
+    Output("scr-beta",   "value"),
+    # Profitability dropdowns (migration 016)
+    Output("scr-roa",    "value"), Output("scr-gm",     "value"),
+    Output("scr-om",     "value"), Output("scr-pm",     "value"),
+    # Tier 1 screener fields (migration 017)
+    Output("scr-float-short",  "value"), Output("scr-short-ratio",  "value"),
+    Output("scr-perf-w",       "value"), Output("scr-perf-m",       "value"),
+    Output("scr-perf-q",       "value"), Output("scr-perf-y",       "value"),
+    Output("scr-perf-ytd",     "value"),
+    Output("scr-recom",        "value"), Output("scr-target",       "value"),
+    Output("scr-eps-gy",       "value"), Output("scr-eps-gny",      "value"),
+    Output("scr-eps-g5y",      "value"), Output("scr-eps-gqoq",     "value"),
+    Output("scr-sales-gqoq",   "value"),
+    Output("scr-atr",          "value"),
+    Output("scr-insider-own",  "value"), Output("scr-inst-own",     "value"),
+    Input("screener-reset-btn", "n_clicks"),
     prevent_initial_call=True,
 )
 def _reset_filters(_):
-    return ("all", "all", "all", "all", "all", "all", "all",
-            "all", "all", "4hr", 0, "all", "all",
-            "all", "all", "avg_sentiment", "")
+    return (
+        "all", "all", "all", "all", "all", "all", "all",
+        "all", "all", "market_cap", "", "any", "", {},
+        # 41 × "any" for all dropdown filters
+        *( ["any"] * 41 ),
+    )
 
 
 @callback(
@@ -1145,40 +1558,46 @@ def _toggle_screener_star(n_clicks_list, version):
 
 
 @callback(
-    Output("screener-overview-rows",  "children"),
-    Output("screener-sentiment-rows", "children"),
-    Output("screener-count",          "children"),
-    Output("screener-pagination",     "children"),
-    Input("screener-interval",        "n_intervals"),
-    Input("screener-refresh-btn",     "n_clicks"),
+    Output("screener-overview-rows", "children"),
+    Output("screener-count",         "children"),
+    Output("screener-pagination",    "children"),
+    Input("screener-interval",       "n_intervals"),
+    Input("screener-refresh-btn",    "n_clicks"),
     *_ALL_FILTER_INPUTS,
-    Input("screener-page",            "data"),
-    Input("url",                      "pathname"),
-    Input("watchlist-store",          "data"),
+    Input("screener-page",           "data"),
+    Input("url",                     "pathname"),
+    Input("watchlist-store",         "data"),
 )
 def _update_screener(n, refresh_clicks,
                      order, sort_dir, search,
                      sector, mktcap, country, price, chg_pct, volume, avg_volume,
-                     sent_label, sent_score, window, min_articles, trend, spike,
+                     news_time, news_keywords, news_custom_state,
+                     pe, fpe, peg, ps, pb, eps, roe, de, cr, qr, dy,
+                     rsi, sma20, sma50, sma200, avgvol, relvol, h52, l52,
+                     beta, roa, gm, om, pm,
+                     float_short, short_ratio,
+                     perf_w, perf_m, perf_q, perf_y, perf_ytd,
+                     recom, target,
+                     eps_gy, eps_gny, eps_g5y, eps_gqoq, sales_gqoq,
+                     atr,
+                     insider_own, inst_own,
                      page, pathname, _wl_version):
     if pathname not in (None, "/screener"):
         raise PreventUpdate
 
-    order        = order    or "avg_sentiment"
-    sort_dir     = sort_dir or "desc"
-    window       = window   or "4hr"
-    min_articles = int(min_articles or 0)
-    page         = max(1, int(page or 1))
+    order    = order    or "market_cap"
+    sort_dir = sort_dir or "desc"
+    page     = max(1, int(page or 1))
 
-    df = _fetch_data(window, min_articles)
+    df = _fetch_data()
 
     if df.empty:
         empty_msg = [html.Div(
-            "No data yet — articles are being collected. Check back in a few minutes.",
+            "No data yet — price data is being collected. Check back in a few minutes.",
             style={"padding": "32px", "textAlign": "center",
                    "color": "#555", "fontSize": "14px"},
         )]
-        return empty_msg, empty_msg, "0 tickers", []
+        return empty_msg, "0 tickers", []
 
     if search:
         df = df[df["ticker"].str.upper().str.startswith(search.strip().upper())]
@@ -1190,12 +1609,68 @@ def _update_screener(n, refresh_clicks,
     df = _apply_chg_pct_filter(df, chg_pct or "all")
     df = _apply_volume_filter(df, volume or "all")
     df = _apply_avg_volume_filter(df, avg_volume or "all")
-    df = _apply_sent_label_filter(df, sent_label or "all")
-    df = _apply_sent_score_filter(df, sent_score or "all")
-    df = _apply_trend_filter(df, trend or "all")
-    df = _apply_spike_filter(df, spike or "all")
 
-    df = _apply_sort(df, "all", order, sort_dir)
+    # Fundamental dropdown filters
+    df = _apply_dd_filter(df, "pe_ratio",       pe,     _MAP_PE)
+    df = _apply_dd_filter(df, "forward_pe",     fpe,    _MAP_PE)
+    df = _apply_dd_filter(df, "peg_ratio",      peg,    _MAP_PEG)
+    df = _apply_dd_filter(df, "price_to_sales", ps,     _MAP_PS)
+    df = _apply_dd_filter(df, "price_to_book",  pb,     _MAP_PB)
+    df = _apply_dd_filter(df, "eps_ttm",        eps,    _MAP_EPS)
+    df = _apply_dd_filter(df, "roe",            roe,    _MAP_ROE)
+    df = _apply_dd_filter(df, "debt_to_equity", de,     _MAP_DE)
+    df = _apply_dd_filter(df, "current_ratio",  cr,     _MAP_CR)
+    df = _apply_dd_filter(df, "quick_ratio",    qr,     _MAP_QR)
+    df = _apply_dd_filter(df, "dividend_yield", dy,     _MAP_DY)
+    # Technical dropdown filters
+    df = _apply_dd_filter(df, "rsi_14",           rsi,    _MAP_RSI)
+    df = _apply_dd_filter(df, "sma_20_pct",       sma20,  _MAP_SMA)
+    df = _apply_dd_filter(df, "sma_50_pct",       sma50,  _MAP_SMA)
+    df = _apply_dd_filter(df, "sma_200_pct",      sma200, _MAP_SMA)
+    df = _apply_dd_filter(df, "avg_volume",       avgvol, _MAP_AVGVOL)
+    df = _apply_dd_filter(df, "rel_volume",       relvol, _MAP_RELVOL)
+    df = _apply_dd_filter(df, "week_52_high_pct", h52,    _MAP_52H)
+    df = _apply_dd_filter(df, "week_52_low_pct",  l52,    _MAP_52L)
+    df = _apply_dd_filter(df, "beta",             beta,   _MAP_BETA)
+    df = _apply_dd_filter(df, "roa",              roa,    _MAP_ROA)
+    df = _apply_dd_filter(df, "gross_margin",     gm,     _MAP_MARGIN)
+    df = _apply_dd_filter(df, "operating_margin", om,     _MAP_MARGIN)
+    df = _apply_dd_filter(df, "net_margin",       pm,     _MAP_MARGIN)
+    # Short Interest
+    df = _apply_dd_filter(df, "float_short",  float_short, _MAP_FLOAT_SHORT)
+    df = _apply_dd_filter(df, "short_ratio",  short_ratio, _MAP_SHORT_RATIO)
+    # Performance
+    df = _apply_dd_filter(df, "perf_week",  perf_w,   _MAP_PERF)
+    df = _apply_dd_filter(df, "perf_month", perf_m,   _MAP_PERF)
+    df = _apply_dd_filter(df, "perf_quart", perf_q,   _MAP_PERF)
+    df = _apply_dd_filter(df, "perf_year",  perf_y,   _MAP_PERF)
+    df = _apply_dd_filter(df, "perf_ytd",   perf_ytd, _MAP_PERF)
+    # Analyst
+    df = _apply_dd_filter(df, "analyst_recom", recom, _MAP_RECOM)
+    if "target_price" in df.columns and "price" in df.columns:
+        _p = pd.to_numeric(df["price"], errors="coerce").replace(0, float("nan"))
+        _t = pd.to_numeric(df["target_price"], errors="coerce")
+        df["target_upside"] = (_t - _p) / _p * 100
+    df = _apply_dd_filter(df, "target_upside", target, _MAP_TARGET)
+    # EPS / Sales Growth
+    df = _apply_dd_filter(df, "eps_growth_this_year", eps_gy,     _MAP_GROWTH)
+    df = _apply_dd_filter(df, "eps_growth_next_year", eps_gny,    _MAP_GROWTH)
+    df = _apply_dd_filter(df, "eps_growth_5y",        eps_g5y,    _MAP_GROWTH)
+    df = _apply_dd_filter(df, "eps_growth_qoq",       eps_gqoq,   _MAP_GROWTH)
+    df = _apply_dd_filter(df, "sales_growth_qoq",     sales_gqoq, _MAP_GROWTH)
+    # Volatility
+    df = _apply_dd_filter(df, "atr",         atr,         _MAP_ATR)
+    # Ownership
+    df = _apply_dd_filter(df, "insider_own", insider_own, _MAP_INSIDER_OWN)
+    df = _apply_dd_filter(df, "inst_own",    inst_own,    _MAP_INST_OWN)
+
+    news_tickers = _fetch_news_tickers(
+        news_time or "any", news_keywords or "", news_custom_state or {}
+    )
+    if news_tickers is not None:
+        df = df[df["ticker"].isin(news_tickers)]
+
+    df = _apply_sort(df, order, sort_dir)
     df = df.reset_index(drop=True)
 
     total       = len(df)
@@ -1217,7 +1692,56 @@ def _update_screener(n, refresh_clicks,
     watched = set(watchlist_tickers())
     return (
         _render_overview_rows(df, page, watched),
-        _render_sentiment_rows(df, page),
         count_el,
         _render_pagination(page, total_pages),
     )
+
+
+# ── News filter callbacks ──────────────────────────────────────────────────
+
+@callback(
+    Output("scr-news-custom-panel", "style"),
+    Input("screener-news-time", "value"),
+    prevent_initial_call=True,
+)
+def _open_panel_on_custom(value):
+    if value == "custom":
+        return {}
+    return {"display": "none"}
+
+
+@callback(
+    Output("scr-news-cats", "value"),
+    Input("scr-news-select-all", "n_clicks"),
+    prevent_initial_call=True,
+)
+def _select_all_news(_):
+    return [val for val, _ in _NEWS_CAT_LABELS]
+
+
+@callback(
+    Output("scr-news-custom-state", "data"),
+    Output("scr-news-custom-panel", "style", allow_duplicate=True),
+    Input("scr-news-apply", "n_clicks"),
+    State("scr-news-cats",      "value"),
+    State("scr-news-date-from", "date"),
+    State("scr-news-date-to",   "date"),
+    prevent_initial_call=True,
+)
+def _apply_custom(_, cats, date_from, date_to):
+    state = {
+        "cats":      cats or [],
+        "date_from": date_from,
+        "date_to":   date_to,
+    }
+    return state, {"display": "none"}
+
+
+@callback(
+    Output("screener-news-time",    "value"),
+    Output("scr-news-custom-panel", "style", allow_duplicate=True),
+    Input("scr-news-cancel", "n_clicks"),
+    prevent_initial_call=True,
+)
+def _cancel_custom(_):
+    return "any", {"display": "none"}
