@@ -18,6 +18,7 @@ from sentiment_analysis.dashboard.db import (
     watchlist_remove,
     watchlist_tickers,
 )
+from sentiment_analysis.dashboard.formatters import _fmt_mktcap
 
 dash.register_page(
     __name__,
@@ -76,14 +77,6 @@ def _fmt_chg(v) -> tuple[str, str]:
     sign  = "+" if v >= 0 else ""
     return f"{sign}{v:.2f}%", color
 
-
-def _fmt_mktcap(v) -> str:
-    v = _safe(v)
-    if v is None:    return "—"
-    if v >= 1e12:    return f"${v/1e12:.2f}T"
-    if v >= 1e9:     return f"${v/1e9:.1f}B"
-    if v >= 1e6:     return f"${v/1e6:.1f}M"
-    return f"${v:,.0f}"
 
 
 def _fmt_volume(v) -> str:

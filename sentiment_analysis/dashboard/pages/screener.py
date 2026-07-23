@@ -24,6 +24,7 @@ from sentiment_analysis.dashboard.db import (
     watchlist_tickers,
 )
 from sentiment_analysis.ingestion.finviz_ingestor import is_market_hours
+from sentiment_analysis.dashboard.formatters import _fmt_mktcap
 
 dash.register_page(__name__, path="/screener", name="Screener", title="Screener")
 
@@ -281,15 +282,6 @@ def _fmt_volume(v) -> str:
     if v >= 1e3:  return f"{v/1e3:.1f}K"
     return str(int(v))
 
-
-def _fmt_mktcap(v) -> str:
-    v = _safe(v)
-    if v is None:
-        return "—"
-    if v >= 1e12: return f"${v/1e12:.2f}T"
-    if v >= 1e9:  return f"${v/1e9:.1f}B"
-    if v >= 1e6:  return f"${v/1e6:.1f}M"
-    return f"${v:,.0f}"
 
 
 def _fmt_pe(v) -> str:

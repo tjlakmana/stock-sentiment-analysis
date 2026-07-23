@@ -137,11 +137,15 @@ _SKIP_AFTER_FAILURES = 3
 
 def _parse_market_cap(s: object) -> int | None:
     """
-    Convert the Market Cap value from the v=111 export to an integer.
+    Convert the Market Cap value from the v=111 export to absolute dollars.
 
-    Finviz's bulk export returns Market Cap as a plain float in millions
-    (e.g. 37693.37 for a $37.7 B company).  Strings with B/M/K suffixes
-    are also handled in case the format ever changes.
+    The v=111 CSV delivers Market Cap as a plain float in MILLIONS with no
+    suffix (e.g. "5064697.09" for NVDA at ~$5.06T, "11977.50" for AA at
+    ~$12B).  Multiplying by 1_000_000 converts to absolute dollars so the
+    stored value matches what every other system expects.
+
+    Strings with B/M/K suffixes are also handled defensively in case the
+    export format ever changes.
     """
     text = str(s).strip() if s is not None else ""
     if not text or text in _NA:
@@ -153,7 +157,8 @@ def _parse_market_cap(s: object) -> int | None:
             return int(float(text[:-1]) * 1_000_000)
         if text.endswith("K"):
             return int(float(text[:-1]) * 1_000)
-        return int(float(text.replace(",", "")))
+        # Plain float in millions — multiply by 1_000_000 to get absolute dollars
+        return int(float(text.replace(",", "")) * 1_000_000)
     except (ValueError, TypeError):
         return None
 
