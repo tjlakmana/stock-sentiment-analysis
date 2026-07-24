@@ -33,3 +33,53 @@ def _fmt_mktcap(v: object) -> str:
     if f >= 1_000:
         return f"{f / 1_000:.2f}K"
     return str(int(f))
+
+
+def _fmt_ratio(v: object, decimals: int = 2) -> str:
+    """
+    Format a ratio or multiple (P/E, PEG, Forward P/E, etc.) to a fixed
+    number of decimal places. Returns "N/A" for missing or non-numeric values.
+
+    Reusable across Key Metrics, Financial Highlights, and Technical Indicators.
+    """
+    try:
+        f = float(v)
+        if math.isnan(f):
+            return "N/A"
+    except (TypeError, ValueError):
+        return "N/A"
+    return f"{f:.{decimals}f}"
+
+
+def _fmt_pct(v: object, decimals: int = 1, signed: bool = False) -> str:
+    """
+    Format a percentage already stored as a percentage value
+    (e.g. 3.5 stored → '3.5%'). Returns "N/A" for missing values.
+    Pass signed=True to prepend '+' on positive values.
+
+    Reusable across Financial Highlights and Technical Indicators.
+    """
+    try:
+        f = float(v)
+        if math.isnan(f):
+            return "N/A"
+    except (TypeError, ValueError):
+        return "N/A"
+    prefix = "+" if signed and f > 0 else ""
+    return f"{prefix}{f:.{decimals}f}%"
+
+
+def _fmt_relvol(v: object) -> str:
+    """
+    Format relative volume as a multiplier (e.g. 1.80x).
+    Returns "N/A" for missing values.
+
+    Reusable across Key Metrics and Technical Indicators.
+    """
+    try:
+        f = float(v)
+        if math.isnan(f):
+            return "N/A"
+    except (TypeError, ValueError):
+        return "N/A"
+    return f"{f:.2f}x"

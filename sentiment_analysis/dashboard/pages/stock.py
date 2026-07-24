@@ -18,7 +18,12 @@ from sentiment_analysis.dashboard.db import (
     watchlist_remove,
     watchlist_tickers,
 )
-from sentiment_analysis.dashboard.formatters import _fmt_mktcap
+from sentiment_analysis.dashboard.formatters import (
+    _fmt_mktcap,
+    _fmt_pct,
+    _fmt_ratio,
+    _fmt_relvol,
+)
 
 dash.register_page(
     __name__,
@@ -31,7 +36,16 @@ dash.register_page(
 
 _PRICE_SQL = """
     SELECT price, change_pct, volume, updated_at, company_name, sector,
-           country, exchange, market_cap, pre_market_price, post_market_price
+           country, exchange, market_cap, pre_market_price, post_market_price,
+           pe_ratio, forward_pe, rel_volume, rsi_14,
+           peg_ratio, price_to_sales, price_to_book, dividend_yield, eps_ttm,
+           roe, roa, gross_margin, operating_margin, net_margin,
+           debt_to_equity, current_ratio, quick_ratio,
+           eps_growth_this_year, eps_growth_next_year, eps_growth_5y,
+           beta, sma_20_pct, sma_50_pct, sma_200_pct,
+           week_52_high_pct, week_52_low_pct, avg_volume, atr,
+           float_short, short_ratio, insider_own, inst_own,
+           perf_week, perf_month
     FROM ticker_prices
     WHERE ticker = :ticker
 """
@@ -45,12 +59,32 @@ _SENTIMENT_SQL = """
     LIMIT 1
 """
 
+_SEC_FILINGS_SQL = """
+    SELECT title, source_name, COALESCE(published_at, ingested_at) AS filed_at, url
+    FROM rss_articles
+    WHERE source_name IN ('sec_edgar','sec_form4','sec_10q','sec_s1','sec_sc13g')
+      AND (:ticker = ANY(tickers) OR primary_ticker = :ticker)
+    ORDER BY COALESCE(published_at, ingested_at) DESC
+    LIMIT 15
+"""
+
+_SEC_FORM_LABELS: dict[str, str] = {
+    "sec_edgar":  "8-K",
+    "sec_form4":  "Form 4",
+    "sec_10q":    "10-Q",
+    "sec_s1":     "S-1",
+    "sec_sc13g":  "SC 13G",
+}
+
 _RECENT_NEWS_SQL = """
     SELECT title, source_name, ingested_at, sentiment_label, url
     FROM rss_articles
-    WHERE primary_ticker = :ticker
+    WHERE :ticker = ANY(tickers)
       AND ingested_at > NOW() - INTERVAL '7 days'
-    ORDER BY ingested_at DESC
+      AND sentiment_score IS NOT NULL
+    ORDER BY
+        (primary_ticker = :ticker) DESC,
+        ingested_at DESC
     LIMIT 20
 """
 
@@ -95,6 +129,34 @@ def _fmt_ts(val) -> str:
         return "—"
 
 
+def _fmt_relative_time(val) -> str:
+    """
+    Convert a timestamp to a human-readable relative time string.
+    Used in the Recent News section so readers see '15 minutes ago' instead
+    of a full datetime. Handles both tz-aware and tz-naive timestamps.
+    """
+    try:
+        ts = pd.Timestamp(val)
+        now = pd.Timestamp.now(tz=ts.tzinfo)
+        secs = max(int((now - ts).total_seconds()), 0)
+        if secs < 60:
+            return "Just now"
+        if secs < 3600:
+            m = secs // 60
+            return f"{m} minute ago" if m == 1 else f"{m} minutes ago"
+        if secs < 86400:
+            h = secs // 3600
+            return f"{h} hour ago" if h == 1 else f"{h} hours ago"
+        if secs < 172800:
+            return "Yesterday"
+        d = secs // 86400
+        if d < 7:
+            return f"{d} days ago"
+        return ts.strftime("%b %d")
+    except Exception:
+        return "Unknown Time"
+
+
 def _score_label(score: float | None) -> str:
     if score is None:  return "Neutral"
     if score >= 0.35:  return "Bullish"
@@ -126,6 +188,15 @@ _SENT_BORDER: dict[str, str] = {
     "Neutral":          "#3d5afe",
     "Somewhat Bearish": "#ff5252",
     "Bearish":          "#d50000",
+}
+
+# Maps the 5-category sentiment labels to 3 colored dot emojis for the news badge.
+_SENT_DOT: dict[str, str] = {
+    "Bullish":          "🟢",
+    "Somewhat Bullish": "🟢",
+    "Neutral":          "🟡",
+    "Somewhat Bearish": "🔴",
+    "Bearish":          "🔴",
 }
 
 
@@ -164,12 +235,80 @@ def _coming_soon(title: str) -> html.Div:
     ])
 
 
-def _metric(label: str, value: str, sub: str = "") -> html.Div:
-    return html.Div(className="sw-metric-card", children=[
-        html.Div(label, className="sw-metric-label"),
-        html.Div(value, className="sw-metric-value"),
-        html.Div(sub,   className="sw-metric-sub") if sub else None,
-    ])
+def _metric_card(
+    label: str,
+    value: str,
+    sub: str = "",
+    icon: str = "",
+    value_color: str = "",
+    status: str = "",
+    status_color: str = "",
+    tooltip: str = "",
+) -> html.Div:
+    """
+    Reusable metric display card for Key Metrics, Financial Highlights,
+    and Technical Indicators sections.
+
+    Args:
+        label:        Uppercase label above the value (e.g. "P/E Ratio").
+        value:        Primary display string (e.g. "23.50" or "Bullish").
+        sub:          Optional secondary line below the value.
+        icon:         Optional icon character rendered above the label.
+        value_color:  CSS color applied to the value text (e.g. "#00e676").
+        status:       Optional status badge text (e.g. "Oversold").
+        status_color: CSS color for the status badge text.
+        tooltip:      Plain-English description shown on hover.
+    """
+    children = []
+    if icon:
+        children.append(html.Span(icon, className="sw-metric-icon"))
+    children.append(html.Div(label, className="sw-metric-label"))
+    children.append(
+        html.Div(
+            value,
+            className="sw-metric-value",
+            style={"color": value_color} if value_color else {},
+        )
+    )
+    if status:
+        children.append(
+            html.Span(
+                status,
+                className="sw-metric-status",
+                style={"color": status_color} if status_color else {},
+            )
+        )
+    if sub:
+        children.append(html.Div(sub, className="sw-metric-sub"))
+
+    extra = {"data-tooltip": tooltip} if tooltip else {}
+    return html.Div(className="sw-metric-card", children=children, **extra)
+
+
+def _rsi_status(v) -> tuple[str, str]:
+    """Return (status_label, color) for an RSI value. Empty strings when neutral."""
+    v = _safe(v)
+    if v is None:
+        return "", ""
+    if v < 30:
+        return "Oversold", "#00e676"
+    if v > 70:
+        return "Overbought", "#ff5252"
+    return "", ""
+
+
+def _relvol_color(v) -> str:
+    """Return a CSS color reflecting how unusual today's volume is vs. average."""
+    v = _safe(v)
+    if v is None:
+        return ""
+    if v >= 2.0:
+        return "#00d4ff"
+    if v >= 1.5:
+        return "#82b1ff"
+    if v < 0.5:
+        return "#555"
+    return ""
 
 
 def _sent_badge(label: str) -> html.Span:
@@ -187,12 +326,82 @@ def _sent_badge(label: str) -> html.Span:
     )
 
 
+def _news_sentiment_badge(label: str) -> html.Span:
+    """
+    Compact news-list sentiment badge. Shows a colored dot emoji followed by
+    the sentiment label. Falls back to Neutral when label is missing or unknown.
+    Reusable in any section that needs a compact per-article sentiment indicator.
+    """
+    resolved = label if label in _SENT_DOT else "Neutral"
+    dot   = _SENT_DOT[resolved]
+    color = _SENT_COLOR.get(resolved, _SENT_COLOR["Neutral"])
+    return html.Span(
+        f"{dot} {resolved}",
+        className="sw-news-badge",
+        style={"color": color},
+    )
+
+
+def _sign_color(v) -> str:
+    v = _safe(v)
+    if v is None: return ""
+    if v > 0:     return "#00e676"
+    if v < 0:     return "#ff5252"
+    return "#888"
+
+
+def _ratio_health_color(v, good_above: float) -> str:
+    v = _safe(v)
+    if v is None: return ""
+    return "#00e676" if v >= good_above else "#ff5252"
+
+
+def _fmt_atr(v) -> str:
+    v = _safe(v)
+    return f"${v:.2f}" if v is not None else "—"
+
+
+def _fmt_date(val) -> str:
+    try:
+        return pd.Timestamp(val).strftime("%b %d, %Y")
+    except Exception:
+        return "—"
+
+
+def _fmt_short_ratio(v) -> str:
+    v = _safe(v)
+    return f"{v:.1f}d" if v is not None else "—"
+
+
+def _highlight_group(title: str, rows: list) -> html.Div:
+    """Compact label-value stat group for Financial Highlights and Technical Indicators."""
+    stat_rows = []
+    for label, value, color, tooltip in rows:
+        kwargs = {"title": tooltip} if tooltip else {}
+        stat_rows.append(
+            html.Div(className="sw-stat-row", children=[
+                html.Span(label, className="sw-stat-label"),
+                html.Span(
+                    value,
+                    className="sw-stat-value",
+                    style={"color": color} if color else {},
+                    **kwargs,
+                ),
+            ])
+        )
+    return html.Div(className="sw-highlight-group", children=[
+        html.Div(title, className="sw-highlight-group-title"),
+        *stat_rows,
+    ])
+
+
 # ── Full page renderer ────────────────────────────────────────────────────
 
 def _render_page(ticker: str) -> html.Div:
-    price_df = query_df(_PRICE_SQL,       {"ticker": ticker})
-    sent_df  = query_df(_SENTIMENT_SQL,   {"ticker": ticker})
-    news_df  = query_df(_RECENT_NEWS_SQL, {"ticker": ticker})
+    price_df = query_df(_PRICE_SQL,          {"ticker": ticker})
+    sent_df  = query_df(_SENTIMENT_SQL,      {"ticker": ticker})
+    news_df  = query_df(_RECENT_NEWS_SQL,    {"ticker": ticker})
+    sec_df   = query_df(_SEC_FILINGS_SQL,    {"ticker": ticker})
 
     p = price_df.iloc[0].to_dict() if not price_df.empty else {}
     s = sent_df.iloc[0].to_dict()  if not sent_df.empty  else {}
@@ -207,6 +416,46 @@ def _render_page(ticker: str) -> html.Div:
     market_cap   = p.get("market_cap")
     volume       = p.get("volume")
     updated_at   = p.get("updated_at")
+    pe_ratio     = p.get("pe_ratio")
+    forward_pe   = p.get("forward_pe")
+    rel_volume   = p.get("rel_volume")
+    rsi_14       = p.get("rsi_14")
+
+    # Financial Highlights fields
+    peg_ratio             = p.get("peg_ratio")
+    price_to_sales        = p.get("price_to_sales")
+    price_to_book         = p.get("price_to_book")
+    dividend_yield        = p.get("dividend_yield")
+    eps_ttm               = p.get("eps_ttm")
+    roe                   = p.get("roe")
+    roa                   = p.get("roa")
+    gross_margin          = p.get("gross_margin")
+    operating_margin      = p.get("operating_margin")
+    net_margin            = p.get("net_margin")
+    debt_to_equity        = p.get("debt_to_equity")
+    current_ratio         = p.get("current_ratio")
+    quick_ratio           = p.get("quick_ratio")
+    eps_growth_this_year  = p.get("eps_growth_this_year")
+    eps_growth_next_year  = p.get("eps_growth_next_year")
+    eps_growth_5y         = p.get("eps_growth_5y")
+    perf_week             = p.get("perf_week")
+    perf_month            = p.get("perf_month")
+
+    # Technical Indicators fields
+    beta          = p.get("beta")
+    sma_20_pct    = p.get("sma_20_pct")
+    sma_50_pct    = p.get("sma_50_pct")
+    sma_200_pct   = p.get("sma_200_pct")
+    week_52_high  = p.get("week_52_high_pct")
+    week_52_low   = p.get("week_52_low_pct")
+    avg_volume    = p.get("avg_volume")
+    atr           = p.get("atr")
+    float_short   = p.get("float_short")
+    short_ratio   = p.get("short_ratio")
+
+    # Insider Activity fields
+    insider_own = p.get("insider_own")
+    inst_own    = p.get("inst_own")
 
     chg_str, chg_color = _fmt_chg(chg)
     upd_str = _fmt_ts(updated_at)
@@ -231,7 +480,9 @@ def _render_page(ticker: str) -> html.Div:
     # SECTION 1 — Header
     # ─────────────────────────────────────────────────────────────────────
 
-    tags = [t for t in [sector, exchange_val, country] if t]
+    # Metadata line: Exchange • Sector • Country (omit any field that is empty)
+    meta_parts = [p for p in [exchange_val, sector, country] if p]
+    meta_str   = " • ".join(meta_parts)
 
     in_watchlist = ticker in set(watchlist_tickers())
     wl_label = "⭐ Watching" if in_watchlist else "☆ Watch"
@@ -260,10 +511,7 @@ def _render_page(ticker: str) -> html.Div:
                       id="stock-company-name"),
         ]),
         html.Div(className="sw-header-foot", children=[
-            html.Div(
-                [html.Span(t, className="sw-tag") for t in tags],
-                className="sw-tag-row",
-            ) if tags else None,
+            html.Span(meta_str, className="sw-header-meta") if meta_str else None,
             html.Span(
                 f"Updated {upd_str}" if upd_str != "—" else "",
                 className="sw-updated",
@@ -290,20 +538,83 @@ def _render_page(ticker: str) -> html.Div:
     # SECTION 3 — Key Metrics
     # ─────────────────────────────────────────────────────────────────────
 
+    rsi_lbl, rsi_color = _rsi_status(rsi_14)
+
     metrics = _section("Key Metrics", [
         html.Div(className="sw-metric-grid", children=[
-            _metric("Price",          _fmt_price(price),
-                    chg_str if chg is not None else ""),
-            _metric("Market Cap",     _fmt_mktcap(market_cap)),
-            _metric("Volume",         _fmt_volume(volume)),
-            _metric("24h Sentiment",  sent_label,
-                    f"Score {avg_score:+.3f}" if avg_score is not None else "—"),
-            _metric("Article Count",  str(art_count)),
-            _metric("Momentum",       momentum),
-            _metric("Sector",         sector       or "—"),
-            _metric("Exchange",       exchange_val or "—"),
-            _metric("Country",        country      or "—"),
-            _metric("Last Updated",   upd_str),
+            _metric_card(
+                "Current Price",
+                _fmt_price(price),
+                tooltip="Current market price per share.",
+            ),
+            _metric_card(
+                "Daily Change",
+                chg_str if chg is not None else "N/A",
+                value_color=chg_color if chg is not None else "#555",
+                tooltip=(
+                    "How much the price has moved today compared to "
+                    "yesterday's closing price."
+                ),
+            ),
+            _metric_card(
+                "Market Cap",
+                _fmt_mktcap(market_cap),
+                tooltip=(
+                    "Total market value of all outstanding shares. "
+                    "Calculated as price × total shares outstanding."
+                ),
+            ),
+            _metric_card(
+                "P/E Ratio",
+                _fmt_ratio(pe_ratio, decimals=2),
+                sub="Trailing 12 months",
+                tooltip=(
+                    "Price-to-Earnings ratio (trailing 12 months). "
+                    "Shows how much investors pay per dollar of earnings. "
+                    "Lower is generally cheaper relative to current earnings."
+                ),
+            ),
+            _metric_card(
+                "Forward P/E",
+                _fmt_ratio(forward_pe, decimals=2),
+                sub="Next year estimates",
+                tooltip=(
+                    "Expected P/E based on next year's estimated earnings. "
+                    "Often lower than the trailing P/E for growing companies."
+                ),
+            ),
+            _metric_card(
+                "Relative Volume",
+                _fmt_relvol(rel_volume),
+                sub="vs. avg daily volume",
+                value_color=_relvol_color(rel_volume),
+                tooltip=(
+                    "Today's volume compared to the stock's average daily volume. "
+                    "Above 1.0x means more activity than usual. "
+                    "Spikes often signal a news event or earnings release."
+                ),
+            ),
+            _metric_card(
+                "RSI (14)",
+                _fmt_ratio(rsi_14, decimals=1),
+                status=rsi_lbl,
+                status_color=rsi_color,
+                tooltip=(
+                    "Relative Strength Index over 14 days. "
+                    "Below 30 may indicate oversold conditions (potential buy). "
+                    "Above 70 may indicate overbought conditions (potential sell)."
+                ),
+            ),
+            _metric_card(
+                "24h Sentiment",
+                sent_label if avg_score is not None else "N/A",
+                sub=f"Score {avg_score:+.3f}" if avg_score is not None else "",
+                value_color=sent_color if avg_score is not None else "#555",
+                tooltip=(
+                    "Average news sentiment from the past 24 hours, "
+                    "based on FinBERT analysis of articles mentioning this ticker."
+                ),
+            ),
         ]),
     ])
 
@@ -313,31 +624,44 @@ def _render_page(ticker: str) -> html.Div:
 
     news_rows: list = []
     for _, n in news_df.iterrows():
-        title    = str(n.get("title")          or "")
-        url      = str(n.get("url")            or "#")
-        source   = str(n.get("source_name")   or "")
-        sent_lbl = str(n.get("sentiment_label") or "")
-        sc       = _SENT_COLOR.get(sent_lbl, "#555")
-        ts = _fmt_ts(n.get("ingested_at"))
+        title    = str(n.get("title")           or "").strip()
+        url      = str(n.get("url")             or "#").strip()
+        source   = str(n.get("source_name")     or "").strip() or "Unknown Source"
+        sent_lbl = str(n.get("sentiment_label") or "").strip()
+        rel_ts   = _fmt_relative_time(n.get("ingested_at"))
+
+        if not title:
+            continue
 
         news_rows.append(html.Div(className="sw-news-row", children=[
-            html.Div(className="sw-news-meta", children=[
-                html.Span(source, className="sw-news-source"),
-                html.Span(ts,     className="sw-news-ts"),
-                html.Span(sent_lbl, className="sw-news-sent",
-                          style={"color": sc}) if sent_lbl else None,
+            html.A(
+                title,
+                href=url,
+                target="_blank",
+                rel="noopener noreferrer",
+                className="sw-news-title",
+            ),
+            html.Div(className="sw-news-footer", children=[
+                html.Div(className="sw-news-byline", children=[
+                    html.Span(source, className="sw-news-source"),
+                    html.Span(" · ", className="sw-news-sep"),
+                    html.Span(rel_ts,  className="sw-news-ts"),
+                ]),
+                _news_sentiment_badge(sent_lbl),
             ]),
-            html.A(title, href=url, target="_blank",
-                   rel="noopener noreferrer",
-                   className="sw-news-title"),
         ]))
 
     news_section = _section("Recent News", [
         html.Div(
-            news_rows or [
-                html.Div("No recent articles.",
-                         style={"color": "#444", "fontSize": "13px",
-                                "padding": "24px 0"})
+            news_rows if news_rows else [
+                html.Div(className="sw-news-empty", children=[
+                    html.Div("No recent news", className="sw-news-empty-title"),
+                    html.Div(
+                        "No articles mentioning this ticker have been found "
+                        "in the past 7 days.",
+                        className="sw-news-empty-sub",
+                    ),
+                ]),
             ],
             className="sw-news-list",
         ),
@@ -390,43 +714,164 @@ def _render_page(ticker: str) -> html.Div:
     ])
 
     # ─────────────────────────────────────────────────────────────────────
-    # SECTION 6 — Company Information
+    # SECTION 6 — Financial Highlights
     # ─────────────────────────────────────────────────────────────────────
 
-    info_rows = [
-        ("Company",  company      or "—"),
-        ("Ticker",   ticker),
-        ("Sector",   sector       or "—"),
-        ("Exchange", exchange_val or "—"),
-        ("Country",  country      or "—"),
-    ]
+    fh_valuation = _highlight_group("Valuation", [
+        ("PEG Ratio",    _fmt_ratio(peg_ratio, decimals=2),     "", "PEG Ratio — P/E divided by earnings growth rate. Below 1.0 may signal undervaluation relative to growth."),
+        ("Price / Sales", _fmt_ratio(price_to_sales, decimals=2), "", "Price-to-Sales ratio. Lower values suggest cheaper revenue relative to market cap."),
+        ("Price / Book",  _fmt_ratio(price_to_book, decimals=2),  "", "Price-to-Book ratio. Compares market value to the book value of assets."),
+        ("EPS (TTM)",     _fmt_ratio(eps_ttm, decimals=2),         "", "Earnings Per Share over the trailing twelve months."),
+    ])
 
-    co_info = _section("Company Information", [
-        html.Div(className="sw-info-table", children=[
-            html.Div(className="sw-info-row", children=[
-                html.Span(k, className="sw-info-key"),
-                html.Span(v, className="sw-info-val"),
-            ])
-            for k, v in info_rows
+    fh_profitability = _highlight_group("Profitability", [
+        ("Gross Margin",     _fmt_pct(gross_margin),     _sign_color(gross_margin),     "Revenue minus cost of goods sold, as a % of revenue."),
+        ("Operating Margin", _fmt_pct(operating_margin), _sign_color(operating_margin), "Operating income as a % of revenue. Reflects operational efficiency."),
+        ("Net Margin",       _fmt_pct(net_margin),       _sign_color(net_margin),       "Net income as a % of revenue after all expenses."),
+        ("ROE",              _fmt_pct(roe),               _sign_color(roe),              "Return on Equity — net income as a % of shareholders' equity."),
+        ("ROA",              _fmt_pct(roa),               _sign_color(roa),              "Return on Assets — how efficiently the company uses its assets to generate profit."),
+    ])
+
+    fh_health = _highlight_group("Financial Health", [
+        ("Current Ratio",  _fmt_ratio(current_ratio, decimals=2),  _ratio_health_color(current_ratio, 1.5),  "Current assets divided by current liabilities. Above 1.5 is generally healthy."),
+        ("Quick Ratio",    _fmt_ratio(quick_ratio,   decimals=2),  _ratio_health_color(quick_ratio, 1.0),    "Liquid assets divided by current liabilities. Above 1.0 means short-term debts can be covered without selling inventory."),
+        ("Debt / Equity",  _fmt_ratio(debt_to_equity, decimals=2), "",                                        "Total debt relative to shareholders' equity. Lower is generally safer."),
+    ])
+
+    fh_growth = _highlight_group("Growth", [
+        ("EPS This Year",  _fmt_pct(eps_growth_this_year), _sign_color(eps_growth_this_year), "Earnings per share growth estimate for the current fiscal year."),
+        ("EPS Next Year",  _fmt_pct(eps_growth_next_year), _sign_color(eps_growth_next_year), "Earnings per share growth estimate for the next fiscal year."),
+        ("EPS 5Y (CAGR)",  _fmt_pct(eps_growth_5y),        _sign_color(eps_growth_5y),        "5-year compound annual EPS growth rate estimate."),
+    ])
+
+    fh_income = _highlight_group("Income", [
+        ("Dividend Yield", _fmt_pct(dividend_yield), "", "Annual dividend as a % of share price."),
+        ("Perf Week",      _fmt_pct(perf_week, decimals=2),  _sign_color(perf_week),  "Price performance over the past week."),
+        ("Perf Month",     _fmt_pct(perf_month, decimals=2), _sign_color(perf_month), "Price performance over the past month."),
+    ])
+
+    financial_highlights = _section("Financial Highlights", [
+        html.Div(className="sw-highlight-grid", children=[
+            fh_valuation, fh_profitability, fh_health, fh_growth, fh_income,
         ]),
     ])
 
     # ─────────────────────────────────────────────────────────────────────
-    # Placeholder sections 7–11
+    # SECTION 7 — Technical Indicators
     # ─────────────────────────────────────────────────────────────────────
+
+    ti_trend = _highlight_group("Trend", [
+        ("SMA 20 (%)",  _fmt_pct(sma_20_pct,  decimals=2), _sign_color(sma_20_pct),  "Price vs. 20-day simple moving average. Positive = above SMA (bullish short-term)."),
+        ("SMA 50 (%)",  _fmt_pct(sma_50_pct,  decimals=2), _sign_color(sma_50_pct),  "Price vs. 50-day simple moving average. Positive = above SMA (bullish medium-term)."),
+        ("SMA 200 (%)", _fmt_pct(sma_200_pct, decimals=2), _sign_color(sma_200_pct), "Price vs. 200-day simple moving average. Positive = above SMA (bullish long-term)."),
+    ])
+
+    ti_momentum = _highlight_group("Momentum", [
+        ("RSI (14)", _fmt_ratio(rsi_14, decimals=1), rsi_color if rsi_lbl else "",
+         "Relative Strength Index (14-day). Below 30 = oversold, above 70 = overbought."),
+        ("Beta",     _fmt_ratio(beta, decimals=2),   "",
+         "Sensitivity to market movements. Above 1.0 = more volatile than the market."),
+    ])
+
+    ti_volatility = _highlight_group("Volatility", [
+        ("ATR", _fmt_atr(atr), "", "Average True Range — average daily price movement in dollars over the past 14 days."),
+        ("Beta", _fmt_ratio(beta, decimals=2), "", "Market volatility coefficient. 2.0 = moves ~2× as much as the market."),
+    ])
+
+    ti_trading = _highlight_group("Trading", [
+        ("Avg Volume",    _fmt_volume(avg_volume),     "", "Average daily trading volume."),
+        ("Rel Volume",    _fmt_relvol(rel_volume),     _relvol_color(rel_volume), "Today's volume relative to the average. Above 1.0x = unusual activity."),
+    ])
+
+    ti_52wk = _highlight_group("52 Week Range", [
+        ("vs. 52W High", _fmt_pct(week_52_high, decimals=2), _sign_color(week_52_high), "Current price relative to the 52-week high. Negative = below the high."),
+        ("vs. 52W Low",  _fmt_pct(week_52_low,  decimals=2), _sign_color(week_52_low),  "Current price relative to the 52-week low. Positive = above the low."),
+    ])
+
+    ti_short = _highlight_group("Short Interest", [
+        ("Float Short",  _fmt_pct(float_short, decimals=2), "", "Percentage of the float that is currently sold short. High values may indicate bearish sentiment."),
+        ("Short Ratio",  _fmt_short_ratio(short_ratio),     "", "Days-to-cover ratio — how many days of average volume it would take to cover all short positions."),
+    ])
+
+    technical_indicators = _section("Technical Indicators", [
+        html.Div(className="sw-highlight-grid", children=[
+            ti_trend, ti_momentum, ti_volatility, ti_trading, ti_52wk, ti_short,
+        ]),
+    ])
+
+    # ─────────────────────────────────────────────────────────────────────
+    # SECTION 8 — Insider Activity
+    # ─────────────────────────────────────────────────────────────────────
+
+    ia_ownership = _highlight_group("Ownership", [
+        ("Insider Own",      _fmt_pct(insider_own, decimals=2), "", "Percentage of shares held by company insiders (officers, directors, 10%+ holders)."),
+        ("Institutional Own", _fmt_pct(inst_own,   decimals=2), "", "Percentage of shares held by institutional investors (funds, ETFs, pension plans)."),
+    ])
+
+    insider_activity = _section("Insider Activity", [
+        html.Div(className="sw-highlight-grid", children=[ia_ownership]),
+    ])
+
+    # ─────────────────────────────────────────────────────────────────────
+    # SECTION 9 — SEC Filings
+    # ─────────────────────────────────────────────────────────────────────
+
+    sec_rows: list = []
+    for _, f in sec_df.iterrows():
+        title     = str(f.get("title")       or "").strip()
+        source    = str(f.get("source_name") or "").strip()
+        url       = str(f.get("url")         or "#").strip()
+        filed_at  = _fmt_date(f.get("filed_at"))
+        form_lbl  = _SEC_FORM_LABELS.get(source, source.upper())
+
+        if not title:
+            continue
+
+        sec_rows.append(html.Div(className="sw-sec-row", children=[
+            html.Span(form_lbl, className="sw-sec-type"),
+            html.Div(className="sw-sec-body", children=[
+                html.A(
+                    title,
+                    href=url,
+                    target="_blank",
+                    rel="noopener noreferrer",
+                    className="sw-sec-title",
+                ),
+                html.Span(filed_at, className="sw-sec-date"),
+            ]),
+        ]))
+
+    sec_filings = _section("SEC Filings", [
+        html.Div(
+            sec_rows if sec_rows else [
+                html.Div(className="sw-news-empty", children=[
+                    html.Div("No recent filings", className="sw-news-empty-title"),
+                    html.Div(
+                        "No SEC filings for this ticker have been ingested yet.",
+                        className="sw-news-empty-sub",
+                    ),
+                ]),
+            ],
+            className="sw-sec-list",
+        ),
+    ])
+
+    # ─────────────────────────────────────────────────────────────────────
+    # SECTION 10 — AI Insights (hidden — implementation pending)
+    # ─────────────────────────────────────────────────────────────────────
+    # ai_insights = _coming_soon("AI Insights")
 
     return html.Div([
         header,
-        chart,
         metrics,
+        chart,
         news_section,
         sentiment_section,
-        co_info,
-        _coming_soon("Financial Highlights"),
-        _coming_soon("Technical Indicators"),
-        _coming_soon("Insider Activity"),
-        _coming_soon("Analyst Ratings"),
-        _coming_soon("SEC Filings"),
+        financial_highlights,
+        technical_indicators,
+        insider_activity,
+        sec_filings,
+        # ai_insights,
     ])
 
 

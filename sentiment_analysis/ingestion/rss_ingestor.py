@@ -15,6 +15,7 @@ from datetime import datetime, timezone
 from typing import List, Optional, Set
 
 import feedparser
+from langdetect import DetectorFactory, LangDetectException, detect_langs
 from loguru import logger
 from sqlalchemy import select
 
@@ -22,6 +23,8 @@ from sentiment_analysis.config import settings
 from sentiment_analysis.ingestion.ticker_list import extract_tickers
 from sentiment_analysis.storage.database import get_async_session
 from sentiment_analysis.storage.models import IngestionLog, RSSArticle
+
+DetectorFactory.seed = 0  # deterministic language detection across runs
 
 # Opener with relaxed SSL for public RSS feeds whose TLS chains include
 # intermediate CA certs without Basic Constraints marked critical — rejected by
@@ -34,12 +37,39 @@ _FEED_OPENER = urllib.request.build_opener(
 )
 
 
-def _is_english(title: str) -> bool:
-    """Return False if more than 15% of title characters are non-ASCII."""
-    if not title:
+def _is_english(title: str, summary: str = "") -> bool:
+    """Return False if the combined title + summary text is not English.
+
+    Two-stage check:
+    1. Fast-path: reject when >15% of characters are non-ASCII (blocks CJK,
+       Arabic, Cyrillic without a library call).
+    2. langdetect on the combined text, requiring English confidence >= 0.80.
+       Rejects and logs when detection is inconclusive or the top language is
+       not English above the threshold.
+    """
+    text = f"{title} {summary}".strip() or title
+    if not text:
         return True
-    non_ascii = sum(1 for c in title if ord(c) > 127)
-    return (non_ascii / len(title)) <= 0.15
+
+    non_ascii = sum(1 for c in text if ord(c) > 127)
+    if non_ascii / len(text) > 0.15:
+        return False
+
+    try:
+        results = detect_langs(text)
+    except LangDetectException:
+        logger.info(f"Skipped — language detection inconclusive: {title[:60]}")
+        return False
+
+    for r in results:
+        if r.lang == "en" and r.prob >= 0.80:
+            return True
+
+    top = results[0] if results else None
+    lang = top.lang if top else "unknown"
+    conf = f"{top.prob:.2f}" if top else "n/a"
+    logger.info(f"Skipped non-English article — lang={lang} conf={conf}: {title[:60]}")
+    return False
 
 
 def _parse_published(entry: feedparser.FeedParserDict) -> Optional[datetime]:
@@ -62,7 +92,7 @@ def _parse_published(entry: feedparser.FeedParserDict) -> Optional[datetime]:
 
 # ── SEC EDGAR enrichment ──────────────────────────────────────────────────────
 
-_SEC_SOURCES = frozenset({"sec_edgar", "sec_form4"})
+_SEC_SOURCES = frozenset({"sec_edgar", "sec_form4", "sec_10q", "sec_s1", "sec_sc13g"})
 
 _FILED_RE   = re.compile(r'Filed:\s*(\d{4}-\d{2}-\d{2})')
 _HTML_TAGS  = re.compile(r'<[^>]+>')
@@ -72,6 +102,9 @@ _ARCHIVE_RE = re.compile(r'href="(/Archives/edgar/data/[^"]+)"', re.IGNORECASE)
 _FORM_DISPLAY_MAP: dict[str, tuple[str, str]] = {
     'sec_edgar':  ('8-K',    ''),
     'sec_form4':  ('Form 4', ' (Insider Trading)'),
+    'sec_10q':    ('10-Q',   ''),
+    'sec_s1':     ('S-1',    ''),
+    'sec_sc13g':  ('SC 13G', ' (Large Investor)'),
 }
 
 
@@ -351,8 +384,7 @@ class RSSIngestor:
                         summary: str = entry.get("summary", "")
                         published_at = _parse_published(entry)
 
-                        if not _is_english(title):
-                            logger.info(f"[{log_source}] Skipped non-English article: {title[:50]}")
+                        if not _is_english(title, summary):
                             continue
 
                         # Clean SEC titles: remove CIK numbers, role suffixes,

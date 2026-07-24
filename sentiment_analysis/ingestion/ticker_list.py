@@ -148,6 +148,14 @@ _STOP_WORDS: frozenset = frozenset({
     "FDIC", "IMF", "WTO", "Q1", "Q2", "Q3", "Q4", "YE", "H1", "H2",
 })
 
+# SEC filing form codes that create false ticker matches when the bare-uppercase
+# scanner sees the letter after the hyphen in e.g. "8-K" (hyphen is non-word,
+# so \b matches before K and _BARE_TICKER_RE captures it as the ticker K).
+_FILING_CODE_RE: re.Pattern = re.compile(
+    r"\b(?:10-K|10-Q|8-K|10-KSB|10-QSB|S-1|S-3|S-4|S-11|DEF\s*14A|SC\s*13[GD])\b",
+    re.IGNORECASE,
+)
+
 # ---------------------------------------------------------------------------
 # Pass 3 — company name → ticker map
 # ---------------------------------------------------------------------------
@@ -514,7 +522,8 @@ _COMPANY_TICKER_MAP: Dict[str, str] = {
     "mattel": "MAT",
     "lululemon": "LULU",
     "deckers outdoor": "DECK",
-    "gap": "GAP",
+    # "gap" intentionally excluded — "gap" is a common English noun and matches
+    # phrases like "the AI compute gap"; The Gap Inc. trades as GPS not GAP.
     "ebay": "EBAY",
     "etsy": "ETSY",
     "copart": "CPRT",
@@ -653,7 +662,8 @@ _COMPANY_TICKER_MAP: Dict[str, str] = {
     "zoom": "ZM",
     "snapchat": "SNAP",
     "roblox": "RBLX",
-    "unity": "U",
+    # "unity" intentionally excluded — "unity" is common prose and U is not in
+    # SP500_TICKER_SET; Unity Software trades as U but is not an S&P 500 constituent.
     "sofi": "SOFI",
     "affirmative": "AFRM",
     "upstart": "UPST",
@@ -762,6 +772,11 @@ def extract_tickers(text: str) -> List[str]:
     if not text:
         return []
 
+    # Strip SEC filing form codes before scanning so e.g. "K" in "8-K" never
+    # reaches the bare-uppercase pass (hyphen is a non-word char that gives \b
+    # a word boundary immediately before the letter, fooling _BARE_TICKER_RE).
+    text = _FILING_CODE_RE.sub(" ", text)
+
     found: list[str] = []
     seen: set[str] = set()
 
@@ -776,7 +791,8 @@ def extract_tickers(text: str) -> List[str]:
     for match in _BARE_TICKER_RE.finditer(text):
         ticker = match.group(1).upper()
         if (
-            ticker in SP500_TICKER_SET
+            len(ticker) >= 2          # single-char tokens excluded; cashtags (Pass 1) still capture $K, $T, etc.
+            and ticker in SP500_TICKER_SET
             and ticker not in _STOP_WORDS
             and ticker not in seen
         ):

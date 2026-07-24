@@ -291,6 +291,76 @@ class TickerPrice(Base):
         return f"<TickerPrice {self.ticker} ${self.price}>"
 
 
+class TickerSnapshotHistory(Base):
+    """
+    One row per ticker per calendar day (ET).
+
+    Populated by the Finviz bulk ingestor after each successful upsert into
+    ticker_prices.  The UNIQUE constraint on (ticker, snapshot_date) ensures
+    only the first snapshot of each day is kept; subsequent ingestor runs that
+    same day are silent no-ops via ON CONFLICT DO NOTHING.
+
+    ticker_prices continues to represent the live/current snapshot — this table
+    is the append-only historical archive used for time-series charts.
+    """
+
+    __tablename__ = "ticker_snapshot_history"
+
+    id            = Column(Integer, primary_key=True, autoincrement=True)
+    ticker        = Column(Text,    nullable=False)
+    snapshot_date = Column(DateTime(timezone=False), nullable=False)   # date only, ET
+
+    # Core price
+    price         = Column(Float,      nullable=True)
+    market_cap    = Column(BigInteger,  nullable=True)
+
+    # Valuation
+    pe            = Column(Float, nullable=True)
+    forward_pe    = Column(Float, nullable=True)
+    peg           = Column(Float, nullable=True)
+    price_book    = Column(Float, nullable=True)
+    price_sales   = Column(Float, nullable=True)
+
+    # Profitability
+    gross_margin  = Column(Float, nullable=True)
+    net_margin    = Column(Float, nullable=True)
+    roe           = Column(Float, nullable=True)
+    roa           = Column(Float, nullable=True)
+
+    # Financial health
+    current_ratio = Column(Float, nullable=True)
+    debt_equity   = Column(Float, nullable=True)
+
+    # Growth
+    eps_growth_this_year = Column(Float, nullable=True)
+    eps_growth_next_year = Column(Float, nullable=True)
+    eps_growth_5y        = Column(Float, nullable=True)
+
+    # Technical
+    rsi_14        = Column(Float, nullable=True)
+    sma_20_pct    = Column(Float, nullable=True)
+    sma_50_pct    = Column(Float, nullable=True)
+    sma_200_pct   = Column(Float, nullable=True)
+    atr           = Column(Float, nullable=True)
+    rel_volume    = Column(Float, nullable=True)
+
+    # Short interest
+    short_float   = Column(Float, nullable=True)
+    short_ratio   = Column(Float, nullable=True)
+
+    created_at    = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    __table_args__ = (
+        # Enforce one snapshot per ticker per day
+        Index("uq_snapshot_ticker_date", "ticker", "snapshot_date", unique=True),
+        Index("ix_snapshot_ticker", "ticker"),
+        Index("ix_snapshot_date",   "snapshot_date"),
+    )
+
+    def __repr__(self) -> str:
+        return f"<TickerSnapshotHistory {self.ticker} {self.snapshot_date} ${self.price}>"
+
+
 class Watchlist(Base):
     """Single-user watchlist — one row per tracked ticker."""
 

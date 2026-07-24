@@ -1087,31 +1087,20 @@ body {
     margin-bottom: 10px;
 }
 .sw-header-foot {
-    display:     flex;
-    align-items: center;
-    gap:         16px;
-    flex-wrap:   wrap;
+    display:        flex;
+    flex-direction: column;
+    align-items:    flex-start;
+    gap:            5px;
     padding-bottom: 20px;
     border-bottom:  1px solid #1c1c1c;
 }
-.sw-tag-row {
-    display:     flex;
-    flex-wrap:   wrap;
-    gap:         6px;
-}
-.sw-tag {
-    background:    #131313;
-    border:        1px solid #252525;
-    border-radius: 4px;
-    color:         #888;
-    font-size:     11px;
-    font-weight:   500;
-    letter-spacing: 0.04em;
-    padding:       3px 9px;
-    text-transform: uppercase;
+.sw-header-meta {
+    color:          #555;
+    font-size:      12px;
+    letter-spacing: 0.01em;
 }
 .sw-updated {
-    color:     #333;
+    color:     #383838;
     font-size: 11px;
 }
 
@@ -1132,18 +1121,69 @@ body {
 }
 
 /* ── Metric grid ────────────────────────────────────────── */
+
+/* Desktop: 4 cards per row; narrows at tablet/mobile breakpoints */
 .sw-metric-grid {
     display:               grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap:                   10px;
     padding-bottom:        28px;
 }
+@media (max-width: 768px) {
+    .sw-metric-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+    .sw-metric-grid { grid-template-columns: 1fr; }
+}
+
 .sw-metric-card {
     background:    #0d0d0d;
     border:        1px solid #1a1a1a;
     border-radius: 6px;
     padding:       14px 16px;
+    position:      relative;  /* required for tooltip ::after positioning */
+    cursor:        default;
 }
+
+/* Bring hovered card above siblings so the tooltip is never clipped */
+.sw-metric-card[data-tooltip]:hover {
+    z-index: 10;
+}
+
+/* CSS-only tooltip rendered via ::after on cards that carry data-tooltip */
+.sw-metric-card[data-tooltip]:hover::after {
+    content:        attr(data-tooltip);
+    position:       absolute;
+    bottom:         calc(100% + 8px);
+    left:           50%;
+    transform:      translateX(-50%);
+    z-index:        50;
+    background:     #1c1c1c;
+    border:         1px solid #2c2c2c;
+    border-radius:  5px;
+    color:          #999;
+    font-size:      11px;
+    font-weight:    400;
+    line-height:    1.55;
+    padding:        8px 12px;
+    pointer-events: none;
+    white-space:    normal;
+    width:          220px;
+}
+
+/* Tooltip caret */
+.sw-metric-card[data-tooltip]:hover::before {
+    content:     "";
+    position:    absolute;
+    bottom:      calc(100% + 3px);
+    left:        50%;
+    transform:   translateX(-50%);
+    border:      5px solid transparent;
+    border-top-color: #2c2c2c;
+    pointer-events: none;
+    z-index:     51;
+}
+
 .sw-metric-label {
     color:          #444;
     font-size:      10px;
@@ -1157,11 +1197,30 @@ body {
     font-size:   18px;
     font-weight: 600;
     line-height: 1.1;
+    font-variant-numeric: tabular-nums;
 }
 .sw-metric-sub {
     color:       #444;
     font-size:   11px;
     margin-top:  4px;
+}
+
+/* Optional icon rendered above the label (emoji or unicode character) */
+.sw-metric-icon {
+    display:      block;
+    font-size:    13px;
+    margin-bottom: 8px;
+    opacity:      0.55;
+}
+
+/* Status badge shown below the value (e.g. "Oversold", "Overbought") */
+.sw-metric-status {
+    display:        inline-block;
+    font-size:      10px;
+    font-weight:    700;
+    letter-spacing: 0.06em;
+    margin-top:     6px;
+    text-transform: uppercase;
 }
 
 /* ── News list ──────────────────────────────────────────── */
@@ -1170,46 +1229,108 @@ body {
     flex-direction: column;
     padding-bottom: 28px;
 }
+
+/* Each article: headline first, then footer row with source/time + badge */
 .sw-news-row {
-    border-bottom: 1px solid #141414;
-    padding:       14px 0;
-    display:       flex;
+    border-bottom:  1px solid #141414;
+    padding:        14px 0;
+    display:        flex;
     flex-direction: column;
-    gap:           6px;
+    gap:            8px;
 }
 .sw-news-row:last-child { border-bottom: none; }
-.sw-news-meta {
+
+/* Headline link — primary visual element; wraps cleanly on narrow screens */
+.sw-news-title {
+    color:           #b0b0b0;
+    font-size:       13px;
+    line-height:     1.5;
+    text-decoration: none;
+    display:         block;
+    word-break:      break-word;
+    transition:      color 0.15s;
+}
+.sw-news-title:hover { color: #00d4ff; }
+
+/* Footer row: source + relative time on the left, sentiment badge on the right */
+.sw-news-footer {
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    gap:             12px;
+}
+
+/* Byline holds source and relative time; shrinks when space is tight */
+.sw-news-byline {
     display:     flex;
     align-items: center;
-    gap:         10px;
-    flex-wrap:   wrap;
+    flex:        1;
+    min-width:   0;
+    overflow:    hidden;
 }
+
 .sw-news-source {
     color:          #3a7ab3;
     font-size:      11px;
     font-weight:    600;
     letter-spacing: 0.03em;
     text-transform: uppercase;
+    white-space:    nowrap;
+    overflow:       hidden;
+    text-overflow:  ellipsis;
+    min-width:      0;
 }
+
+.sw-news-sep {
+    color:       #252525;
+    font-size:   11px;
+    padding:     0 5px;
+    flex-shrink: 0;
+}
+
 .sw-news-ts {
-    color:     #2e2e2e;
-    font-size: 11px;
+    color:       #2e2e2e;
+    font-size:   11px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
-.sw-news-sent {
-    font-size:   10px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
+
+/* Compact colored-dot + label badge; text color applied inline via Python */
+.sw-news-badge {
+    font-size:      10px;
+    font-weight:    700;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
+    white-space:    nowrap;
+    flex-shrink:    0;
 }
-.sw-news-title {
-    color:       #b0b0b0;
-    font-size:   13px;
-    line-height: 1.5;
-    text-decoration: none;
-    display:     block;
-    transition:  color 0.15s;
+
+/* On very small screens let the footer wrap so badge drops below byline */
+@media (max-width: 420px) {
+    .sw-news-footer {
+        flex-wrap: wrap;
+        gap:       6px;
+    }
 }
-.sw-news-title:hover { color: #00d4ff; }
+
+/* Empty state shown when no articles are found for the past 7 days */
+.sw-news-empty {
+    padding:    48px 0;
+    text-align: center;
+}
+.sw-news-empty-title {
+    color:         #383838;
+    font-size:     14px;
+    font-weight:   600;
+    margin-bottom: 8px;
+}
+.sw-news-empty-sub {
+    color:       #282828;
+    font-size:   12px;
+    max-width:   320px;
+    margin:      0 auto;
+    line-height: 1.65;
+}
 
 /* ── Sentiment analytics ────────────────────────────────── */
 .sw-sent-grid {
@@ -1283,36 +1404,6 @@ body {
     margin-top: 4px;
 }
 
-/* ── Company info table ─────────────────────────────────── */
-.sw-info-table {
-    background:     #0d0d0d;
-    border:         1px solid #1a1a1a;
-    border-radius:  6px;
-    overflow:       hidden;
-    padding-bottom: 0;
-    margin-bottom:  28px;
-}
-.sw-info-row {
-    display:     flex;
-    align-items: center;
-    border-bottom: 1px solid #141414;
-    padding:     12px 16px;
-    gap:         16px;
-}
-.sw-info-row:last-child { border-bottom: none; }
-.sw-info-key {
-    color:          #3a3a3a;
-    font-size:      11px;
-    font-weight:    600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    width:          110px;
-    flex-shrink:    0;
-}
-.sw-info-val {
-    color:     #b0b0b0;
-    font-size: 13px;
-}
 
 /* ── Coming Soon placeholder ────────────────────────────── */
 .sw-coming-soon {
@@ -1676,3 +1767,117 @@ body {
 .scr-ncp-btn-cancel:hover  { color: #888; }
 .scr-ncp-btn-apply         { background: #003344; border-color: #006688; color: #00d4ff; }
 .scr-ncp-btn-apply:hover   { background: #004455; }
+
+/* ═══════════════════════════════════════════════════════════
+   Stock Workspace — Financial Highlights & Technical Indicators
+   (.sw-highlight-grid, .sw-highlight-group, .sw-stat-*)
+═══════════════════════════════════════════════════════════ */
+
+.sw-highlight-grid {
+    display:               grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:                   10px;
+    margin-bottom:         8px;
+}
+@media (max-width: 900px) {
+    .sw-highlight-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+    .sw-highlight-grid { grid-template-columns: 1fr; }
+}
+
+.sw-highlight-group {
+    background:    #0a0a0a;
+    border:        1px solid #1a1a1a;
+    border-radius: 6px;
+    padding:       14px 16px;
+}
+
+.sw-highlight-group-title {
+    color:          #404040;
+    font-size:      10px;
+    font-weight:    700;
+    letter-spacing: 0.08em;
+    margin-bottom:  10px;
+    text-transform: uppercase;
+}
+
+.sw-stat-row {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     baseline;
+    padding:         5px 0;
+    border-bottom:   1px solid #111;
+}
+.sw-stat-row:last-child { border-bottom: none; }
+
+.sw-stat-label {
+    color:     #505050;
+    font-size: 12px;
+    flex:      1;
+}
+
+.sw-stat-value {
+    color:                #aaa;
+    font-size:            12px;
+    font-variant-numeric: tabular-nums;
+    text-align:           right;
+    flex-shrink:          0;
+    margin-left:          8px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Stock Workspace — SEC Filings list (.sw-sec-*)
+═══════════════════════════════════════════════════════════ */
+
+.sw-sec-list {
+    display:        flex;
+    flex-direction: column;
+    gap:            0;
+}
+
+.sw-sec-row {
+    display:     flex;
+    align-items: flex-start;
+    gap:         12px;
+    padding:     12px 0;
+    border-bottom: 1px solid #111;
+}
+.sw-sec-row:last-child { border-bottom: none; }
+
+.sw-sec-type {
+    background:     #0d1a2a;
+    border:         1px solid #1a3a5a;
+    border-radius:  4px;
+    color:          #4da6ff;
+    flex-shrink:    0;
+    font-size:      10px;
+    font-weight:    700;
+    letter-spacing: 0.05em;
+    min-width:      52px;
+    padding:        3px 7px;
+    text-align:     center;
+    text-transform: uppercase;
+}
+
+.sw-sec-body {
+    display:        flex;
+    flex-direction: column;
+    gap:            4px;
+    flex:           1;
+    min-width:      0;
+}
+
+.sw-sec-title {
+    color:           #c0c0c0;
+    font-size:       13px;
+    line-height:     1.4;
+    text-decoration: none;
+    word-break:      break-word;
+}
+.sw-sec-title:hover { color: #00d4ff; text-decoration: underline; }
+
+.sw-sec-date {
+    color:     #383838;
+    font-size: 11px;
+}

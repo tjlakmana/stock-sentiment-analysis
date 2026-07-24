@@ -73,6 +73,7 @@ async def _job_prices() -> None:
 
     if price_data:
         await _store_prices(price_data)
+        await _store_snapshot_history()
 
 
 async def _store_prices(price_data: list[dict]) -> None:
@@ -95,6 +96,58 @@ async def _store_prices(price_data: list[dict]) -> None:
             await session.execute(stmt)
 
     logger.debug(f"[price] Upserted {len(price_data)} price records.")
+
+
+async def _store_snapshot_history() -> None:
+    """
+    Insert one row per ticker into ticker_snapshot_history for today (ET).
+
+    Runs a single INSERT … SELECT FROM ticker_prices so all ~11k tickers are
+    handled in one round-trip.  ON CONFLICT DO NOTHING means every subsequent
+    ingestor run on the same calendar day is a silent, instant no-op.
+
+    Called from _job_prices() after _store_prices() commits successfully.
+    """
+    from sqlalchemy import text as _text
+
+    from sentiment_analysis.storage.database import get_async_session
+
+    sql = _text("""
+        INSERT INTO ticker_snapshot_history (
+            ticker, snapshot_date,
+            price, market_cap,
+            pe, forward_pe, peg, price_book, price_sales,
+            gross_margin, net_margin, roe, roa,
+            current_ratio, debt_equity,
+            eps_growth_this_year, eps_growth_next_year, eps_growth_5y,
+            rsi_14, sma_20_pct, sma_50_pct, sma_200_pct,
+            atr, rel_volume,
+            short_float, short_ratio
+        )
+        SELECT
+            ticker,
+            (CURRENT_TIMESTAMP AT TIME ZONE 'America/New_York')::date,
+            price,       market_cap,
+            pe_ratio,    forward_pe,  peg_ratio, price_to_book, price_to_sales,
+            gross_margin, net_margin, roe,       roa,
+            current_ratio, debt_to_equity,
+            eps_growth_this_year, eps_growth_next_year, eps_growth_5y,
+            rsi_14, sma_20_pct, sma_50_pct, sma_200_pct,
+            atr, rel_volume,
+            float_short, short_ratio
+        FROM ticker_prices
+        ON CONFLICT (ticker, snapshot_date) DO NOTHING
+    """)
+
+    async with get_async_session() as session:
+        result = await session.execute(sql)
+        await session.commit()
+
+    inserted = result.rowcount
+    if inserted > 0:
+        logger.info(f"[snapshot] Inserted {inserted} new daily snapshots.")
+    else:
+        logger.debug("[snapshot] Daily snapshots already recorded for today — skipped.")
 
 
 async def _job_cleanup() -> None:

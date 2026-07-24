@@ -89,14 +89,58 @@ class Settings:
 
     # ------------------------------------------------------------------ #
     # RSS feed definitions: internal_name -> URL                           #
+    # Organized by category for maintainability.                           #
+    # All URLs validated as reachable public RSS/Atom feeds.               #
     # ------------------------------------------------------------------ #
     rss_feeds: Dict[str, str] = field(
         default_factory=lambda: {
-            # Newswires
-            "pr_newswire":            "https://www.prnewswire.com/rss/news-releases-list.rss",
-            "globe_newswire_finance": "https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services",
-            "globe_newswire_ma":      "https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions",
-            # SEC EDGAR
+            # ── FINANCIAL NEWS ──────────────────────────────────────────
+            "cnbc_finance": (
+                "https://www.cnbc.com/id/100003114/device/rss/rss.html"
+            ),
+            "cnbc_earnings": (
+                "https://www.cnbc.com/id/15839135/device/rss/rss.html"
+            ),
+            "yahoo_finance_news": (
+                "https://finance.yahoo.com/news/rssindex"
+            ),
+            "marketwatch_news": (
+                "https://feeds.marketwatch.com/marketwatch/marketpulse/"
+            ),
+            "wsj_markets": (
+                "https://feeds.a.dj.com/rss/RSSMarketsMain.xml"
+            ),
+            "wsj_business": (
+                "https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml"
+            ),
+            "ft_markets": (
+                "https://www.ft.com/markets?format=rss"
+            ),
+            "bloomberg_markets": (
+                "https://feeds.bloomberg.com/markets/news.rss"
+            ),
+            "motley_fool": (
+                "https://www.fool.com/feeds/index.aspx?id=fool-headlines"
+            ),
+
+            # ── PRESS RELEASES ──────────────────────────────────────────
+            "pr_newswire": (
+                "https://www.prnewswire.com/rss/news-releases-list.rss"
+            ),
+            "globe_newswire_finance": (
+                "https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services"
+            ),
+            "globe_newswire_ma": (
+                "https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions"
+            ),
+            "globe_newswire_earnings": (
+                "https://www.globenewswire.com/RssFeed/subjectcode/05-Earnings"
+            ),
+            "globe_newswire_company": (
+                "https://www.globenewswire.com/RssFeed/subjectcode/02-Company%20Announcement"
+            ),
+
+            # ── REGULATORY / SEC EDGAR ───────────────────────────────────
             "sec_edgar": (
                 "https://www.sec.gov/cgi-bin/browse-edgar"
                 "?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom"
@@ -105,10 +149,52 @@ class Settings:
                 "https://www.sec.gov/cgi-bin/browse-edgar"
                 "?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom"
             ),
-            # Regulatory
+            "sec_10q": (
+                "https://www.sec.gov/cgi-bin/browse-edgar"
+                "?action=getcurrent&type=10-Q&dateb=&owner=include&count=40&output=atom"
+            ),
+            "sec_s1": (
+                "https://www.sec.gov/cgi-bin/browse-edgar"
+                "?action=getcurrent&type=S-1&dateb=&owner=include&count=40&output=atom"
+            ),
+            "sec_sc13g": (
+                "https://www.sec.gov/cgi-bin/browse-edgar"
+                "?action=getcurrent&type=SC+13G&dateb=&owner=include&count=40&output=atom"
+            ),
             "fda": (
                 "https://www.fda.gov/about-fda/contact-fda/stay-informed"
                 "/rss-feeds/press-releases/rss.xml"
+            ),
+            "fed_reserve": (
+                "https://www.federalreserve.gov/feeds/press_all.xml"
+            ),
+            "fed_reserve_monetary": (
+                "https://www.federalreserve.gov/feeds/press_monetary.xml"
+            ),
+            "ftc_news": (
+                "https://www.ftc.gov/feeds/press-release.xml"
+            ),
+
+            # ── TECHNOLOGY ───────────────────────────────────────────────
+            "techcrunch": (
+                "https://techcrunch.com/feed/"
+            ),
+            "arstechnica": (
+                "https://feeds.arstechnica.com/arstechnica/index"
+            ),
+            "venturebeat": (
+                "https://venturebeat.com/feed/"
+            ),
+            "zdnet": (
+                "https://www.zdnet.com/news/rss.xml"
+            ),
+
+            # ── HEALTHCARE / BIOTECH ─────────────────────────────────────
+            "fierce_biotech": (
+                "https://www.fiercebiotech.com/rss/xml"
+            ),
+            "stat_news": (
+                "https://www.statnews.com/feed/"
             ),
         }
     )
