@@ -10,6 +10,7 @@ from __future__ import annotations
 from sqlalchemy import (
     ARRAY,
     BigInteger,
+    Boolean,
     Column,
     DateTime,
     Float,
@@ -376,6 +377,81 @@ class Watchlist(Base):
 
     def __repr__(self) -> str:
         return f"<Watchlist {self.ticker}>"
+
+
+class Alert(Base):
+    """
+    User-defined alert rule for a single ticker.
+
+    Supported alert_type values: 'price' | 'sentiment'
+    Supported operator values:   '>'     | '<'
+
+    When is_active is True the scheduler evaluates this rule every minute
+    and writes a row to alert_history if the condition fires.  A 1-hour
+    cooldown prevents the same alert from firing on consecutive ticks.
+    """
+
+    __tablename__ = "alerts"
+
+    id         = Column(Integer, primary_key=True, autoincrement=True)
+    ticker     = Column(String(20), nullable=False)
+    alert_type = Column(String(20), nullable=False)   # 'price' | 'sentiment'
+    operator   = Column(String(5),  nullable=False)   # '>'     | '<'
+    threshold  = Column(Float,      nullable=False)
+    is_active     = Column(Boolean, nullable=False, default=True)
+    condition_met = Column(Boolean, nullable=False, default=False)   # price/sentiment: True while condition holds
+    last_seen_at  = Column(DateTime(timezone=True), server_default=func.now(), nullable=True)   # breaking_news/volume_spike: high-water mark
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    __table_args__ = (
+        Index("ix_alerts_ticker",    "ticker"),
+        Index("ix_alerts_is_active", "is_active"),
+    )
+
+    def __repr__(self) -> str:
+        return (
+            f"<Alert #{self.id} {self.ticker} {self.alert_type} "
+            f"{self.operator} {self.threshold} active={self.is_active}>"
+        )
+
+
+class AlertHistory(Base):
+    """
+    Immutable record of every time an alert rule fired.
+
+    alert_id FK → alerts.id with CASCADE delete so removing an alert also
+    removes all of its history rows automatically.
+    """
+
+    __tablename__ = "alert_history"
+
+    id            = Column(Integer, primary_key=True, autoincrement=True)
+    alert_id      = Column(
+        Integer,
+        ForeignKey("alerts.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    ticker        = Column(String(20),             nullable=False)
+    trigger_value = Column(Float,                  nullable=False)
+    triggered_at  = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+    message       = Column(Text, nullable=False)
+
+    __table_args__ = (
+        Index("ix_alert_history_alert_id",    "alert_id"),
+        Index("ix_alert_history_triggered_at", "triggered_at"),
+        Index("ix_alert_history_ticker",       "ticker"),
+    )
+
+    def __repr__(self) -> str:
+        return (
+            f"<AlertHistory #{self.id} alert={self.alert_id} "
+            f"{self.ticker}={self.trigger_value} at={self.triggered_at}>"
+        )
 
 
 class SentimentSpike(Base):

@@ -1881,3 +1881,290 @@ body {
     color:     #383838;
     font-size: 11px;
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   ALERTS PAGE
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Page header */
+.al-page-header {
+    align-items:     center;
+    display:         flex;
+    justify-content: space-between;
+    margin-bottom:   20px;
+}
+.al-title {
+    color:       #e0e0e0;
+    font-size:   22px;
+    font-weight: 600;
+}
+.al-create-btn {
+    background:    #00d4ff;
+    border:        none;
+    border-radius: 6px;
+    color:         #0a0a0a;
+    cursor:        pointer;
+    font-size:     13px;
+    font-weight:   600;
+    padding:       8px 16px;
+    transition:    background 0.15s;
+}
+.al-create-btn:hover { background: #00b8d9; }
+
+/* Feedback message */
+.al-msg {
+    border-radius: 6px;
+    font-size:     13px;
+    margin-bottom: 14px;
+    padding:       10px 14px;
+}
+.al-msg-ok    { background: rgba(0,230,118,0.12); border: 1px solid #00e676; color: #00e676; }
+.al-msg-error { background: rgba(255,82,82,0.12);  border: 1px solid #ff5252; color: #ff5252; }
+
+/* Summary cards */
+.al-summary {
+    display:               grid;
+    gap:                   14px;
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom:         22px;
+}
+.al-card {
+    background:    #1a1a1a;
+    border:        1px solid #2a2a2a;
+    border-radius: 8px;
+    padding:       16px 20px;
+    text-align:    center;
+}
+.al-card-value {
+    color:               #e0e0e0;
+    font-size:           28px;
+    font-variant-numeric: tabular-nums;
+    font-weight:         700;
+    line-height:         1.1;
+}
+.al-card-label {
+    color:      #666;
+    font-size:  11px;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+/* Section title between tables */
+.al-section-title {
+    color:         #888;
+    font-size:     12px;
+    font-weight:   600;
+    letter-spacing: 0.07em;
+    margin:        22px 0 10px;
+    text-transform: uppercase;
+}
+
+/* Create form */
+.al-form-wrap {
+    background:    #141414;
+    border:        1px solid #2a2a2a;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding:       18px 20px;
+}
+.al-form-title {
+    color:         #e0e0e0;
+    font-size:     14px;
+    font-weight:   600;
+    margin-bottom: 14px;
+}
+.al-form-row {
+    align-items: flex-end;
+    display:     flex;
+    flex-wrap:   wrap;
+    gap:         12px;
+    margin-top:  10px;
+}
+.al-form-field {
+    display:        flex;
+    flex:           1 1 140px;
+    flex-direction: column;
+    gap:            5px;
+}
+.al-form-label {
+    color:      #888;
+    font-size:  11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+.al-input {
+    background:    #1e1e1e;
+    border:        1px solid #333;
+    border-radius: 5px;
+    color:         #e0e0e0;
+    font-size:     13px;
+    outline:       none;
+    padding:       7px 10px;
+    transition:    border-color 0.15s;
+    width:         100%;
+    box-sizing:    border-box;
+}
+.al-input:focus { border-color: #00d4ff; }
+
+
+.al-submit-btn {
+    background:    #00d4ff;
+    border:        none;
+    border-radius: 6px;
+    color:         #0a0a0a;
+    cursor:        pointer;
+    font-size:     13px;
+    font-weight:   600;
+    padding:       8px 20px;
+    transition:    background 0.15s;
+}
+.al-submit-btn:hover { background: #00b8d9; }
+
+.al-cancel-btn {
+    background:    transparent;
+    border:        1px solid #444;
+    border-radius: 6px;
+    color:         #888;
+    cursor:        pointer;
+    font-size:     13px;
+    padding:       8px 20px;
+    transition:    border-color 0.15s, color 0.15s;
+}
+.al-cancel-btn:hover { border-color: #888; color: #c0c0c0; }
+
+/* Tables */
+.al-table {
+    border-collapse: collapse;
+    font-size:       13px;
+    width:           100%;
+}
+.al-th {
+    border-bottom: 1px solid #2a2a2a;
+    color:         #555;
+    font-size:     11px;
+    font-weight:   600;
+    letter-spacing: 0.05em;
+    padding:       8px 12px;
+    text-align:    left;
+    text-transform: uppercase;
+}
+.al-tr:hover { background: #141414; }
+.al-td {
+    border-bottom:        1px solid #1a1a1a;
+    color:                #c0c0c0;
+    font-variant-numeric: tabular-nums;
+    padding:              9px 12px;
+    vertical-align:       middle;
+}
+
+/* Status badges */
+.al-badge {
+    border-radius:  4px;
+    display:        inline-block;
+    font-size:      10px;
+    font-weight:    700;
+    letter-spacing: 0.05em;
+    padding:        3px 8px;
+    text-transform: uppercase;
+}
+.al-badge-active   { background: rgba(0,230,118,0.15); color: #00e676; }
+.al-badge-inactive { background: rgba(136,136,136,0.15); color: #888; }
+
+/* Row action buttons */
+.al-toggle-btn {
+    background:    transparent;
+    border:        1px solid #444;
+    border-radius: 4px;
+    color:         #888;
+    cursor:        pointer;
+    font-size:     11px;
+    padding:       4px 10px;
+    transition:    all 0.15s;
+}
+.al-toggle-btn:hover { border-color: #00d4ff; color: #00d4ff; }
+
+.al-delete-btn {
+    background:    transparent;
+    border:        1px solid #444;
+    border-radius: 4px;
+    color:         #888;
+    cursor:        pointer;
+    font-size:     11px;
+    padding:       4px 10px;
+    transition:    all 0.15s;
+}
+.al-delete-btn:hover { border-color: #ff5252; color: #ff5252; }
+
+/* Empty state */
+.al-empty {
+    padding:    40px 0;
+    text-align: center;
+}
+.al-empty-title {
+    color:      #555;
+    font-size:  15px;
+    font-weight: 500;
+}
+.al-empty-sub {
+    color:      #3a3a3a;
+    font-size:  13px;
+    margin-top: 6px;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+    .al-summary { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 440px) {
+    .al-summary { grid-template-columns: 1fr; }
+}
+
+/* ── Alert page additions (Phase 1 completion) ── */
+
+/* Inline field validation error */
+.al-field-err {
+    color:      #ff5252;
+    font-size:  11px;
+    margin-top: 4px;
+}
+
+/* Edit button */
+.al-edit-btn {
+    background:    transparent;
+    border:        1px solid #444;
+    border-radius: 4px;
+    color:         #888;
+    cursor:        pointer;
+    font-size:     11px;
+    padding:       4px 10px;
+    transition:    all 0.15s;
+}
+.al-edit-btn:hover { border-color: #00d4ff; color: #00d4ff; }
+
+/* Action cell — side-by-side Edit + Delete */
+.al-td-actions {
+    display:  flex;
+    gap:      6px;
+    align-items: center;
+}
+
+/* Monospace condition column */
+.al-td-mono {
+    font-family:          "Consolas", "Menlo", monospace;
+    font-size:            12px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Muted date columns */
+.al-td-muted { color: #555; font-size: 12px; }
+
+/* History message — allow wrap in narrow layouts */
+.al-history-msg {
+    color:     #c0c0c0;
+    font-size: 12px;
+    max-width: 420px;
+    word-break: break-word;
+}

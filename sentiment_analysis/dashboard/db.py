@@ -93,6 +93,132 @@ def watchlist_remove(ticker: str) -> bool:
     )
 
 
+# ── Alert CRUD ────────────────────────────────────────────────────────────────
+
+def ticker_exists(ticker: str) -> bool:
+    """Return True if the ticker has a row in ticker_prices."""
+    df = query_df(
+        "SELECT 1 FROM ticker_prices WHERE ticker = :t LIMIT 1",
+        {"t": ticker.upper().strip()},
+    )
+    return not df.empty
+
+
+def update_alert(
+    alert_id: int, ticker: str, alert_type: str, operator: str, threshold: float
+) -> bool:
+    """Update an existing alert rule and reset condition_met so it can re-trigger."""
+    return execute_write(
+        """
+        UPDATE alerts
+        SET ticker        = :ticker,
+            alert_type    = :alert_type,
+            operator      = :operator,
+            threshold     = :threshold,
+            condition_met = FALSE,
+            last_seen_at  = NOW(),
+            updated_at    = NOW()
+        WHERE id = :id
+        """,
+        {
+            "id":         alert_id,
+            "ticker":     ticker.upper().strip(),
+            "alert_type": alert_type,
+            "operator":   operator,
+            "threshold":  float(threshold),
+        },
+    )
+
+
+def create_alert(ticker: str, alert_type: str, operator: str, threshold: float) -> bool:
+    """Insert a new active alert rule. Returns True on success."""
+    return execute_write(
+        """
+        INSERT INTO alerts (ticker, alert_type, operator, threshold, is_active)
+        VALUES (:ticker, :alert_type, :operator, :threshold, TRUE)
+        """,
+        {
+            "ticker":     ticker.upper().strip(),
+            "alert_type": alert_type,
+            "operator":   operator,
+            "threshold":  float(threshold),
+        },
+    )
+
+
+def list_alerts() -> pd.DataFrame:
+    """Return all alert rules ordered newest first."""
+    return query_df(
+        "SELECT id, ticker, alert_type, operator, threshold, is_active, created_at "
+        "FROM alerts ORDER BY created_at DESC"
+    )
+
+
+def toggle_alert(alert_id: int) -> bool:
+    """Flip is_active for the given alert. Returns True on success."""
+    return execute_write(
+        "UPDATE alerts SET is_active = NOT is_active, updated_at = NOW() WHERE id = :id",
+        {"id": alert_id},
+    )
+
+
+def delete_alert(alert_id: int) -> bool:
+    """Delete an alert and its history (CASCADE). Returns True on success."""
+    return execute_write("DELETE FROM alerts WHERE id = :id", {"id": alert_id})
+
+
+def add_alert_history(
+    alert_id: int, ticker: str, trigger_value: float, message: str
+) -> bool:
+    """Record a single alert firing. Returns True on success."""
+    return execute_write(
+        """
+        INSERT INTO alert_history (alert_id, ticker, trigger_value, message)
+        VALUES (:alert_id, :ticker, :trigger_value, :message)
+        """,
+        {
+            "alert_id":      alert_id,
+            "ticker":        ticker,
+            "trigger_value": trigger_value,
+            "message":       message,
+        },
+    )
+
+
+def list_alert_history(limit: int = 50) -> pd.DataFrame:
+    """Return recent alert firings joined with their rule metadata."""
+    return query_df(
+        """
+        SELECT
+            ah.id,
+            ah.ticker,
+            ah.trigger_value,
+            ah.triggered_at,
+            ah.message,
+            a.alert_type,
+            a.operator,
+            a.threshold
+        FROM alert_history ah
+        JOIN alerts a ON ah.alert_id = a.id
+        ORDER BY ah.triggered_at DESC
+        LIMIT :limit
+        """,
+        {"limit": limit},
+    )
+
+
+def count_triggered_today() -> int:
+    """Return the number of alert_history rows whose triggered_at date is today (ET)."""
+    df = query_df(
+        """
+        SELECT COUNT(*) AS n FROM alert_history
+        WHERE triggered_at::date =
+              (CURRENT_TIMESTAMP AT TIME ZONE 'America/New_York')::date
+        """
+    )
+    return int(df.iloc[0]["n"]) if not df.empty else 0
+
+
 def query_status() -> str:
     """Return 'Running', 'Degraded', or 'Error' based on recent ingestion logs."""
     df = query_df(f"""
