@@ -134,8 +134,8 @@ def create_alert(ticker: str, alert_type: str, operator: str, threshold: float) 
     """Insert a new active alert rule. Returns True on success."""
     return execute_write(
         """
-        INSERT INTO alerts (ticker, alert_type, operator, threshold, is_active)
-        VALUES (:ticker, :alert_type, :operator, :threshold, TRUE)
+        INSERT INTO alerts (ticker, alert_type, operator, threshold, is_active, condition_met)
+        VALUES (:ticker, :alert_type, :operator, :threshold, TRUE, FALSE)
         """,
         {
             "ticker":     ticker.upper().strip(),

@@ -87,6 +87,59 @@ def run_migrations() -> None:
         conn.execute(text(
             "CREATE INDEX IF NOT EXISTS ix_watchlist_ticker ON watchlist (ticker);"
         ))
+        # ── Alerts tables (migrations 019–021) ────────────────────────────
+        conn.execute(text("""
+            CREATE TABLE IF NOT EXISTS alerts (
+                id            SERIAL PRIMARY KEY,
+                ticker        VARCHAR(20)  NOT NULL,
+                alert_type    VARCHAR(20)  NOT NULL,
+                operator      VARCHAR(5)   NOT NULL,
+                threshold     FLOAT        NOT NULL,
+                is_active     BOOLEAN      NOT NULL DEFAULT TRUE,
+                condition_met BOOLEAN      NOT NULL DEFAULT FALSE,
+                last_seen_at  TIMESTAMPTZ           DEFAULT NOW(),
+                created_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+                updated_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+            );
+        """))
+        conn.execute(text(
+            "CREATE INDEX IF NOT EXISTS ix_alerts_ticker ON alerts (ticker);"
+        ))
+        conn.execute(text(
+            "CREATE INDEX IF NOT EXISTS ix_alerts_is_active ON alerts (is_active);"
+        ))
+        conn.execute(text("""
+            CREATE TABLE IF NOT EXISTS alert_history (
+                id            SERIAL PRIMARY KEY,
+                alert_id      INTEGER NOT NULL REFERENCES alerts(id) ON DELETE CASCADE,
+                ticker        VARCHAR(20)  NOT NULL,
+                trigger_value FLOAT        NOT NULL,
+                triggered_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+                message       TEXT         NOT NULL DEFAULT ''
+            );
+        """))
+        conn.execute(text(
+            "CREATE INDEX IF NOT EXISTS ix_alert_history_alert_id ON alert_history (alert_id);"
+        ))
+        conn.execute(text(
+            "CREATE INDEX IF NOT EXISTS ix_alert_history_triggered_at ON alert_history (triggered_at);"
+        ))
+        # Patch columns that may exist from a create_all run without server_default
+        conn.execute(text(
+            "ALTER TABLE alerts ADD COLUMN IF NOT EXISTS condition_met BOOLEAN NOT NULL DEFAULT FALSE;"
+        ))
+        conn.execute(text(
+            "ALTER TABLE alerts ALTER COLUMN condition_met SET DEFAULT FALSE;"
+        ))
+        conn.execute(text(
+            "ALTER TABLE alerts ADD COLUMN IF NOT EXISTS last_seen_at TIMESTAMPTZ DEFAULT NOW();"
+        ))
+        conn.execute(text(
+            "ALTER TABLE alerts ALTER COLUMN last_seen_at SET DEFAULT NOW();"
+        ))
+        conn.execute(text(
+            "ALTER TABLE alert_history ADD COLUMN IF NOT EXISTS message TEXT NOT NULL DEFAULT '';"
+        ))
         # ── Fundamental & Technical columns (migration 015) ───────────────
         _float_cols = [
             "pe_ratio", "forward_pe", "peg_ratio", "price_to_sales", "price_to_book",

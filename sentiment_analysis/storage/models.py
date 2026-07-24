@@ -20,6 +20,7 @@ from sqlalchemy import (
     String,
     Text,
     func,
+    text,
 )
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import DeclarativeBase
@@ -398,8 +399,8 @@ class Alert(Base):
     alert_type = Column(String(20), nullable=False)   # 'price' | 'sentiment'
     operator   = Column(String(5),  nullable=False)   # '>'     | '<'
     threshold  = Column(Float,      nullable=False)
-    is_active     = Column(Boolean, nullable=False, default=True)
-    condition_met = Column(Boolean, nullable=False, default=False)   # price/sentiment: True while condition holds
+    is_active     = Column(Boolean, nullable=False, default=True,  server_default=text("TRUE"))
+    condition_met = Column(Boolean, nullable=False, default=False, server_default=text("FALSE"))  # price/sentiment: True while condition holds
     last_seen_at  = Column(DateTime(timezone=True), server_default=func.now(), nullable=True)   # breaking_news/volume_spike: high-water mark
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
