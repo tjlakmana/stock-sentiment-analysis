@@ -10,7 +10,6 @@ import math
 import dash
 import pandas as pd
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 
@@ -89,34 +88,6 @@ _RECENT_NEWS_SQL = """
         ingested_at DESC
     LIMIT 20
 """
-
-# ── Message Density chart config ─────────────────────────────────────────
-
-_TF_OPTIONS = [
-    {"label": "1D", "value": "1D"},
-    {"label": "5D", "value": "5D"},
-    {"label": "1M", "value": "1M"},
-    {"label": "3M", "value": "3M"},
-    {"label": "6M", "value": "6M"},
-    {"label": "1Y", "value": "1Y"},
-]
-
-_TF_CONFIG: dict[str, dict] = {
-    "1D":  {"days": 1,   "bucket": "hour",  "price_trunc": None},
-    "5D":  {"days": 5,   "bucket": "day",   "price_trunc": None},
-    "1M":  {"days": 30,  "bucket": "day",   "price_trunc": None},
-    "3M":  {"days": 90,  "bucket": "week",  "price_trunc": "week"},
-    "6M":  {"days": 180, "bucket": "week",  "price_trunc": "week"},
-    "1Y":  {"days": 365, "bucket": "month", "price_trunc": "month"},
-}
-
-_SENT_BAR_COLOR: dict[str, str] = {
-    "Bullish":          "rgba(0, 230, 118, 0.55)",
-    "Somewhat Bullish": "rgba(105, 240, 174, 0.55)",
-    "Neutral":          "rgba(130, 177, 255, 0.55)",
-    "Somewhat Bearish": "rgba(255, 138, 128, 0.55)",
-    "Bearish":          "rgba(255, 82, 82, 0.55)",
-}
 
 # ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -242,166 +213,6 @@ def _tv_src(ticker: str) -> str:
         "&save_image=false&hide_side_toolbar=false"
         "&allow_symbol_change=false&studies=%5B%5D"
     )
-
-
-# ── Density chart builders ────────────────────────────────────────────────
-
-def _empty_density_fig(msg: str = "No data available") -> go.Figure:
-    fig = go.Figure()
-    fig.update_layout(
-        plot_bgcolor="#131722",
-        paper_bgcolor="#0e1117",
-        height=360,
-        margin={"l": 50, "r": 50, "t": 20, "b": 40},
-        xaxis={"visible": False},
-        yaxis={"visible": False},
-        annotations=[{
-            "text": msg,
-            "xref": "paper", "yref": "paper",
-            "x": 0.5, "y": 0.5,
-            "showarrow": False,
-            "font": {"size": 15, "color": "#555"},
-        }],
-    )
-    return fig
-
-
-def _build_density_chart(ticker: str, tf: str) -> go.Figure:
-    cfg = _TF_CONFIG.get(tf, _TF_CONFIG["1M"])
-    days = cfg["days"]
-    bucket = cfg["bucket"]
-    price_trunc = cfg["price_trunc"]
-
-    if price_trunc is None:
-        price_sql = f"""
-            SELECT snapshot_date::date AS bucket, price
-            FROM ticker_snapshot_history
-            WHERE ticker = :ticker
-              AND snapshot_date >= CURRENT_DATE - {days}
-            ORDER BY bucket
-        """
-    else:
-        price_sql = f"""
-            SELECT DATE_TRUNC('{price_trunc}', snapshot_date::timestamp)::date AS bucket,
-                   AVG(price) AS price
-            FROM ticker_snapshot_history
-            WHERE ticker = :ticker
-              AND snapshot_date >= CURRENT_DATE - {days}
-            GROUP BY bucket
-            ORDER BY bucket
-        """
-    price_df = query_df(price_sql, {"ticker": ticker})
-
-    art_sql = f"""
-        WITH bucketed AS (
-            SELECT
-                DATE_TRUNC('{bucket}', ingested_at) AS bucket,
-                title,
-                sentiment_label,
-                source_name,
-                ROW_NUMBER() OVER (
-                    PARTITION BY DATE_TRUNC('{bucket}', ingested_at)
-                    ORDER BY ingested_at DESC
-                ) AS rn
-            FROM rss_articles
-            WHERE :ticker = ANY(tickers)
-              AND ingested_at >= NOW() - INTERVAL '{days} days'
-        )
-        SELECT
-            bucket,
-            COUNT(*) AS article_count,
-            MAX(CASE WHEN rn = 1 THEN title END) AS top_title,
-            MAX(CASE WHEN rn = 1 THEN sentiment_label END) AS top_sentiment,
-            MAX(CASE WHEN rn = 1 THEN source_name END) AS top_source
-        FROM bucketed
-        GROUP BY bucket
-        ORDER BY bucket
-    """
-    art_df = query_df(art_sql, {"ticker": ticker})
-
-    if price_df.empty and art_df.empty:
-        return _empty_density_fig(f"No price or news data found for {ticker}.")
-
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
-
-    if not price_df.empty:
-        fig.add_trace(
-            go.Scatter(
-                x=price_df["bucket"],
-                y=price_df["price"],
-                name="Price",
-                line={"color": "#82b1ff", "width": 2},
-                mode="lines",
-                hovertemplate="$%{y:,.2f}<extra>Price</extra>",
-            ),
-            secondary_y=False,
-        )
-
-    if not art_df.empty:
-        hover_texts = []
-        for _, row in art_df.iterrows():
-            cnt   = int(row.get("article_count") or 0)
-            title = str(row.get("top_title") or "—")
-            if len(title) > 72:
-                title = title[:72] + "…"
-            sent  = str(row.get("top_sentiment") or "—").strip()
-            src   = str(row.get("top_source") or "—").replace("_", " ").title()
-            more  = f" <i>(+{cnt - 1} more)</i>" if cnt > 1 else ""
-            hover_texts.append(
-                f"<b>{cnt} article{'s' if cnt != 1 else ''}</b>{more}<br>"
-                f"{title}<br>"
-                f"<span style='opacity:.7'>{sent} · {src}</span>"
-            )
-
-        bar_colors = [
-            _SENT_BAR_COLOR.get(str(s).strip(), "rgba(130, 177, 255, 0.55)")
-            for s in art_df["top_sentiment"].fillna("Neutral")
-        ]
-
-        fig.add_trace(
-            go.Bar(
-                x=art_df["bucket"],
-                y=art_df["article_count"],
-                name="Articles",
-                marker_color=bar_colors,
-                hovertext=hover_texts,
-                hovertemplate="%{hovertext}<extra>Articles</extra>",
-            ),
-            secondary_y=True,
-        )
-
-    fig.update_layout(
-        plot_bgcolor="#131722",
-        paper_bgcolor="#0e1117",
-        font={"color": "#cdd6f4", "family": "Inter, system-ui, sans-serif", "size": 12},
-        legend={
-            "orientation": "h", "y": 1.06, "x": 0,
-            "bgcolor": "rgba(0,0,0,0)", "font": {"size": 12},
-        },
-        hovermode="x unified",
-        margin={"l": 60, "r": 60, "t": 10, "b": 40},
-        height=360,
-        bargap=0.35,
-        xaxis={"gridcolor": "#1a1f35", "linecolor": "#282a36", "tickcolor": "#282a36"},
-    )
-    fig.update_yaxes(
-        title_text="Price ($)",
-        secondary_y=False,
-        gridcolor="#1a1f35",
-        tickfont={"color": "#82b1ff"},
-        title_font={"color": "#82b1ff"},
-        tickprefix="$",
-        linecolor="#282a36",
-    )
-    fig.update_yaxes(
-        title_text="Articles",
-        secondary_y=True,
-        gridcolor="rgba(0,0,0,0)",
-        tickfont={"color": "#00c896"},
-        title_font={"color": "#00c896"},
-        linecolor="#282a36",
-    )
-    return fig
 
 
 # ── UI building blocks ────────────────────────────────────────────────────
@@ -540,10 +351,37 @@ def _sign_color(v) -> str:
     return "#888"
 
 
-def _ratio_health_color(v, good_above: float) -> str:
+def _beta_color(v) -> str:
+    v = _safe(v)
+    if v is None: return "#444"
+    if v < 0.5:  return "#82b1ff"
+    if v <= 1.5: return "#888"
+    if v <= 2.5: return "#ffab40"
+    return "#ff5252"
+
+
+def _peg_color(v) -> str:
     v = _safe(v)
     if v is None: return ""
-    return "#00e676" if v >= good_above else "#ff5252"
+    return "#00e676" if v < 1.0 else "#ffab40" if v < 2.0 else "#ff5252"
+
+
+def _ps_color(v) -> str:
+    v = _safe(v)
+    if v is None: return ""
+    return "#00e676" if v < 2.0 else "#ffab40" if v < 5.0 else "#ff5252"
+
+
+def _pb_color(v) -> str:
+    v = _safe(v)
+    if v is None: return ""
+    return "#00e676" if v < 1.5 else "#ffab40" if v < 3.0 else "#ff5252"
+
+
+def _div_color(v) -> str:
+    v = _safe(v)
+    if v is None: return ""
+    return "#00e676" if v >= 3.0 else "#ffab40" if v >= 1.0 else "#888"
 
 
 def _fmt_atr(v) -> str:
@@ -563,25 +401,252 @@ def _fmt_short_ratio(v) -> str:
     return f"{v:.1f}d" if v is not None else "—"
 
 
-def _highlight_group(title: str, rows: list) -> html.Div:
-    """Compact label-value stat group for Financial Highlights and Technical Indicators."""
-    stat_rows = []
-    for label, value, color, tooltip in rows:
-        kwargs = {"title": tooltip} if tooltip else {}
-        stat_rows.append(
-            html.Div(className="sw-stat-row", children=[
-                html.Span(label, className="sw-stat-label"),
-                html.Span(
-                    value,
-                    className="sw-stat-value",
-                    style={"color": color} if color else {},
-                    **kwargs,
-                ),
-            ])
-        )
-    return html.Div(className="sw-highlight-group", children=[
+# ── Visual component builders ─────────────────────────────────────────────
+
+def _vis_group(title: str, children: list) -> html.Div:
+    return html.Div(className="sw-vis-group", children=[
         html.Div(title, className="sw-highlight-group-title"),
-        *stat_rows,
+        *[c for c in children if c is not None],
+    ])
+
+
+def _vis_bar(label: str, value, max_val: float, tooltip: str = "") -> html.Div:
+    """Signed horizontal progress bar. Bar length = |value| / max_val; color encodes sign."""
+    v = _safe(value)
+    if v is None:
+        bar_pct, display, color = 0, "—", "#2a2e42"
+    else:
+        bar_pct = min(abs(v), max_val) / max_val * 100
+        sign    = "+" if v > 0 else ""
+        display = f"{sign}{v:.1f}%"
+        color   = "#00e676" if v >= 0 else "#ff5252"
+    kwargs = {"title": tooltip} if tooltip else {}
+    return html.Div(className="sw-vis-bar-row", children=[
+        html.Span(label, className="sw-vis-bar-label"),
+        html.Div(className="sw-vis-bar-track", children=[
+            html.Div(className="sw-vis-bar-fill",
+                     style={"width": f"{bar_pct:.1f}%", "background": color}),
+        ]),
+        html.Span(display, className="sw-vis-bar-value",
+                  style={"color": color if v is not None else "#444"}),
+    ], **kwargs)
+
+
+def _health_bar(label: str, value, max_val: float,
+                good_above: float | None = None,
+                good_below: float | None = None,
+                threshold_at: float | None = None,
+                tooltip: str = "") -> html.Div:
+    """Progress bar for ratio metrics with an optional threshold marker."""
+    v = _safe(value)
+    if v is None:
+        bar_pct, display, color = 0, "—", "#2a2e42"
+    else:
+        bar_pct = min(abs(v), max_val) / max_val * 100
+        display = f"{v:.2f}"
+        if good_above is not None:
+            color = "#00e676" if v >= good_above else "#ff5252"
+        elif good_below is not None:
+            color = "#00e676" if v <= good_below else "#ff8a80"
+        else:
+            color = "#82b1ff"
+
+    thresh_els = []
+    if threshold_at is not None and v is not None:
+        t_pct = min(threshold_at, max_val) / max_val * 100
+        thresh_els = [html.Div(className="sw-vis-bar-threshold",
+                               style={"left": f"{t_pct:.1f}%"})]
+
+    kwargs = {"title": tooltip} if tooltip else {}
+    return html.Div(className="sw-vis-bar-row", children=[
+        html.Span(label, className="sw-vis-bar-label"),
+        html.Div(className="sw-vis-bar-track", children=[
+            html.Div(className="sw-vis-bar-fill",
+                     style={"width": f"{bar_pct:.1f}%", "background": color}),
+            *thresh_els,
+        ]),
+        html.Span(display, className="sw-vis-bar-value",
+                  style={"color": color if v is not None else "#444"}),
+    ], **kwargs)
+
+
+def _val_chip(label: str, value: str, color: str = "", tooltip: str = "") -> html.Div:
+    return html.Div(className="sw-val-chip", title=tooltip, children=[
+        html.Div(label, className="sw-val-chip-label"),
+        html.Div(value, className="sw-val-chip-value",
+                 style={"color": color} if color else {}),
+    ])
+
+
+def _rsi_gauge_fig(value) -> go.Figure:
+    v = _safe(value)
+    if v is None:
+        v, gauge_color = 50, "#2a2e42"
+    elif v < 30:
+        gauge_color = "#00e676"
+    elif v > 70:
+        gauge_color = "#ff5252"
+    else:
+        gauge_color = "#82b1ff"
+
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=v,
+        number={"font": {"size": 32, "color": "#cdd6f4", "family": "Inter"}},
+        gauge={
+            "axis": {
+                "range": [0, 100],
+                "tickwidth": 1,
+                "tickcolor": "#333",
+                "tickvals": [0, 30, 70, 100],
+                "ticktext": ["0", "30", "70", "100"],
+                "tickfont": {"size": 10, "color": "#555"},
+            },
+            "bar": {"color": gauge_color, "thickness": 0.2},
+            "bgcolor": "rgba(0,0,0,0)",
+            "borderwidth": 0,
+            "steps": [
+                {"range": [0, 30],   "color": "rgba(0, 230, 118, 0.12)"},
+                {"range": [30, 70],  "color": "rgba(130, 177, 255, 0.07)"},
+                {"range": [70, 100], "color": "rgba(255, 82, 82, 0.12)"},
+            ],
+        },
+    ))
+    fig.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        height=170,
+        margin={"t": 30, "b": 0, "l": 20, "r": 20},
+        font={"family": "Inter, system-ui"},
+    )
+    return fig
+
+
+def _sma_row(label: str, pct_val, tooltip: str = "") -> html.Div:
+    v = _safe(pct_val)
+    if v is None:
+        direction, badge_text, pct_str = "na", "N/A", "—"
+    elif v >= 0:
+        direction, badge_text, pct_str = "above", "ABOVE", f"+{v:.1f}%"
+    else:
+        direction, badge_text, pct_str = "below", "BELOW", f"{v:.1f}%"
+
+    return html.Div(className="sw-sma-row", title=tooltip, children=[
+        html.Span(label, className="sw-sma-label"),
+        html.Span(badge_text, className=f"sw-sma-badge sw-sma-badge--{direction}"),
+        html.Span(pct_str,    className=f"sw-sma-pct   sw-sma-pct--{direction}"),
+    ])
+
+
+def _range_indicator(price_val, week_52_high_pct_val, week_52_low_pct_val) -> html.Div:
+    p     = _safe(price_val)
+    h_pct = _safe(week_52_high_pct_val)
+    l_pct = _safe(week_52_low_pct_val)
+
+    if p is None or h_pct is None or l_pct is None:
+        return html.Div("Data unavailable", className="sw-vis-na",
+                        style={"padding": "20px 0"})
+    try:
+        low52  = p / (1 + l_pct / 100)
+        high52 = p / (1 + h_pct / 100)
+        rng    = high52 - low52
+        pos    = max(2.0, min(98.0, (p - low52) / rng * 100)) if rng > 0 else 50.0
+    except ZeroDivisionError:
+        return html.Div("Data unavailable", className="sw-vis-na",
+                        style={"padding": "20px 0"})
+
+    return html.Div(className="sw-range-indicator", children=[
+        html.Div(className="sw-range-track", children=[
+            html.Div(className="sw-range-fill", style={"width": f"{pos:.1f}%"}),
+            html.Div(className="sw-range-marker", style={"left": f"{pos:.1f}%"}),
+        ]),
+        html.Div(className="sw-range-labels", children=[
+            html.Span(f"${low52:.2f}",   className="sw-range-low"),
+            html.Span(f"{pos:.0f}% of range", className="sw-range-pos"),
+            html.Span(f"${high52:.2f}",  className="sw-range-high"),
+        ]),
+    ])
+
+
+def _relvol_visual(rel_vol_val, avg_vol_val) -> html.Div:
+    rv = _safe(rel_vol_val)
+    av = _safe(avg_vol_val)
+    if rv is None:
+        return html.Div("—", className="sw-vis-na")
+    bar_pct = min(rv, 3.0) / 3.0 * 100
+    color   = _relvol_color(rv) or "#888"
+    children: list = [
+        html.Div(className="sw-vis-bar-row", children=[
+            html.Span("Rel. Volume", className="sw-vis-bar-label"),
+            html.Div(className="sw-vis-bar-track", children=[
+                html.Div(className="sw-vis-bar-fill",
+                         style={"width": f"{bar_pct:.1f}%", "background": color}),
+                html.Div(className="sw-vis-bar-marker", style={"left": "33.3%"}),
+            ]),
+            html.Span(f"{rv:.2f}×", className="sw-vis-bar-value",
+                      style={"color": color}),
+        ]),
+    ]
+    if av is not None:
+        children.append(html.Div(f"Avg: {_fmt_volume(av)}", className="sw-vis-sub"))
+    return html.Div(children=children)
+
+
+def _beta_visual(beta_val) -> html.Div:
+    v = _safe(beta_val)
+    color   = _beta_color(v)
+    bar_pct = min(abs(v), 3.0) / 3.0 * 100 if v is not None else 0
+    display = f"{v:.2f}" if v is not None else "—"
+    return html.Div(className="sw-vis-bar-row",
+                    title="Sensitivity to market movements. 1.0 = moves with the market.", children=[
+        html.Span("Beta", className="sw-vis-bar-label"),
+        html.Div(className="sw-vis-bar-track", children=[
+            html.Div(className="sw-vis-bar-fill",
+                     style={"width": f"{bar_pct:.1f}%", "background": color}),
+            html.Div(className="sw-vis-bar-marker", style={"left": "33.3%"}),
+        ]),
+        html.Span(display, className="sw-vis-bar-value", style={"color": color}),
+    ])
+
+
+def _ownership_donut(pct_raw, label: str, color: str) -> html.Div:
+    v = _safe(pct_raw)
+    if v is None:
+        return html.Div(className="sw-donut-card", children=[
+            html.Div(className="sw-donut-empty-inner", children=[
+                html.Div("—", className="sw-donut-na-value"),
+            ]),
+            html.Div(label, className="sw-donut-label"),
+        ])
+    remaining = max(0.0, 100.0 - v)
+    fig = go.Figure(go.Pie(
+        values=[v, remaining],
+        labels=[label, "Other"],
+        hole=0.65,
+        marker_colors=[color, "#1a1f35"],
+        marker_line={"width": 0},
+        textinfo="none",
+        hovertemplate="%{label}: %{value:.1f}%<extra></extra>",
+        sort=False,
+    ))
+    fig.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        height=180,
+        margin={"t": 5, "b": 5, "l": 5, "r": 5},
+        showlegend=False,
+        annotations=[{
+            "text": f"{v:.1f}%",
+            "x": 0.5, "y": 0.52,
+            "font": {"size": 24, "color": "#cdd6f4", "family": "Inter, system-ui"},
+            "showarrow": False,
+        }],
+    )
+    return html.Div(className="sw-donut-card", children=[
+        dcc.Graph(figure=fig,
+                  config={"displayModeBar": False, "responsive": True},
+                  style={"height": "180px"}),
+        html.Div(label, className="sw-donut-label"),
     ])
 
 
@@ -721,30 +786,6 @@ def _render_page(ticker: str) -> html.Div:
                 style={"width": "100%", "height": "100%",
                        "border": "none", "display": "block"},
             )],
-        ),
-    ])
-
-    # ─────────────────────────────────────────────────────────────────────
-    # SECTION 2b — Message Density vs. Price
-    # ─────────────────────────────────────────────────────────────────────
-
-    density_section = html.Div(className="sw-section", children=[
-        html.Div(className="sw-density-header", children=[
-            html.Div("Message Density vs. Price", className="sw-section-title"),
-            dcc.RadioItems(
-                id="stock-tf-radio",
-                options=_TF_OPTIONS,
-                value="1M",
-                inline=True,
-                className="sw-tf-radio",
-                inputStyle={"display": "none"},
-            ),
-        ]),
-        dcc.Graph(
-            id="stock-density-chart",
-            style={"height": "360px"},
-            config={"displayModeBar": False, "responsive": True},
-            figure=_empty_density_fig("Loading…"),
         ),
     ])
 
@@ -931,42 +972,43 @@ def _render_page(ticker: str) -> html.Div:
     # SECTION 6 — Financial Highlights
     # ─────────────────────────────────────────────────────────────────────
 
-    fh_valuation = _highlight_group("Valuation", [
-        ("PEG Ratio",    _fmt_ratio(peg_ratio, decimals=2),     "", "PEG Ratio — P/E divided by earnings growth rate. Below 1.0 may signal undervaluation relative to growth."),
-        ("Price / Sales", _fmt_ratio(price_to_sales, decimals=2), "", "Price-to-Sales ratio. Lower values suggest cheaper revenue relative to market cap."),
-        ("Price / Book",  _fmt_ratio(price_to_book, decimals=2),  "", "Price-to-Book ratio. Compares market value to the book value of assets."),
-        ("EPS (TTM)",     _fmt_ratio(eps_ttm, decimals=2),         "", "Earnings Per Share over the trailing twelve months."),
-    ])
-
-    fh_profitability = _highlight_group("Profitability", [
-        ("Gross Margin",     _fmt_pct(gross_margin),     _sign_color(gross_margin),     "Revenue minus cost of goods sold, as a % of revenue."),
-        ("Operating Margin", _fmt_pct(operating_margin), _sign_color(operating_margin), "Operating income as a % of revenue. Reflects operational efficiency."),
-        ("Net Margin",       _fmt_pct(net_margin),       _sign_color(net_margin),       "Net income as a % of revenue after all expenses."),
-        ("ROE",              _fmt_pct(roe),               _sign_color(roe),              "Return on Equity — net income as a % of shareholders' equity."),
-        ("ROA",              _fmt_pct(roa),               _sign_color(roa),              "Return on Assets — how efficiently the company uses its assets to generate profit."),
-    ])
-
-    fh_health = _highlight_group("Financial Health", [
-        ("Current Ratio",  _fmt_ratio(current_ratio, decimals=2),  _ratio_health_color(current_ratio, 1.5),  "Current assets divided by current liabilities. Above 1.5 is generally healthy."),
-        ("Quick Ratio",    _fmt_ratio(quick_ratio,   decimals=2),  _ratio_health_color(quick_ratio, 1.0),    "Liquid assets divided by current liabilities. Above 1.0 means short-term debts can be covered without selling inventory."),
-        ("Debt / Equity",  _fmt_ratio(debt_to_equity, decimals=2), "",                                        "Total debt relative to shareholders' equity. Lower is generally safer."),
-    ])
-
-    fh_growth = _highlight_group("Growth", [
-        ("EPS This Year",  _fmt_pct(eps_growth_this_year), _sign_color(eps_growth_this_year), "Earnings per share growth estimate for the current fiscal year."),
-        ("EPS Next Year",  _fmt_pct(eps_growth_next_year), _sign_color(eps_growth_next_year), "Earnings per share growth estimate for the next fiscal year."),
-        ("EPS 5Y (CAGR)",  _fmt_pct(eps_growth_5y),        _sign_color(eps_growth_5y),        "5-year compound annual EPS growth rate estimate."),
-    ])
-
-    fh_income = _highlight_group("Income", [
-        ("Dividend Yield", _fmt_pct(dividend_yield), "", "Annual dividend as a % of share price."),
-        ("Perf Week",      _fmt_pct(perf_week, decimals=2),  _sign_color(perf_week),  "Price performance over the past week."),
-        ("Perf Month",     _fmt_pct(perf_month, decimals=2), _sign_color(perf_month), "Price performance over the past month."),
-    ])
-
     financial_highlights = _section("Financial Highlights", [
-        html.Div(className="sw-highlight-grid", children=[
-            fh_valuation, fh_profitability, fh_health, fh_growth, fh_income,
+        html.Div(className="sw-fh-grid", children=[
+            _vis_group("Profitability", [
+                _vis_bar("Gross Margin",     gross_margin,      100, "Revenue minus COGS as a % of revenue."),
+                _vis_bar("Operating Margin", operating_margin,   50, "Operating income as a % of revenue. Reflects operational efficiency."),
+                _vis_bar("Net Margin",       net_margin,         50, "Net income as a % of revenue after all expenses."),
+                _vis_bar("ROE",              roe,                50, "Return on Equity — net income as a % of shareholders' equity."),
+                _vis_bar("ROA",              roa,                25, "Return on Assets — how efficiently the company uses its assets to generate profit."),
+            ]),
+            _vis_group("Growth & Performance", [
+                _vis_bar("EPS This Year", eps_growth_this_year, 100, "EPS growth estimate for the current fiscal year."),
+                _vis_bar("EPS Next Year", eps_growth_next_year, 100, "EPS growth estimate for the next fiscal year."),
+                _vis_bar("EPS 5Y CAGR",  eps_growth_5y,        100, "5-year compound annual EPS growth rate estimate."),
+                html.Div(className="sw-vis-divider"),
+                _vis_bar("Perf Week",  perf_week,  20, "Price performance over the past week."),
+                _vis_bar("Perf Month", perf_month, 30, "Price performance over the past month."),
+            ]),
+            _vis_group("Financial Health", [
+                _health_bar("Current Ratio", current_ratio,  4.0,
+                            good_above=1.5, threshold_at=1.5,
+                            tooltip="Above 1.5 is generally healthy."),
+                _health_bar("Quick Ratio",   quick_ratio,    3.0,
+                            good_above=1.0, threshold_at=1.0,
+                            tooltip="Above 1.0: short-term debts covered without selling inventory."),
+                _health_bar("Debt / Equity", debt_to_equity, 5.0,
+                            good_below=1.0, threshold_at=1.0,
+                            tooltip="Total debt relative to equity. Lower is generally safer."),
+            ]),
+            _vis_group("Valuation", [
+                html.Div(className="sw-val-chips", children=[
+                    _val_chip("PEG Ratio", _fmt_ratio(peg_ratio,      2), _peg_color(peg_ratio),      "P/E ÷ earnings growth. Below 1.0 may signal undervaluation."),
+                    _val_chip("P / Sales", _fmt_ratio(price_to_sales, 2), _ps_color(price_to_sales),  "Price-to-Sales. Lower suggests cheaper revenue relative to market cap."),
+                    _val_chip("P / Book",  _fmt_ratio(price_to_book,  2), _pb_color(price_to_book),   "Market value vs. book value of assets."),
+                    _val_chip("Div Yield", _fmt_pct(dividend_yield),      _div_color(dividend_yield), "Annual dividend as a % of share price."),
+                    _val_chip("EPS (TTM)", _fmt_ratio(eps_ttm,         2), _sign_color(eps_ttm),       "Earnings Per Share over the trailing twelve months."),
+                ]),
+            ]),
         ]),
     ])
 
@@ -974,42 +1016,65 @@ def _render_page(ticker: str) -> html.Div:
     # SECTION 7 — Technical Indicators
     # ─────────────────────────────────────────────────────────────────────
 
-    ti_trend = _highlight_group("Trend", [
-        ("SMA 20 (%)",  _fmt_pct(sma_20_pct,  decimals=2), _sign_color(sma_20_pct),  "Price vs. 20-day simple moving average. Positive = above SMA (bullish short-term)."),
-        ("SMA 50 (%)",  _fmt_pct(sma_50_pct,  decimals=2), _sign_color(sma_50_pct),  "Price vs. 50-day simple moving average. Positive = above SMA (bullish medium-term)."),
-        ("SMA 200 (%)", _fmt_pct(sma_200_pct, decimals=2), _sign_color(sma_200_pct), "Price vs. 200-day simple moving average. Positive = above SMA (bullish long-term)."),
-    ])
-
-    ti_momentum = _highlight_group("Momentum", [
-        ("RSI (14)", _fmt_ratio(rsi_14, decimals=1), rsi_color if rsi_lbl else "",
-         "Relative Strength Index (14-day). Below 30 = oversold, above 70 = overbought."),
-        ("Beta",     _fmt_ratio(beta, decimals=2),   "",
-         "Sensitivity to market movements. Above 1.0 = more volatile than the market."),
-    ])
-
-    ti_volatility = _highlight_group("Volatility", [
-        ("ATR", _fmt_atr(atr), "", "Average True Range — average daily price movement in dollars over the past 14 days."),
-        ("Beta", _fmt_ratio(beta, decimals=2), "", "Market volatility coefficient. 2.0 = moves ~2× as much as the market."),
-    ])
-
-    ti_trading = _highlight_group("Trading", [
-        ("Avg Volume",    _fmt_volume(avg_volume),     "", "Average daily trading volume."),
-        ("Rel Volume",    _fmt_relvol(rel_volume),     _relvol_color(rel_volume), "Today's volume relative to the average. Above 1.0x = unusual activity."),
-    ])
-
-    ti_52wk = _highlight_group("52 Week Range", [
-        ("vs. 52W High", _fmt_pct(week_52_high, decimals=2), _sign_color(week_52_high), "Current price relative to the 52-week high. Negative = below the high."),
-        ("vs. 52W Low",  _fmt_pct(week_52_low,  decimals=2), _sign_color(week_52_low),  "Current price relative to the 52-week low. Positive = above the low."),
-    ])
-
-    ti_short = _highlight_group("Short Interest", [
-        ("Float Short",  _fmt_pct(float_short, decimals=2), "", "Percentage of the float that is currently sold short. High values may indicate bearish sentiment."),
-        ("Short Ratio",  _fmt_short_ratio(short_ratio),     "", "Days-to-cover ratio — how many days of average volume it would take to cover all short positions."),
-    ])
-
     technical_indicators = _section("Technical Indicators", [
-        html.Div(className="sw-highlight-grid", children=[
-            ti_trend, ti_momentum, ti_volatility, ti_trading, ti_52wk, ti_short,
+        html.Div(className="sw-ti-grid", children=[
+            _vis_group("Momentum — RSI (14)", [
+                dcc.Graph(
+                    figure=_rsi_gauge_fig(rsi_14),
+                    config={"displayModeBar": False, "responsive": True},
+                    style={"height": "170px"},
+                ),
+                html.Div(
+                    rsi_lbl if rsi_lbl else "Neutral Zone",
+                    className="sw-rsi-label",
+                    style={"color": rsi_color if rsi_color else "#82b1ff"},
+                ),
+                html.Div(className="sw-rsi-zones", children=[
+                    html.Span("Oversold < 30",   className="sw-rsi-zone-label sw-rsi-oversold"),
+                    html.Span("Overbought > 70", className="sw-rsi-zone-label sw-rsi-overbought"),
+                ]),
+            ]),
+            _vis_group("Trend", [
+                _sma_row("SMA 20",  sma_20_pct,  "Price vs. 20-day SMA. Positive = above (bullish short-term)."),
+                _sma_row("SMA 50",  sma_50_pct,  "Price vs. 50-day SMA. Positive = above (bullish medium-term)."),
+                _sma_row("SMA 200", sma_200_pct, "Price vs. 200-day SMA. Positive = above (bullish long-term)."),
+            ]),
+            _vis_group("Volatility", [
+                _beta_visual(beta),
+                html.Div(className="sw-vis-divider"),
+                html.Div(className="sw-vis-bar-row", children=[
+                    html.Span("ATR", className="sw-vis-bar-label"),
+                    html.Div(style={"flex": 1}),
+                    html.Span(_fmt_atr(atr), className="sw-vis-bar-value",
+                              style={"color": "#cdd6f4"},
+                              title="Average True Range — avg daily price movement over 14 days."),
+                ]),
+            ]),
+            _vis_group("52-Week Range", [
+                _range_indicator(price, week_52_high, week_52_low),
+            ]),
+            _vis_group("Trading", [
+                _relvol_visual(rel_volume, avg_volume),
+                html.Div(className="sw-vis-divider"),
+                html.Div(className="sw-vis-bar-row", children=[
+                    html.Span("Volume", className="sw-vis-bar-label"),
+                    html.Div(style={"flex": 1}),
+                    html.Span(_fmt_volume(volume), className="sw-vis-bar-value",
+                              style={"color": "#cdd6f4"},
+                              title="Today's trading volume."),
+                ]),
+            ]),
+            _vis_group("Short Interest", [
+                _vis_bar("Float Short", float_short, 50,
+                         "% of float sold short. High values may indicate bearish sentiment."),
+                html.Div(className="sw-vis-bar-row", children=[
+                    html.Span("Short Ratio", className="sw-vis-bar-label"),
+                    html.Div(style={"flex": 1}),
+                    html.Span(_fmt_short_ratio(short_ratio), className="sw-vis-bar-value",
+                              style={"color": "#cdd6f4"},
+                              title="Days-to-cover — how many days of avg volume to cover short positions."),
+                ]),
+            ]),
         ]),
     ])
 
@@ -1017,13 +1082,17 @@ def _render_page(ticker: str) -> html.Div:
     # SECTION 8 — Insider Activity
     # ─────────────────────────────────────────────────────────────────────
 
-    ia_ownership = _highlight_group("Ownership", [
-        ("Insider Own",      _fmt_pct(insider_own, decimals=2), "", "Percentage of shares held by company insiders (officers, directors, 10%+ holders)."),
-        ("Institutional Own", _fmt_pct(inst_own,   decimals=2), "", "Percentage of shares held by institutional investors (funds, ETFs, pension plans)."),
-    ])
+    has_ownership = _safe(insider_own) is not None or _safe(inst_own) is not None
 
     insider_activity = _section("Insider Activity", [
-        html.Div(className="sw-highlight-grid", children=[ia_ownership]),
+        html.Div(className="sw-ownership-grid", children=[
+            _ownership_donut(inst_own,    "Institutional", "#82b1ff"),
+            _ownership_donut(insider_own, "Insider",       "#00e676"),
+        ]) if has_ownership else html.Div(className="sw-news-empty", children=[
+            html.Div("No ownership data",       className="sw-news-empty-title"),
+            html.Div("Ownership percentages are not available for this ticker.",
+                     className="sw-news-empty-sub"),
+        ]),
     ])
 
     # ─────────────────────────────────────────────────────────────────────
@@ -1079,7 +1148,6 @@ def _render_page(ticker: str) -> html.Div:
         header,
         metrics,
         chart,
-        density_section,
         news_section,
         sentiment_section,
         financial_highlights,
@@ -1145,14 +1213,3 @@ def _toggle_watchlist(_, ticker):
     else:
         watchlist_add(ticker)
         return "⭐ Watching", "sw-wl-btn sw-wl-btn-active"
-
-
-@callback(
-    Output("stock-density-chart", "figure"),
-    Input("stock-tf-radio",       "value"),
-    State("stock-ticker-store",   "data"),
-)
-def _update_density_chart(tf, ticker):
-    if not ticker:
-        raise PreventUpdate
-    return _build_density_chart(ticker, tf or "1M")

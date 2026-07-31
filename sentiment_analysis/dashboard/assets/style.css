@@ -1270,13 +1270,13 @@ body {
     text-align: center;
 }
 .sw-news-empty-title {
-    color:         #383838;
+    color:         #555;
     font-size:     14px;
     font-weight:   600;
     margin-bottom: 8px;
 }
 .sw-news-empty-sub {
-    color:       #282828;
+    color:       #444;
     font-size:   12px;
     max-width:   320px;
     margin:      0 auto;
@@ -1295,25 +1295,25 @@ body {
     .sw-sent-grid { grid-template-columns: 1fr; }
 }
 .sw-sent-overall {
-    background:    #0d0d0d;
-    border:        1px solid #1a1a1a;
-    border-radius: 6px;
-    padding:       18px 16px;
+    background:    #0b0e1a;
+    border:        1px solid #1a1f35;
+    border-radius: 8px;
+    padding:       16px 18px;
 }
 .sw-sent-breakdown {
-    background:    #0d0d0d;
-    border:        1px solid #1a1a1a;
-    border-radius: 6px;
-    padding:       18px 16px;
+    background:    #0b0e1a;
+    border:        1px solid #1a1f35;
+    border-radius: 8px;
+    padding:       16px 18px;
     display:       flex;
     flex-direction: column;
     gap:           14px;
 }
 .sw-sent-trend {
-    background:    #0d0d0d;
-    border:        1px solid #1a1a1a;
-    border-radius: 6px;
-    padding:       18px 16px;
+    background:    #0b0e1a;
+    border:        1px solid #1a1f35;
+    border-radius: 8px;
+    padding:       16px 18px;
 }
 .sw-bar-row {
     display:     flex;
@@ -1331,7 +1331,7 @@ body {
 }
 .sw-bar-track {
     flex:          1;
-    background:    #141414;
+    background:    #1a1f35;
     border-radius: 3px;
     height:        6px;
     overflow:      hidden;
@@ -1342,7 +1342,7 @@ body {
     transition:    width 0.4s ease;
 }
 .sw-bar-count {
-    color:     #383838;
+    color:     #555;
     font-size: 11px;
     width:     80px;
     text-align: right;
@@ -1350,7 +1350,7 @@ body {
     flex-shrink: 0;
 }
 .sw-bar-footnote {
-    color:     #2a2a2a;
+    color:     #555;
     font-size: 11px;
     margin-top: 4px;
 }
@@ -1745,7 +1745,7 @@ body {
 }
 
 .sw-highlight-group-title {
-    color:          #404040;
+    color:          #566070;
     font-size:      10px;
     font-weight:    700;
     letter-spacing: 0.08em;
@@ -1785,6 +1785,10 @@ body {
     display:        flex;
     flex-direction: column;
     gap:            0;
+    background:     #0b0e1a;
+    border:         1px solid #1a1f35;
+    border-radius:  8px;
+    padding:        4px 18px;
 }
 
 .sw-sec-row {
@@ -1792,7 +1796,7 @@ body {
     align-items: flex-start;
     gap:         12px;
     padding:     12px 0;
-    border-bottom: 1px solid #111;
+    border-bottom: 1px solid #1a1f35;
 }
 .sw-sec-row:last-child { border-bottom: none; }
 
@@ -2120,46 +2124,263 @@ body {
     word-break: break-word;
 }
 
-/* ── Stock Workspace — Message Density vs. Price ─────────────────────── */
-.sw-density-header {
-    display:         flex;
-    align-items:     center;
-    justify-content: space-between;
-    margin-bottom:   12px;
-}
-.sw-density-header .sw-section-title {
-    margin-bottom: 0;
+/* ── Stock Workspace — Visual Redesign ───────────────────────────────── */
+
+/* Shared visual group card */
+.sw-vis-group {
+    background:    #0b0e1a;
+    border:        1px solid #1a1f35;
+    border-radius: 8px;
+    padding:       16px 18px;
 }
 
-.sw-tf-radio {
-    display: flex;
-    gap:     4px;
+/* Financial Highlights — 2-column grid */
+.sw-fh-grid {
+    display:               grid;
+    grid-template-columns: 1fr 1fr;
+    gap:                   16px;
 }
-.sw-tf-radio .option-inline {
-    display: inline-flex;
+
+/* Technical Indicators — responsive auto-fill */
+.sw-ti-grid {
+    display:               grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap:                   16px;
 }
-.sw-tf-radio input[type="radio"] {
-    display: none !important;
+
+@media (max-width: 760px) {
+    .sw-fh-grid { grid-template-columns: 1fr; }
+    .sw-ti-grid { grid-template-columns: 1fr; }
 }
-.sw-tf-radio label {
-    padding:        4px 14px;
-    border:         1px solid #2a2e42;
-    border-radius:  4px;
-    color:          #666;
-    cursor:         pointer;
+
+/* Horizontal progress bar rows */
+.sw-vis-bar-row {
+    display:       flex;
+    align-items:   center;
+    gap:           10px;
+    margin-bottom: 10px;
+}
+.sw-vis-bar-row:last-child { margin-bottom: 0; }
+
+.sw-vis-bar-label {
+    flex:           0 0 110px;
     font-size:      12px;
-    font-weight:    600;
+    color:          #777;
+    letter-spacing: 0.01em;
+    white-space:    nowrap;
+}
+.sw-vis-bar-track {
+    flex:          1;
+    height:        6px;
+    background:    #1a1f35;
+    border-radius: 3px;
+    position:      relative;
+    overflow:      visible;
+}
+.sw-vis-bar-fill {
+    height:        100%;
+    border-radius: 3px;
+    min-width:     2px;
+}
+.sw-vis-bar-value {
+    flex:                  0 0 54px;
+    text-align:            right;
+    font-size:             12px;
+    font-weight:           600;
+    font-variant-numeric:  tabular-nums;
+    color:                 #cdd6f4;
+}
+
+/* Threshold marker (dashed vertical line on bar track) */
+.sw-vis-bar-threshold {
+    position:      absolute;
+    top:           -4px;
+    width:         2px;
+    height:        14px;
+    background:    rgba(255,255,255,0.18);
+    border-radius: 1px;
+    transform:     translateX(-50%);
+}
+
+/* 1× reference marker on rel-volume and beta bars */
+.sw-vis-bar-marker {
+    position:      absolute;
+    top:           -3px;
+    width:         2px;
+    height:        12px;
+    background:    #3a3f5c;
+    border-radius: 1px;
+    transform:     translateX(-50%);
+}
+
+/* Thin horizontal rule between sub-groups inside a vis-group */
+.sw-vis-divider {
+    height:     1px;
+    background: #1a1f35;
+    margin:     12px 0;
+}
+
+/* Utility */
+.sw-vis-na  { color: #444; font-size: 13px; }
+.sw-vis-sub { font-size: 11px; color: #555; margin-top: 4px; }
+
+/* Valuation chips */
+.sw-val-chips {
+    display:   flex;
+    flex-wrap: wrap;
+    gap:       8px;
+}
+.sw-val-chip {
+    background:    #111520;
+    border:        1px solid #1e2237;
+    border-radius: 6px;
+    padding:       8px 12px;
+    min-width:     72px;
+    cursor:        default;
+    transition:    border-color 0.15s;
+}
+.sw-val-chip:hover { border-color: #2a304a; }
+.sw-val-chip-label {
+    font-size:      10px;
+    color:          #555;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-bottom:  4px;
+}
+.sw-val-chip-value {
+    font-size:            15px;
+    font-weight:          700;
+    font-variant-numeric: tabular-nums;
+    color:                #cdd6f4;
+}
+
+/* SMA trend rows */
+.sw-sma-row {
+    display:       flex;
+    align-items:   center;
+    gap:           10px;
+    margin-bottom: 10px;
+    cursor:        default;
+}
+.sw-sma-label {
+    flex:      0 0 54px;
+    font-size: 12px;
+    color:     #777;
+}
+.sw-sma-badge {
+    font-size:      10px;
+    font-weight:    700;
+    padding:        2px 8px;
+    border:         1px solid;
+    border-radius:  3px;
+    letter-spacing: 0.07em;
+}
+.sw-sma-badge--above { border-color: #00e676; color: #00e676; background: rgba(0,230,118,0.10); }
+.sw-sma-badge--below { border-color: #ff5252; color: #ff5252; background: rgba(255,82,82,0.10); }
+.sw-sma-badge--na    { border-color: #333;    color: #555;    background: transparent; }
+.sw-sma-pct {
+    margin-left:          auto;
+    font-size:            12px;
+    font-weight:          600;
+    font-variant-numeric: tabular-nums;
+}
+.sw-sma-pct--above { color: #00e676; }
+.sw-sma-pct--below { color: #ff5252; }
+.sw-sma-pct--na    { color: #555; }
+
+/* RSI gauge labels */
+.sw-rsi-label {
+    text-align:    center;
+    font-size:     13px;
+    font-weight:   600;
+    margin-bottom: 6px;
+}
+.sw-rsi-zones {
+    display:         flex;
+    justify-content: space-between;
+    padding:         0 2px;
+}
+.sw-rsi-zone-label {
+    font-size:      10px;
+    color:          #555;
     letter-spacing: 0.03em;
-    transition:     all 0.15s ease;
-    background:     transparent;
-    user-select:    none;
 }
-.sw-tf-radio label:hover {
-    color:        #aaa;
-    border-color: rgba(61, 90, 254, 0.35);
+.sw-rsi-oversold   { color: rgba(0,230,118,0.65) !important; }
+.sw-rsi-overbought { color: rgba(255,82,82,0.65) !important; }
+
+/* 52-week range indicator */
+.sw-range-indicator { padding: 8px 0; }
+.sw-range-track {
+    height:        8px;
+    background:    #1a1f35;
+    border-radius: 4px;
+    position:      relative;
+    margin:        18px 0 8px;
+    overflow:      visible;
 }
-.sw-tf-radio input[type="radio"]:checked + label {
-    background:   #1a2040;
-    border-color: #3d5afe;
-    color:        #82b1ff;
+.sw-range-fill {
+    height:        100%;
+    background:    linear-gradient(90deg, #1e2850, #3d5afe);
+    border-radius: 4px;
+}
+.sw-range-marker {
+    position:      absolute;
+    top:           50%;
+    width:         14px;
+    height:        14px;
+    background:    #e8ecff;
+    border:        2.5px solid #82b1ff;
+    border-radius: 50%;
+    transform:     translate(-50%, -50%);
+    box-shadow:    0 0 0 4px rgba(130,177,255,0.18);
+}
+.sw-range-labels {
+    display:         flex;
+    justify-content: space-between;
+    font-size:       11px;
+    color:           #555;
+    margin-top:      10px;
+}
+.sw-range-low  { color: rgba(255,138,128,0.8); }
+.sw-range-high { color: rgba(105,240,174,0.8); }
+.sw-range-pos  {
+    color:                #82b1ff;
+    font-weight:          600;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Ownership donut charts */
+.sw-ownership-grid {
+    display:         flex;
+    gap:             40px;
+    justify-content: center;
+    flex-wrap:       wrap;
+    padding:         12px 0;
+}
+.sw-donut-card {
+    text-align:    center;
+    flex:          0 0 200px;
+    background:    #0b0e1a;
+    border:        1px solid #1a1f35;
+    border-radius: 8px;
+    padding:       16px 18px;
+}
+.sw-donut-label {
+    font-size:      13px;
+    color:          #888;
+    margin-top:     2px;
+    letter-spacing: 0.03em;
+}
+.sw-donut-empty-inner {
+    display:         flex;
+    flex-direction:  column;
+    align-items:     center;
+    justify-content: center;
+    height:          180px;
+    margin-bottom:   6px;
+}
+.sw-donut-na-value {
+    font-size:   32px;
+    font-weight: 600;
+    color:       #2a2e42;
 }

@@ -56469,3 +56469,1987 @@ Reason
 2026-07-31 14:46:10 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:341 — [finviz] Merged frame: 11532 tickers x 64 columns.
 2026-07-31 14:46:12 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:444 — [finviz] Parsed 11531 ticker rows for upsert.
 2026-07-31 14:46:12 | INFO     | __main__:277 — Dashboard process terminated.
+2026-07-31 15:40:33 | INFO     | __main__:254 — ============================================================
+2026-07-31 15:40:33 | INFO     | __main__:255 — Stock Sentiment Analysis — Phase 2 starting
+2026-07-31 15:40:33 | INFO     | __main__:256 —   DB URL   : postgresql+asyncpg://postgres:1074@localhost:5432/…
+2026-07-31 15:40:33 | INFO     | __main__:257 —   Log level: INFO
+2026-07-31 15:40:33 | INFO     | __main__:258 —   Watchlist: A, AAL, AAP, AAPL, ABBV, ABC, ABMD, ABT, ACN, ACGL, ADBE, ADI, ADM, ADP, ADSK, AEE, AEP, AES, AFL, AIG, AIZ, AJG, AKAM, ALB, ALGN, ALK, ALL, ALLE, AMAT, AMCR, AMD, AME, AMGN, AMP, AMT, AMZN, ANET, ANSS, AON, AOS, APA, APD, APH, APTV, ARE, ATO, AVB, AVGO, AVY, AWK, AXP, AXON, AZO, BA, BAC, BALL, BAX, BBWI, BBY, BCR, BDX, BEN, BF.B, BG, BIIB, BIO, BK, BKNG, BKR, BLK, BLDR, BMY, BR, BRO, BSX, BWA, BX, BXP, C, CAG, CAH, CARR, CAT, CB, CBOE, CBRE, CCI, CCL, CDNS, CDW, CE, CEG, CF, CFG, CHD, CHRW, CHTR, CI, CINF, CL, CLX, CMA, CMCSA, CME, CMG, CMI, CMS, CNC, CNP, COF, COO, COP, COR, COST, CPB, CPRT, CPT, CRL, CRM, CSCO, CSGP, CSX, CTAS, CTLT, CTRA, CTSH, CTVA, CVS, CVX, CZR, D, DAL, DAY, DD, DE, DECK, DFS, DG, DGX, DHI, DHR, DIS, DISH, DLR, DLTR, DOC, DOV, DOW, DPZ, DRI, DTE, DUK, DVA, DVN, DXC, DXCM, EA, EBAY, ECL, ED, EFX, EG, EIX, EL, ELV, EMN, EMR, ENPH, EOG, EPAM, EQIX, EQR, EQT, ES, ESS, ETN, ETR, ETSY, EVRG, EW, EXC, EXPD, EXPE, EXR, F, FANG, FAST, FCX, FDS, FDX, FE, FFIV, FI, FICO, FIS, FISV, FITB, FLT, FMC, FOX, FOXA, FRT, FSLR, FTNT, FTV, GD, GE, GDDY, GEHC, GEN, GEV, GILD, GIS, GL, GLW, GM, GNRC, GOOG, GOOGL, GPC, GPN, GPS, GRMN, GS, GWW, HAL, HAS, HBAN, HCA, HD, HES, HIG, HII, HLT, HOLX, HON, HPE, HPQ, HRL, HSIC, HST, HSY, HUBB, HUM, HWM, IBM, ICE, IDXX, IEX, IFF, ILMN, INCY, INTC, INTU, INVH, IP, IPG, IQV, IR, IRM, ISRG, IT, ITW, IVZ, J, JBL, JBHT, JCI, JKHY, JNJ, JNPR, JPM, K, KDP, KEY, KEYS, KHC, KIM, KLAC, KMB, KMI, KMX, KO, KR, KVUE, L, LDOS, LEN, LH, LHX, LIN, LKQ, LLY, LMT, LNC, LNT, LOW, LRCX, LULU, LUMN, LUV, LVS, LW, LYB, LYV, MA, MAA, MAR, MAS, MCD, MCHP, MCK, MCO, MDLZ, MDT, MET, META, MGM, MHK, MKC, MKTX, MLM, MMC, MMM, MNST, MO, MOH, MOS, MPC, MPWR, MRK, MRO, MRNA, MS, MSCI, MSFT, MSI, MTB, MTCH, MTD, MU, NCLH, NDAQ, NDSN, NEE, NEM, NFLX, NI, NKE, NOC, NOW, NRG, NSC, NTAP, NTRS, NUE, NVDA, NVR, NWL, NWS, NWSA, NXPI, O, ODFL, OKE, OMC, ON, ORCL, ORLY, OTIS, OXY, PANW, PARA, PAYC, PAYX, PCAR, PCG, PEAK, PEG, PEP, PFE, PFG, PG, PGR, PH, PHM, PKG, PKI, PLD, PM, PNC, PNR, PNW, PODD, POOL, PPG, PPL, PRU, PSA, PSX, PTC, PTVE, PWR, PXD, PYPL, QCOM, QRVO, RCL, RE, REG, REGN, RF, RHI, RJF, RL, RMD, ROK, ROL, ROP, ROST, RSG, RTX, RVTY, SBAC, SBUX, SCHW, SEE, SHW, SJM, SLB, SNA, SNPS, SO, SOLV, SPG, SPGI, SRE, STE, STLD, STT, STX, STZ, SWK, SWKS, SYF, SYK, SYY, T, TAP, TDG, TDY, TECH, TEL, TER, TFC, TFX, TGT, TJX, TMO, TMUS, TPR, TRGP, TRMB, TROW, TRV, TSCO, TSLA, TSN, TT, TTWO, TXN, TXT, TYL, UA, UAA, UAL, UDR, UHS, ULTA, UNH, UNP, UPS, URI, USB, V, VFC, VICI, VLO, VMC, VNO, VRSK, VRSN, VRTX, VST, VTR, VTRS, VZ, WAB, WAT, WBA, WBD, WDAY, WDC, WEC, WELL, WFC, WHR, WLK, WM, WMB, WMT, WRB, WRK, WST, WTW, WY, WYNN, XEL, XOM, XRAY, XYL, YUM, ZBH, ZBRA, ZION, ZTS, SPY, QQQ, IWM, DIA, GLD, SLV, TLT, HYG, LQD, VTI, VOO, VEA, VWO, EFA, EEM, XLF, XLK, XLE, XLV, XLI, XLY, XLP, XLU, XLB, XLRE, PLTR, RIVN, LCID, SOFI, GME, AMC, BB, NOK, COIN, HOOD, ROKU, SNAP, UBER, LYFT, ABNB, DASH, PINS, TWTR, SHOP, SQ, PYPL, AFRM, UPST
+2026-07-31 15:40:33 | INFO     | __main__:259 — ============================================================
+2026-07-31 15:40:33 | INFO     | __main__:177 — [startup] schema columns verified/added
+2026-07-31 15:40:33 | INFO     | __main__:214 — Dashboard started (PID 19232)  →  http://localhost:8050
+2026-07-31 15:40:33 | INFO     | __main__:50 — Database schema verified / created.
+2026-07-31 15:40:33 | INFO     | sentiment_analysis.ingestion.scheduler:436 — Scheduler configured — RSS every 5m, NLP every 10m, Sentiment every 5m, Finviz prices every 1m, Alerts every 1m, Cleanup daily at midnight ET
+2026-07-31 15:40:33 | INFO     | sentiment_analysis.ingestion.scheduler:448 — Scheduler started — running initial pass.
+2026-07-31 15:40:33 | INFO     | sentiment_analysis.ingestion.scheduler:365 — [cleanup] Deleted 0 rows older than 2 days.
+2026-07-31 15:40:33 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:cnbc_finance] Fetching https://www.cnbc.com/id/100003114/device/rss/rss.html
+2026-07-31 15:40:33 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:cnbc_finance] Stored 2/30 new articles.
+2026-07-31 15:40:33 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:cnbc_earnings] Fetching https://www.cnbc.com/id/15839135/device/rss/rss.html
+2026-07-31 15:40:33 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:cnbc_earnings] Stored 0/30 new articles.
+2026-07-31 15:40:33 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:yahoo_finance_news] Fetching https://finance.yahoo.com/news/rssindex
+2026-07-31 15:40:34 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.74: Market Update: FLEX, LRCX, PCAR, TMUS, MA, UL, META, HLT
+2026-07-31 15:40:34 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:yahoo_finance_news] Stored 15/45 new articles.
+2026-07-31 15:40:34 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:marketwatch_news] Fetching https://feeds.marketwatch.com/marketwatch/marketpulse/
+2026-07-31 15:40:34 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:marketwatch_news] Stored 0/30 new articles.
+2026-07-31 15:40:34 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:wsj_markets] Fetching https://feeds.a.dj.com/rss/RSSMarketsMain.xml
+2026-07-31 15:40:34 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:wsj_markets] Stored 0/20 new articles.
+2026-07-31 15:40:34 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:wsj_business] Fetching https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml
+2026-07-31 15:40:34 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:wsj_business] Stored 0/20 new articles.
+2026-07-31 15:40:34 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:ft_markets] Fetching https://www.ft.com/markets?format=rss
+2026-07-31 15:40:34 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:ft_markets] Stored 0/25 new articles.
+2026-07-31 15:40:34 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:bloomberg_markets] Fetching https://feeds.bloomberg.com/markets/news.rss
+2026-07-31 15:40:34 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:bloomberg_markets] Stored 6/20 new articles.
+2026-07-31 15:40:34 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:motley_fool] Fetching https://www.fool.com/feeds/index.aspx?id=fool-headlines
+2026-07-31 15:40:35 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:motley_fool] Stored 2/50 new articles.
+2026-07-31 15:40:35 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-31 15:40:35 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=es conf=1.00: XCMG presenta tres vías para una minería más sostenible en e
+2026-07-31 15:40:35 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=fr conf=1.00: XCMG présente trois pistes pour une exploitation minière plu
+2026-07-31 15:40:35 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=fr conf=1.00: StarCharge désignée marque nº 1 dans le domaine des microrés
+2026-07-31 15:40:35 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:pr_newswire] Stored 17/20 new articles.
+2026-07-31 15:40:35 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-31 15:40:35 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-31 15:40:35 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-31 15:40:35 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-31 15:40:35 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:globe_newswire_earnings] Fetching https://www.globenewswire.com/RssFeed/subjectcode/05-Earnings
+2026-07-31 15:40:36 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:globe_newswire_earnings] Stored 0/20 new articles.
+2026-07-31 15:40:36 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:globe_newswire_company] Fetching https://www.globenewswire.com/RssFeed/subjectcode/02-Company%20Announcement
+2026-07-31 15:40:36 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=fr conf=1.00: Egide - AGM du 10 septembre 2026 - Avis de réunion
+2026-07-31 15:40:36 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=fr conf=1.00: Bilan semestriel du contrat de liquidité
+2026-07-31 15:40:36 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: Coface SA : Hugh Sturgess et Christine Todd  rejoignent le C
+2026-07-31 15:40:36 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=sv conf=1.00: Síminn hf. – Leiðrétting á tillögum stjórnar fyrir hluthafaf
+2026-07-31 15:40:36 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:globe_newswire_company] Stored 0/20 new articles.
+2026-07-31 15:40:36 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-31 15:40:36 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_edgar] SEC enriched: Nuveen Churchill Private Capital Income Fund filed 8-K on 2026-07-31.
+2026-07-31 15:40:37 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_edgar] SEC enriched: Invesco Commercial Real Estate Finance Trust, Inc. filed 8-K on 2026-07-31.
+2026-07-31 15:40:38 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_edgar] SEC enriched: LION COPPER & GOLD CORP. filed 8-K on 2026-07-31.
+2026-07-31 15:40:39 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_edgar] SEC enriched: OSR Health, Inc. filed 8-K on 2026-07-31.
+2026-07-31 15:40:39 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:sec_edgar] Stored 4/40 new articles.
+2026-07-31 15:40:39 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-31 15:40:41 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of GS Finance Corp..
+2026-07-31 15:40:41 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 424B2 - GOLDMAN SACHS GROUP INC (0000886982) (Filer)
+2026-07-31 15:40:42 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of JPMorgan Chase Financial Co. LLC.
+2026-07-31 15:40:43 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of JPMORGAN CHASE & CO.
+2026-07-31 15:40:44 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Callahan Edward F..
+2026-07-31 15:40:44 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.57: 4 - BADGER METER INC (0000009092) (Issuer)
+2026-07-31 15:40:45 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider filing (Form 4) for GS Finance Corp. on 2026-07-31.
+2026-07-31 15:40:45 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 424B2 - GOLDMAN SACHS GROUP INC (0000886982) (Filer)
+2026-07-31 15:40:45 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: 497K - BLACKROCK ALLOCATION TARGET SHARES (0001221845) (File
+2026-07-31 15:40:45 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: 497K - BLACKROCK ALLOCATION TARGET SHARES (0001221845) (File
+2026-07-31 15:40:45 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: 497K - BLACKROCK ALLOCATION TARGET SHARES (0001221845) (File
+2026-07-31 15:40:45 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: 497K - BLACKROCK ALLOCATION TARGET SHARES (0001221845) (File
+2026-07-31 15:40:45 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: 497K - BLACKROCK ALLOCATION TARGET SHARES (0001221845) (File
+2026-07-31 15:40:45 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: 497K - BLACKROCK ALLOCATION TARGET SHARES (0001221845) (File
+2026-07-31 15:40:45 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: 497K - BLACKROCK ALLOCATION TARGET SHARES (0001221845) (File
+2026-07-31 15:40:46 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of JPMorgan Chase Financial Co. LLC.
+2026-07-31 15:40:47 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of JPMORGAN CHASE & CO.
+2026-07-31 15:40:47 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 424B2 - DEUTSCHE BANK AKTIENGESELLSCHAFT (0001159508) (Filer
+2026-07-31 15:40:48 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Cullum Charles S.
+2026-07-31 15:40:50 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of SHORE BANCSHARES INC.
+2026-07-31 15:40:51 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of JPMorgan Chase Financial Co. LLC.
+2026-07-31 15:40:52 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of JPMORGAN CHASE & CO.
+2026-07-31 15:40:52 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 424B2 - Morgan Stanley Finance LLC (0001666268) (Filer)
+2026-07-31 15:40:52 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: 424B2 - MORGAN STANLEY (0000895421) (Filer)
+2026-07-31 15:40:52 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider filing (Form 4) for Calamos ETF Trust on 2026-07-31.
+2026-07-31 15:40:54 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of JPMorgan Chase Financial Co. LLC.
+2026-07-31 15:40:55 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of JPMORGAN CHASE & CO.
+2026-07-31 15:40:55 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider filing (Form 4) for JPMorgan Chase Financial Co. LLC on 2026-07-31.
+2026-07-31 15:40:56 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider filing (Form 4) for JPMORGAN CHASE & CO on 2026-07-31.
+2026-07-31 15:40:57 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of JPMORGAN CHASE & CO.
+2026-07-31 15:40:57 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 424B2 - Morgan Stanley Finance LLC (0001666268) (Filer)
+2026-07-31 15:40:57 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: 424B2 - MORGAN STANLEY (0000895421) (Filer)
+2026-07-31 15:40:57 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 485BPOS - FORESTER FUNDS INC (0001088323) (Filer)
+2026-07-31 15:40:57 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 485BPOS - FORESTER FUNDS INC (0001088323) (Filer)
+2026-07-31 15:40:58 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of JPMORGAN CHASE & CO.
+2026-07-31 15:40:58 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 424B2 - BARCLAYS BANK PLC (0000312070) (Filer)
+2026-07-31 15:40:59 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of ABERNETHY JAMES S.
+2026-07-31 15:41:01 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of PEOPLES BANCORP OF NORTH CAROLINA INC.
+2026-07-31 15:41:02 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of JPMORGAN CHASE & CO.
+2026-07-31 15:41:02 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:sec_form4] Stored 21/40 new articles.
+2026-07-31 15:41:02 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:sec_10q] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=10-Q&dateb=&owner=include&count=40&output=atom
+2026-07-31 15:41:02 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 10-Q - ENTERPRISE FINANCIAL SERVICES CORP (0001025835) (File
+2026-07-31 15:41:02 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_10q] SEC enriched: American Assets Trust, L.P. filed quarterly report (10-Q) on 2026-07-31.
+2026-07-31 15:41:02 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_10q] SEC enriched: American Assets Trust, Inc. filed quarterly report (10-Q) on 2026-07-31.
+2026-07-31 15:41:02 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_10q] SEC enriched: Proto Labs Inc filed quarterly report (10-Q) on 2026-07-31.
+2026-07-31 15:41:02 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_10q] SEC enriched: RBC Bearings INC filed quarterly report (10-Q) on 2026-07-31.
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 10-Q - SOUTHERN COPPER CORP/ (0001001838) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.57: 10-Q - MINERALS TECHNOLOGIES INC (0000891014) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 10-Q - STEVEN MADDEN, LTD. (0000913241) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: 10-Q - Business First Bancshares, Inc. (0001624322) (Filer)
+2026-07-31 15:41:03 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_10q] SEC enriched: Crane Co filed quarterly report (10-Q) on 2026-07-31.
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 10-Q - NORTHRIM BANCORP INC (0001163370) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: 10-Q - CONTINENTAL RESOURCES, INC (0000732834) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: 10-Q - TOMPKINS FINANCIAL CORP (0001005817) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 10-Q - MOHAWK INDUSTRIES INC (0000851968) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.71: 10-Q - ENTERGY TEXAS, INC. (0001427437) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 10-Q - ENTERGY LOUISIANA, LLC (0001348952) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 10-Q - SYSTEM ENERGY RESOURCES, INC (0000202584) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: 10-Q - ENTERGY NEW ORLEANS, LLC (0000071508) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.71: 10-Q - ENTERGY MISSISSIPPI, LLC (0000066901) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.71: 10-Q - ENTERGY CORP /DE/ (0000065984) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 10-Q - ENTERGY ARKANSAS, LLC (0000007323) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 10-Q - TERADYNE, INC (0000097210) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.57: 10-Q - FORUM ENERGY TECHNOLOGIES, INC. (0001401257) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.71: 10-Q - FIRST MERCHANTS CORP (0000712534) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 10-Q - CHIPOTLE MEXICAN GRILL INC (0001058090) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.57: 10-Q - CARTERS INC (0001060822) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 10-Q - LyondellBasell Industries N.V. (0001489393) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 10-Q - MANHATTAN ASSOCIATES INC (0001056696) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: 10-Q - STRYKER CORP (0000310764) (Filer)
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:sec_10q] Stored 5/40 new articles.
+2026-07-31 15:41:03 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:sec_s1] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=S-1&dateb=&owner=include&count=40&output=atom
+2026-07-31 15:41:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: S-1 - SHF Holdings, Inc. (0001854963) (Filer)
+2026-07-31 15:41:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: S-1/A - SHF Holdings, Inc. (0001854963) (Filer)
+2026-07-31 15:41:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: S-1/A - POWERDYNE INTERNATIONAL, INC. (0001435617) (Filer)
+2026-07-31 15:41:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: S-1/A - Neuro Spectrum Insights, Inc. (0002034588) (Filer)
+2026-07-31 15:41:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: S-1/A - Vogenx, Inc. (0001903784) (Filer)
+2026-07-31 15:41:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: S-1 - Beneficient (0001775734) (Filer)
+2026-07-31 15:41:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: S-1 - ECOMINAS CORP. (0001115864) (Filer)
+2026-07-31 15:41:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: S-1 - BioStem Technologies, Inc. (0001658678) (Filer)
+2026-07-31 15:41:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:sec_s1] Stored 0/30 new articles.
+2026-07-31 15:41:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:sec_sc13g] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=SC+13G&dateb=&owner=include&count=40&output=atom
+2026-07-31 15:41:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:sec_sc13g] Stored 0/0 new articles.
+2026-07-31 15:41:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-31 15:41:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:fda] Stored 0/20 new articles.
+2026-07-31 15:41:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:fed_reserve] Fetching https://www.federalreserve.gov/feeds/press_all.xml
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.58: Federal Reserve issues FOMC statement
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:fed_reserve] Stored 0/20 new articles.
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:fed_reserve_monetary] Fetching https://www.federalreserve.gov/feeds/press_monetary.xml
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.58: Federal Reserve issues FOMC statement
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.58: Federal Reserve issues FOMC statement
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.58: Federal Reserve issues FOMC statement
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.58: Federal Reserve issues FOMC statement
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:fed_reserve_monetary] Stored 0/15 new articles.
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:ftc_news] Fetching https://www.ftc.gov/feeds/press-release.xml
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:ftc_news] Stored 1/10 new articles.
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:techcrunch] Fetching https://techcrunch.com/feed/
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:techcrunch] Stored 2/20 new articles.
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:arstechnica] Fetching https://feeds.arstechnica.com/arstechnica/index
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:arstechnica] Stored 5/20 new articles.
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:venturebeat] Fetching https://venturebeat.com/feed/
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:venturebeat] Stored 1/7 new articles.
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:zdnet] Fetching https://www.zdnet.com/news/rss.xml
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:zdnet] Stored 0/20 new articles.
+2026-07-31 15:41:13 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:fierce_biotech] Fetching https://www.fiercebiotech.com/rss/xml
+2026-07-31 15:41:14 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:fierce_biotech] Stored 0/25 new articles.
+2026-07-31 15:41:14 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:stat_news] Fetching https://www.statnews.com/feed/
+2026-07-31 15:41:14 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:stat_news] Stored 0/20 new articles.
+2026-07-31 15:41:20 | INFO     | sentiment_analysis.entity_resolution.ner:48 — [ner] spaCy model loaded: en_core_web_sm
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Datadog' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'New Relic' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Grafana' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'AI.</p><h2><b>AI' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article a23b30b3-23cf-4cbc-b527-728c0179bfe0: 1 tickers, 2 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+How is your enterprise tracking AI agent telemetry? Groundcover thinks it should never leave your cloud
+
+Candidates
+  BYOC = 20
+
+Winner
+  NULL
+
+Reason
+  No sufficiently relevant company detected (best: BYOC=20)
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Nicolas Cage' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Netflix' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Man invested $45M in a Nicolas Cage movie. It got stolen off Netflix’s desk.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'PlayStation' → Other (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article f03cd979-b25e-4942-899a-d01510be0594: 0 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Sony acknowledges backlash, “cautiously” moves ahead with end of PlayStation discs
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'China' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 772d9a36-a024-4c01-a071-5fba805f22f7: 0 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+China could supply EV manufacturing boom with recycled EVs
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Researchers devise a full-color night vision goggle
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'AI' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Pennsylvania' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+High school defends staying silent while boys made AI nudes of 59 classmates
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'U.K.' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article a54d63ce-2d4f-4923-800f-26384c109dd1: 0 tickers, 3 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+VC-backed startups commit more fraud, and researchers think they know why
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Index' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article ff12760f-27b4-46c5-ad7f-46cbb627cc72: 0 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Fresh off its Wiz payout, Index Ventures raises $2B across three funds
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'the Grant of Early Termination' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article b7df4129-eeab-45e9-ad5b-28d208fe7827: 0 tickers, 5 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Statements on the Grant of Early Termination of the FTC’s Investigation of IonQ’s Proposed Acquisition of SkyWater
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article a390746e-6d37-436a-8d8b-104070714e5a: 0 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — Crane Co
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 3c7d12b6-74a5-41eb-a7b4-40fa02e9a5c2: 0 tickers, 2 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — RBC Bearings INC
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Labs Inc' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 04e991a8-9041-43a3-b340-db549fd55310: 0 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — Proto Labs Inc
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article c1a4db2b-0f97-4307-80ae-7b73c1fa057f: 0 tickers, 2 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — American Assets Trust, Inc.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'L.P' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'L.P.' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 1600f9c7-9893-4eec-b7b9-ccfbb9eda870: 0 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — American Assets Trust, L.P.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 516c5787-add2-4d16-baba-b6b5848a0480: 1 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMORGAN CHASE & CO (Insider Trading)
+
+Candidates
+  JPM = 110
+
+Winner
+  JPM
+
+Confidence
+  110
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article a256d78c-d188-4ed6-bed6-87044ef5826f: 0 tickers, 2 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — PEOPLES BANCORP OF NORTH CAROLINA INC (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'JAMES S' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — ABERNETHY JAMES S (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article b74e7b12-572f-4a57-b30f-568c5f50cc11: 1 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMORGAN CHASE & CO (Insider Trading)
+
+Candidates
+  JPM = 110
+
+Winner
+  JPM
+
+Confidence
+  110
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 8c448ba5-dafa-4e69-aa2f-ec104bf4b00b: 1 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMORGAN CHASE & CO (Insider Trading)
+
+Candidates
+  JPM = 110
+
+Winner
+  JPM
+
+Confidence
+  110
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 73cfd249-8772-4a23-8247-2f56fe64d9ca: 1 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMORGAN CHASE & CO (Insider Trading)
+
+Candidates
+  JPM = 110
+
+Winner
+  JPM
+
+Confidence
+  110
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 50992ddb-c695-43da-8efa-43868f519dfe: 1 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMorgan Chase Financial Co. LLC (Insider Trading)
+
+Candidates
+  JPM = 90
+
+Winner
+  JPM
+
+Confidence
+  90
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 809984d9-8c23-4cf5-97f0-c6f08f3f52e3: 1 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMORGAN CHASE & CO (Insider Trading)
+
+Candidates
+  JPM = 110
+
+Winner
+  JPM
+
+Confidence
+  110
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article ef974f58-326d-4b89-b5b6-d7656974d0e7: 1 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMorgan Chase Financial Co. LLC (Insider Trading)
+
+Candidates
+  JPM = 90
+
+Winner
+  JPM
+
+Confidence
+  90
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article cada8404-6ae8-4c10-be31-ee2ef9b68365: 0 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — Calamos ETF Trust (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 0dc94adf-1e69-4b25-87b1-9d2cbdb74b38: 0 tickers, 2 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — GS Finance Corp. (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 4e10c525-3174-4ad5-8a78-d11d06ab2d51: 1 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMorgan Chase Financial Co. LLC (Insider Trading)
+
+Candidates
+  JPM = 90
+
+Winner
+  JPM
+
+Confidence
+  90
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 2360e7fa-beaf-4cfb-b56b-82d5df4a2dca: 1 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMORGAN CHASE & CO (Insider Trading)
+
+Candidates
+  JPM = 110
+
+Winner
+  JPM
+
+Confidence
+  110
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Callahan Edward F. (Insider' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Callahan Edward F' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — Callahan Edward F. (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 456ddd84-945a-4f15-96a8-07edf825938e: 0 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — GS Finance Corp. (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 9b52d62f-b800-43a2-9402-38873a3c4a42: 1 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMorgan Chase Financial Co. LLC (Insider Trading)
+
+Candidates
+  JPM = 90
+
+Winner
+  JPM
+
+Confidence
+  90
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article f77cbf02-c954-4978-a6ac-7f7e5ba2d8e6: 1 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMORGAN CHASE & CO (Insider Trading)
+
+Candidates
+  JPM = 110
+
+Winner
+  JPM
+
+Confidence
+  110
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Cullum Charles S' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — Cullum Charles S (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 23bd1f2d-4e20-4928-8004-35094c87a620: 0 tickers, 2 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — SHORE BANCSHARES INC (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 5b303a35-77f9-4f14-b900-52188aad1edf: 1 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMorgan Chase Financial Co. LLC (Insider Trading)
+
+Candidates
+  JPM = 90
+
+Winner
+  JPM
+
+Confidence
+  90
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 1771512c-e455-4d1b-9f15-c0c439faf872: 1 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMORGAN CHASE & CO (Insider Trading)
+
+Candidates
+  JPM = 110
+
+Winner
+  JPM
+
+Confidence
+  110
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article b05d1d67-3044-459f-a0f6-528a8c593a33: 0 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+8-K — Nuveen Churchill Private Capital Income Fund
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Invesco Commercial Real Estate Finance Trust' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+8-K — Invesco Commercial Real Estate Finance Trust, Inc.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'LION COPPER & GOLD CORP.' → Commodity (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+8-K — LION COPPER & GOLD CORP.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article e3f5fc35-b759-41c2-81e8-e0d8fe85931c: 0 tickers, 2 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+8-K — OSR Health, Inc.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'SAN MATEO' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Calif.' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article ef1de3ae-ffb9-4716-9956-5361658f1699: 0 tickers, 3 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Achieve's Henri' Dawes named among Top 50 Phoenix Women Leaders of 2026
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'CHICAGO' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Ill.' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article fbf16bea-7cc3-465e-8839-5a1293dfad58: 1 tickers, 4 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Research Team Co-Led by Rosalind Franklin University Awarded $3.4 Million Grant to Address Bone-Stress Injuries in Military Recruits
+
+Candidates
+  RFU = 35
+
+Winner
+  NULL
+
+Reason
+  No sufficiently relevant company detected (best: RFU=35)
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'EnerCom Denver' → Other (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Denver' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Colorado' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'DENVER' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 70c34c91-3fa7-42d8-aa48-0ce576b0f5f0: 0 tickers, 2 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+EnerCom Announces SM Energy as a Keynote Speaker at the 31st EnerCom Denver - The Energy Investment Conference, on August 19, 2026, in Denver, Colorado
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] "Frederick County's" → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Md.' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 15322df8-2c4f-4bb4-bc00-300c15ca35dc: 0 tickers, 4 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Woodsboro Bank Announces Commercial Banking Growth with Increased Lending Limit &amp; Team Expansion
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Ray Johnson' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Wis.' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 4dc40892-f9a6-47b6-bc0b-9bd978b8686d: 0 tickers, 2 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+In HelloNation, Home Improvement Expert Ray Johnson Highlights the Essential Tools Every Homeowner Should Own
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Texas' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article c095e866-c9b7-4fd5-a098-837d7b8e903e: 1 tickers, 3 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+DealerFire Highlights SEO Strategies That Help Dealerships Increase Website Traffic and Conversions
+
+Candidates
+  SEO = 60
+
+Winner
+  NULL
+
+Reason
+  No sufficiently relevant company detected (best: SEO=60)
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Pomifera' → Other (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Better' → Other (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Pomifera Oil' → Other (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Shaklee' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article ff790787-470e-42c3-b523-492dec4fbbc5: 0 tickers, 1 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Pomifera® Relaunches with a Bold New Vision for Skincare: Not Big Beauty. Just Better.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Minn.' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Ala.' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 3837a3aa-ff01-4755-a261-8f338cd68c41: 0 tickers, 4 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+GeoComm and SkyfireAI Bring Actionable Location Intelligence to Drone as First Responder Operations
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Fireplace' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'NASHVILLE' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Tenn.' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Chimney Collective' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 20be3738-9170-4174-a2aa-8619cfa135e4: 0 tickers, 3 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Chimney Collective Announces Partnership with American Chimney &amp; Fireplace
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Kristen Bonn' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'HelloNation' → Other (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Rochester' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'N.Y.' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 57ccbc4a-ccf1-4a93-ad52-80974ed618f0: 0 tickers, 2 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Indoor Play Field Trip Benefits for Social Emotional Learning Explained by Children's Play Expert Kristen Bonn in HelloNation
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Marquis' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'N.Y.' → Country (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Anshu Rajpurohit' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Rajpurohit' → Person (skipped — not ticker-eligible)
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article f185adcd-c111-4a22-b2d5-3c0c49d42c87: 0 tickers, 2 unresolved
+2026-07-31 15:41:20 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Marquis Who's Who Honors Anshu Rajpurohit for Leadership in Corporate Accounting and Financial Operations
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:41:20 | INFO     | sentiment_analysis.nlp.pipeline:188 — [nlp] Batch complete — processed 50/50 articles
+2026-07-31 15:41:20 | INFO     | sentiment_analysis.sentiment.pipeline:107 — [sentiment] Analyzing 30 SEC articles via SEC Analyzer.
+2026-07-31 15:41:20 | INFO     | sentiment_analysis.sentiment.pipeline:130 — [sentiment] SEC breakdown: 21 Form4, 4 8-K, 5 10-Q, 0 S-1, 0 SC13G scored.
+2026-07-31 15:41:20 | INFO     | sentiment_analysis.sentiment.pipeline:141 — [sentiment] Analyzing 20 articles via FinBERT.
+2026-07-31 15:41:27 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:148 — [finbert] Loading model 'peyterho/finbert-macro-sentiment'...
+2026-07-31 15:41:28 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:160 — [finbert] No GPU detected — using CPU
+2026-07-31 15:41:28 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:172 — [finbert] Model loaded successfully in 0.8s  | labels=['positive', 'negative', 'neutral']
+2026-07-31 15:41:28 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:182 — [finbert] Warm-up complete.
+2026-07-31 15:41:29 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:126 — [finbert] Scored 20 articles in 1.7s
+2026-07-31 15:41:29 | INFO     | sentiment_analysis.sentiment.pipeline:205 — [sentiment] Stored 50 results.
+2026-07-31 15:41:29 | INFO     | sentiment_analysis.sentiment.aggregator:80 — [aggregator] 1 spike(s) recorded.
+2026-07-31 15:41:30 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:544 — [finviz] v=111: fetch failed — 429 Client Error: Too Many Requests for url: https://elite.finviz.com/export?v=111&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-07-31 15:41:30 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:544 — [finviz] v=121: fetch failed — 429 Client Error: Too Many Requests for url: https://elite.finviz.com/export?v=121&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-07-31 15:41:30 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:544 — [finviz] v=131: fetch failed — 429 Client Error: Too Many Requests for url: https://elite.finviz.com/export?v=131&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-07-31 15:41:30 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:544 — [finviz] v=141: fetch failed — 429 Client Error: Too Many Requests for url: https://elite.finviz.com/export?v=141&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-07-31 15:41:30 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:544 — [finviz] v=161: fetch failed — 429 Client Error: Too Many Requests for url: https://elite.finviz.com/export?v=161&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-07-31 15:41:30 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:544 — [finviz] v=171: fetch failed — 429 Client Error: Too Many Requests for url: https://elite.finviz.com/export?v=171&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-07-31 15:41:30 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:318 — [finviz] Base view v=111 returned no data — aborting bulk fetch.
+2026-07-31 15:41:30 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Bulk fetch: 0 tickers updated
+2026-07-31 15:41:30 | DEBUG    | sentiment_analysis.ingestion.scheduler:183 — [alerts] Evaluating 1 active alerts.
+2026-07-31 15:41:30 | INFO     | __main__:189 — Ingestion pipeline running.  Press Ctrl+C to stop.
+2026-07-31 15:41:33 | DEBUG    | sentiment_analysis.ingestion.scheduler:183 — [alerts] Evaluating 1 active alerts.
+2026-07-31 15:41:33 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:544 — [finviz] v=111: fetch failed — 429 Client Error: Too Many Requests for url: https://elite.finviz.com/export?v=111&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-07-31 15:41:33 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:544 — [finviz] v=121: fetch failed — 429 Client Error: Too Many Requests for url: https://elite.finviz.com/export?v=121&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-07-31 15:41:33 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:544 — [finviz] v=131: fetch failed — 429 Client Error: Too Many Requests for url: https://elite.finviz.com/export?v=131&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-07-31 15:41:33 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:544 — [finviz] v=141: fetch failed — 429 Client Error: Too Many Requests for url: https://elite.finviz.com/export?v=141&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-07-31 15:41:33 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:544 — [finviz] v=161: fetch failed — 429 Client Error: Too Many Requests for url: https://elite.finviz.com/export?v=161&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-07-31 15:41:33 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:544 — [finviz] v=171: fetch failed — 429 Client Error: Too Many Requests for url: https://elite.finviz.com/export?v=171&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-07-31 15:41:33 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:318 — [finviz] Base view v=111 returned no data — aborting bulk fetch.
+2026-07-31 15:41:33 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Bulk fetch: 0 tickers updated
+2026-07-31 15:42:33 | DEBUG    | sentiment_analysis.ingestion.scheduler:183 — [alerts] Evaluating 1 active alerts.
+2026-07-31 15:42:33 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=111 — all 8 expected columns present.
+2026-07-31 15:42:33 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=111: fetched 11532 rows.
+2026-07-31 15:42:33 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=121 — all 7 expected columns present.
+2026-07-31 15:42:33 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=121: fetched 11532 rows.
+2026-07-31 15:42:33 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=131 — all 5 expected columns present.
+2026-07-31 15:42:33 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=131: fetched 11532 rows.
+2026-07-31 15:42:34 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=141 — all 6 expected columns present.
+2026-07-31 15:42:34 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=141: fetched 11532 rows.
+2026-07-31 15:42:34 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=161 — all 9 expected columns present.
+2026-07-31 15:42:34 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=161: fetched 11532 rows.
+2026-07-31 15:42:34 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=171 — all 8 expected columns present.
+2026-07-31 15:42:34 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=171: fetched 11532 rows.
+2026-07-31 15:42:34 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:341 — [finviz] Merged frame: 11532 tickers x 64 columns.
+2026-07-31 15:42:35 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:444 — [finviz] Parsed 11531 ticker rows for upsert.
+2026-07-31 15:42:35 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Bulk fetch: 11531 tickers updated
+2026-07-31 15:42:39 | INFO     | __main__:199 — Pipeline stopped cleanly.
+2026-07-31 15:42:39 | INFO     | __main__:277 — Dashboard process terminated.
+2026-07-31 15:49:26 | INFO     | __main__:254 — ============================================================
+2026-07-31 15:49:26 | INFO     | __main__:255 — Stock Sentiment Analysis — Phase 2 starting
+2026-07-31 15:49:26 | INFO     | __main__:256 —   DB URL   : postgresql+asyncpg://postgres:1074@localhost:5432/…
+2026-07-31 15:49:26 | INFO     | __main__:257 —   Log level: INFO
+2026-07-31 15:49:26 | INFO     | __main__:258 —   Watchlist: A, AAL, AAP, AAPL, ABBV, ABC, ABMD, ABT, ACN, ACGL, ADBE, ADI, ADM, ADP, ADSK, AEE, AEP, AES, AFL, AIG, AIZ, AJG, AKAM, ALB, ALGN, ALK, ALL, ALLE, AMAT, AMCR, AMD, AME, AMGN, AMP, AMT, AMZN, ANET, ANSS, AON, AOS, APA, APD, APH, APTV, ARE, ATO, AVB, AVGO, AVY, AWK, AXP, AXON, AZO, BA, BAC, BALL, BAX, BBWI, BBY, BCR, BDX, BEN, BF.B, BG, BIIB, BIO, BK, BKNG, BKR, BLK, BLDR, BMY, BR, BRO, BSX, BWA, BX, BXP, C, CAG, CAH, CARR, CAT, CB, CBOE, CBRE, CCI, CCL, CDNS, CDW, CE, CEG, CF, CFG, CHD, CHRW, CHTR, CI, CINF, CL, CLX, CMA, CMCSA, CME, CMG, CMI, CMS, CNC, CNP, COF, COO, COP, COR, COST, CPB, CPRT, CPT, CRL, CRM, CSCO, CSGP, CSX, CTAS, CTLT, CTRA, CTSH, CTVA, CVS, CVX, CZR, D, DAL, DAY, DD, DE, DECK, DFS, DG, DGX, DHI, DHR, DIS, DISH, DLR, DLTR, DOC, DOV, DOW, DPZ, DRI, DTE, DUK, DVA, DVN, DXC, DXCM, EA, EBAY, ECL, ED, EFX, EG, EIX, EL, ELV, EMN, EMR, ENPH, EOG, EPAM, EQIX, EQR, EQT, ES, ESS, ETN, ETR, ETSY, EVRG, EW, EXC, EXPD, EXPE, EXR, F, FANG, FAST, FCX, FDS, FDX, FE, FFIV, FI, FICO, FIS, FISV, FITB, FLT, FMC, FOX, FOXA, FRT, FSLR, FTNT, FTV, GD, GE, GDDY, GEHC, GEN, GEV, GILD, GIS, GL, GLW, GM, GNRC, GOOG, GOOGL, GPC, GPN, GPS, GRMN, GS, GWW, HAL, HAS, HBAN, HCA, HD, HES, HIG, HII, HLT, HOLX, HON, HPE, HPQ, HRL, HSIC, HST, HSY, HUBB, HUM, HWM, IBM, ICE, IDXX, IEX, IFF, ILMN, INCY, INTC, INTU, INVH, IP, IPG, IQV, IR, IRM, ISRG, IT, ITW, IVZ, J, JBL, JBHT, JCI, JKHY, JNJ, JNPR, JPM, K, KDP, KEY, KEYS, KHC, KIM, KLAC, KMB, KMI, KMX, KO, KR, KVUE, L, LDOS, LEN, LH, LHX, LIN, LKQ, LLY, LMT, LNC, LNT, LOW, LRCX, LULU, LUMN, LUV, LVS, LW, LYB, LYV, MA, MAA, MAR, MAS, MCD, MCHP, MCK, MCO, MDLZ, MDT, MET, META, MGM, MHK, MKC, MKTX, MLM, MMC, MMM, MNST, MO, MOH, MOS, MPC, MPWR, MRK, MRO, MRNA, MS, MSCI, MSFT, MSI, MTB, MTCH, MTD, MU, NCLH, NDAQ, NDSN, NEE, NEM, NFLX, NI, NKE, NOC, NOW, NRG, NSC, NTAP, NTRS, NUE, NVDA, NVR, NWL, NWS, NWSA, NXPI, O, ODFL, OKE, OMC, ON, ORCL, ORLY, OTIS, OXY, PANW, PARA, PAYC, PAYX, PCAR, PCG, PEAK, PEG, PEP, PFE, PFG, PG, PGR, PH, PHM, PKG, PKI, PLD, PM, PNC, PNR, PNW, PODD, POOL, PPG, PPL, PRU, PSA, PSX, PTC, PTVE, PWR, PXD, PYPL, QCOM, QRVO, RCL, RE, REG, REGN, RF, RHI, RJF, RL, RMD, ROK, ROL, ROP, ROST, RSG, RTX, RVTY, SBAC, SBUX, SCHW, SEE, SHW, SJM, SLB, SNA, SNPS, SO, SOLV, SPG, SPGI, SRE, STE, STLD, STT, STX, STZ, SWK, SWKS, SYF, SYK, SYY, T, TAP, TDG, TDY, TECH, TEL, TER, TFC, TFX, TGT, TJX, TMO, TMUS, TPR, TRGP, TRMB, TROW, TRV, TSCO, TSLA, TSN, TT, TTWO, TXN, TXT, TYL, UA, UAA, UAL, UDR, UHS, ULTA, UNH, UNP, UPS, URI, USB, V, VFC, VICI, VLO, VMC, VNO, VRSK, VRSN, VRTX, VST, VTR, VTRS, VZ, WAB, WAT, WBA, WBD, WDAY, WDC, WEC, WELL, WFC, WHR, WLK, WM, WMB, WMT, WRB, WRK, WST, WTW, WY, WYNN, XEL, XOM, XRAY, XYL, YUM, ZBH, ZBRA, ZION, ZTS, SPY, QQQ, IWM, DIA, GLD, SLV, TLT, HYG, LQD, VTI, VOO, VEA, VWO, EFA, EEM, XLF, XLK, XLE, XLV, XLI, XLY, XLP, XLU, XLB, XLRE, PLTR, RIVN, LCID, SOFI, GME, AMC, BB, NOK, COIN, HOOD, ROKU, SNAP, UBER, LYFT, ABNB, DASH, PINS, TWTR, SHOP, SQ, PYPL, AFRM, UPST
+2026-07-31 15:49:26 | INFO     | __main__:259 — ============================================================
+2026-07-31 15:49:26 | INFO     | __main__:177 — [startup] schema columns verified/added
+2026-07-31 15:49:26 | INFO     | __main__:214 — Dashboard started (PID 18904)  →  http://localhost:8050
+2026-07-31 15:49:27 | INFO     | __main__:50 — Database schema verified / created.
+2026-07-31 15:49:27 | INFO     | sentiment_analysis.ingestion.scheduler:436 — Scheduler configured — RSS every 5m, NLP every 10m, Sentiment every 5m, Finviz prices every 1m, Alerts every 1m, Cleanup daily at midnight ET
+2026-07-31 15:49:27 | INFO     | sentiment_analysis.ingestion.scheduler:448 — Scheduler started — running initial pass.
+2026-07-31 15:49:27 | INFO     | sentiment_analysis.ingestion.scheduler:365 — [cleanup] Deleted 0 rows older than 2 days.
+2026-07-31 15:49:27 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:cnbc_finance] Fetching https://www.cnbc.com/id/100003114/device/rss/rss.html
+2026-07-31 15:49:27 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:cnbc_finance] Stored 0/30 new articles.
+2026-07-31 15:49:27 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:cnbc_earnings] Fetching https://www.cnbc.com/id/15839135/device/rss/rss.html
+2026-07-31 15:49:27 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:cnbc_earnings] Stored 0/30 new articles.
+2026-07-31 15:49:27 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:yahoo_finance_news] Fetching https://finance.yahoo.com/news/rssindex
+2026-07-31 15:49:27 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=da conf=0.86: Synlogic and Caldera sign merger agreement
+2026-07-31 15:49:27 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.74: Market Update: FLEX, LRCX, PCAR, TMUS, MA, UL, META, HLT
+2026-07-31 15:49:27 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:yahoo_finance_news] Stored 8/45 new articles.
+2026-07-31 15:49:27 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:marketwatch_news] Fetching https://feeds.marketwatch.com/marketwatch/marketpulse/
+2026-07-31 15:49:27 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:marketwatch_news] Stored 0/30 new articles.
+2026-07-31 15:49:27 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:wsj_markets] Fetching https://feeds.a.dj.com/rss/RSSMarketsMain.xml
+2026-07-31 15:49:28 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:wsj_markets] Stored 0/20 new articles.
+2026-07-31 15:49:28 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:wsj_business] Fetching https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml
+2026-07-31 15:49:28 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:wsj_business] Stored 0/20 new articles.
+2026-07-31 15:49:28 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:ft_markets] Fetching https://www.ft.com/markets?format=rss
+2026-07-31 15:49:28 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:ft_markets] Stored 0/25 new articles.
+2026-07-31 15:49:28 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:bloomberg_markets] Fetching https://feeds.bloomberg.com/markets/news.rss
+2026-07-31 15:49:28 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:bloomberg_markets] Stored 0/20 new articles.
+2026-07-31 15:49:28 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:motley_fool] Fetching https://www.fool.com/feeds/index.aspx?id=fool-headlines
+2026-07-31 15:49:28 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:motley_fool] Stored 9/50 new articles.
+2026-07-31 15:49:28 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-07-31 15:49:29 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=es conf=1.00: XCMG presenta tres vías para una minería más sostenible en e
+2026-07-31 15:49:29 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=fr conf=1.00: XCMG présente trois pistes pour une exploitation minière plu
+2026-07-31 15:49:29 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=fr conf=1.00: StarCharge désignée marque nº 1 dans le domaine des microrés
+2026-07-31 15:49:29 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:pr_newswire] Stored 2/20 new articles.
+2026-07-31 15:49:29 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-07-31 15:49:29 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:globe_newswire_finance] Stored 0/20 new articles.
+2026-07-31 15:49:29 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-07-31 15:49:29 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-07-31 15:49:29 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:globe_newswire_earnings] Fetching https://www.globenewswire.com/RssFeed/subjectcode/05-Earnings
+2026-07-31 15:49:29 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:globe_newswire_earnings] Stored 0/20 new articles.
+2026-07-31 15:49:29 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:globe_newswire_company] Fetching https://www.globenewswire.com/RssFeed/subjectcode/02-Company%20Announcement
+2026-07-31 15:49:30 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=fr conf=1.00: Egide - AGM du 10 septembre 2026 - Avis de réunion
+2026-07-31 15:49:30 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=fr conf=1.00: Bilan semestriel du contrat de liquidité
+2026-07-31 15:49:30 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: Coface SA : Hugh Sturgess et Christine Todd  rejoignent le C
+2026-07-31 15:49:30 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=sv conf=1.00: Síminn hf. – Leiðrétting á tillögum stjórnar fyrir hluthafaf
+2026-07-31 15:49:30 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:globe_newswire_company] Stored 0/20 new articles.
+2026-07-31 15:49:30 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-07-31 15:49:31 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:sec_edgar] Stored 0/40 new articles.
+2026-07-31 15:49:31 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-07-31 15:49:32 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of GS Finance Corp..
+2026-07-31 15:49:32 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 424B2 - GOLDMAN SACHS GROUP INC (0000886982) (Filer)
+2026-07-31 15:49:32 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.57: 497K - IVY FUNDS (0000883622) (Filer)
+2026-07-31 15:49:32 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 424B2 - BANK OF AMERICA CORP /DE/ (0000070858) (Filer)
+2026-07-31 15:49:33 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of DEL CASTILLO CACHO GUILLERMO.
+2026-07-31 15:49:33 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: 4 - Vesta Real Estate Corporation, S.A.B. de C.V. (000196937
+2026-07-31 15:49:34 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of JPMorgan Chase Financial Co. LLC.
+2026-07-31 15:49:36 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of WAYSON KONRAD.
+2026-07-31 15:49:37 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of SHORE BANCSHARES INC.
+2026-07-31 15:49:38 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of JPMORGAN CHASE & CO.
+2026-07-31 15:49:39 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider filing (Form 4) for WisdomTree Digital Trust on 2026-07-31.
+2026-07-31 15:49:40 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of GS Finance Corp..
+2026-07-31 15:49:40 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 424B2 - GOLDMAN SACHS GROUP INC (0000886982) (Filer)
+2026-07-31 15:49:40 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.57: 497K - IVY FUNDS (0000883622) (Filer)
+2026-07-31 15:49:40 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider filing (Form 4) for GS Finance Corp. on 2026-07-31.
+2026-07-31 15:49:40 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 424B2 - GOLDMAN SACHS GROUP INC (0000886982) (Filer)
+2026-07-31 15:49:41 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider filing (Form 4) for WisdomTree Trust on 2026-07-31.
+2026-07-31 15:49:41 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.57: 497K - IVY FUNDS (0000883622) (Filer)
+2026-07-31 15:49:42 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of JPMorgan Chase Financial Co. LLC.
+2026-07-31 15:49:43 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of JPMORGAN CHASE & CO.
+2026-07-31 15:49:43 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 424B2 - Morgan Stanley Finance LLC (0001666268) (Filer)
+2026-07-31 15:49:43 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: 424B2 - MORGAN STANLEY (0000895421) (Filer)
+2026-07-31 15:49:43 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.71: 424B2 - ROYAL BANK OF CANADA (0001000275) (Filer)
+2026-07-31 15:49:43 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.57: 40-17G - Jacob Funds Inc. (0001090372) (Filer)
+2026-07-31 15:49:44 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider filing (Form 4) for BofA Finance LLC on 2026-07-31.
+2026-07-31 15:49:44 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 424B2 - BANK OF AMERICA CORP /DE/ (0000070858) (Filer)
+2026-07-31 15:49:45 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Saba Capital Management, L.P..
+2026-07-31 15:49:46 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of MEXICO FUND INC.
+2026-07-31 15:49:46 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 424B2 - Morgan Stanley Finance LLC (0001666268) (Filer)
+2026-07-31 15:49:46 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: 424B2 - MORGAN STANLEY (0000895421) (Filer)
+2026-07-31 15:49:46 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: 424B2 - CITIGROUP INC (0000831001) (Filer)
+2026-07-31 15:49:47 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Citigroup Global Markets Holdings Inc..
+2026-07-31 15:49:47 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 424B2 - GOLDMAN SACHS GROUP INC (0000886982) (Filer)
+2026-07-31 15:49:47 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.57: 4 - BADGER METER INC (0000009092) (Issuer)
+2026-07-31 15:49:47 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 424B2 - GOLDMAN SACHS GROUP INC (0000886982) (Filer)
+2026-07-31 15:49:47 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:sec_form4] Stored 16/40 new articles.
+2026-07-31 15:49:47 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:sec_10q] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=10-Q&dateb=&owner=include&count=40&output=atom
+2026-07-31 15:49:50 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:400 — [rss:sec_10q] SEC enriched: Stagwell Inc filed quarterly report (10-Q) on 2026-07-31.
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 10-Q - ENTERPRISE FINANCIAL SERVICES CORP (0001025835) (File
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 10-Q - SOUTHERN COPPER CORP/ (0001001838) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.57: 10-Q - MINERALS TECHNOLOGIES INC (0000891014) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 10-Q - STEVEN MADDEN, LTD. (0000913241) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: 10-Q - Business First Bancshares, Inc. (0001624322) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 10-Q - NORTHRIM BANCORP INC (0001163370) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: 10-Q - CONTINENTAL RESOURCES, INC (0000732834) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: 10-Q - TOMPKINS FINANCIAL CORP (0001005817) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 10-Q - MOHAWK INDUSTRIES INC (0000851968) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.71: 10-Q - ENTERGY TEXAS, INC. (0001427437) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 10-Q - ENTERGY LOUISIANA, LLC (0001348952) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 10-Q - SYSTEM ENERGY RESOURCES, INC (0000202584) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: 10-Q - ENTERGY NEW ORLEANS, LLC (0000071508) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.71: 10-Q - ENTERGY MISSISSIPPI, LLC (0000066901) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.71: 10-Q - ENTERGY CORP /DE/ (0000065984) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: 10-Q - ENTERGY ARKANSAS, LLC (0000007323) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 10-Q - TERADYNE, INC (0000097210) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.57: 10-Q - FORUM ENERGY TECHNOLOGIES, INC. (0001401257) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.71: 10-Q - FIRST MERCHANTS CORP (0000712534) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 10-Q - CHIPOTLE MEXICAN GRILL INC (0001058090) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.57: 10-Q - CARTERS INC (0001060822) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 10-Q - LyondellBasell Industries N.V. (0001489393) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.57: 10-Q - MANHATTAN ASSOCIATES INC (0001056696) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: 10-Q - STRYKER CORP (0000310764) (Filer)
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:sec_10q] Stored 1/40 new articles.
+2026-07-31 15:49:50 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:sec_s1] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=S-1&dateb=&owner=include&count=40&output=atom
+2026-07-31 15:49:52 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: S-1 - SHF Holdings, Inc. (0001854963) (Filer)
+2026-07-31 15:49:52 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: S-1/A - SHF Holdings, Inc. (0001854963) (Filer)
+2026-07-31 15:49:52 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: S-1/A - POWERDYNE INTERNATIONAL, INC. (0001435617) (Filer)
+2026-07-31 15:49:52 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.71: S-1/A - Neuro Spectrum Insights, Inc. (0002034588) (Filer)
+2026-07-31 15:49:52 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: S-1/A - Vogenx, Inc. (0001903784) (Filer)
+2026-07-31 15:49:52 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: S-1 - Beneficient (0001775734) (Filer)
+2026-07-31 15:49:52 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=1.00: S-1 - ECOMINAS CORP. (0001115864) (Filer)
+2026-07-31 15:49:52 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=de conf=0.86: S-1 - BioStem Technologies, Inc. (0001658678) (Filer)
+2026-07-31 15:49:52 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:sec_s1] Stored 0/30 new articles.
+2026-07-31 15:49:52 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:sec_sc13g] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=SC+13G&dateb=&owner=include&count=40&output=atom
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:sec_sc13g] Stored 0/0 new articles.
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:fda] Stored 0/20 new articles.
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:fed_reserve] Fetching https://www.federalreserve.gov/feeds/press_all.xml
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.58: Federal Reserve issues FOMC statement
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:fed_reserve] Stored 0/20 new articles.
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:fed_reserve_monetary] Fetching https://www.federalreserve.gov/feeds/press_monetary.xml
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.58: Federal Reserve issues FOMC statement
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.58: Federal Reserve issues FOMC statement
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.58: Federal Reserve issues FOMC statement
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:71 — Skipped non-English article — lang=en conf=0.58: Federal Reserve issues FOMC statement
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:fed_reserve_monetary] Stored 0/15 new articles.
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:ftc_news] Fetching https://www.ftc.gov/feeds/press-release.xml
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:ftc_news] Stored 0/10 new articles.
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:techcrunch] Fetching https://techcrunch.com/feed/
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:techcrunch] Stored 1/20 new articles.
+2026-07-31 15:49:56 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:arstechnica] Fetching https://feeds.arstechnica.com/arstechnica/index
+2026-07-31 15:49:57 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:arstechnica] Stored 0/20 new articles.
+2026-07-31 15:49:57 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:venturebeat] Fetching https://venturebeat.com/feed/
+2026-07-31 15:49:57 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:venturebeat] Stored 0/7 new articles.
+2026-07-31 15:49:57 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:zdnet] Fetching https://www.zdnet.com/news/rss.xml
+2026-07-31 15:49:57 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:zdnet] Stored 0/20 new articles.
+2026-07-31 15:49:57 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:fierce_biotech] Fetching https://www.fiercebiotech.com/rss/xml
+2026-07-31 15:49:57 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:fierce_biotech] Stored 0/25 new articles.
+2026-07-31 15:49:57 | INFO     | sentiment_analysis.ingestion.rss_ingestor:329 — [rss:stat_news] Fetching https://www.statnews.com/feed/
+2026-07-31 15:50:05 | INFO     | sentiment_analysis.ingestion.rss_ingestor:448 — [rss:stat_news] Stored 0/20 new articles.
+2026-07-31 15:50:09 | INFO     | sentiment_analysis.entity_resolution.ner:48 — [ner] spaCy model loaded: en_core_web_sm
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article de6ca7fb-9235-4354-90a3-69f21dacfd13: 1 tickers, 0 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Google nixes its Earth AI feature one day after launch, amid criticism it would spread misinformation
+
+Candidates
+  GOOGL = 90
+
+Winner
+  GOOGL
+
+Confidence
+  90
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article ff842876-2d24-4a58-b764-0746b5c2dd41: 0 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — Stagwell Inc
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 67470c23-d569-46c1-8c13-301272f07f65: 0 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — Citigroup Global Markets Holdings Inc. (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article dcecfec5-3d16-4b88-bdd9-832865e45ecc: 0 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — MEXICO FUND INC (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 15b8c5d7-c9cd-4bd9-a3dc-33963e6beee5: 0 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — Saba Capital Management, L.P. (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — BofA Finance LLC (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article a41516fa-b195-490f-8fc5-5015c093fb8a: 1 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMORGAN CHASE & CO (Insider Trading)
+
+Candidates
+  JPM = 110
+
+Winner
+  JPM
+
+Confidence
+  110
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article cf52f56f-9188-4d9b-be22-fa24d2a816b6: 1 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMorgan Chase Financial Co. LLC (Insider Trading)
+
+Candidates
+  JPM = 90
+
+Winner
+  JPM
+
+Confidence
+  90
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 285bc9c7-032d-49a2-b465-da9b7acdf4b7: 0 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — WisdomTree Trust (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 8322af48-ce31-42c2-b123-5a10afcbea93: 0 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — GS Finance Corp. (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 815cf616-d575-422d-97c0-071e6cebe072: 0 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — GS Finance Corp. (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article e1b3208e-3cd7-4230-9533-3be4f05adf16: 0 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — WisdomTree Digital Trust (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 5f498667-2e2e-46fc-831b-87abff905284: 1 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMORGAN CHASE & CO (Insider Trading)
+
+Candidates
+  JPM = 110
+
+Winner
+  JPM
+
+Confidence
+  110
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 735bb5d7-1354-47d1-8e4d-f55f04771574: 0 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — SHORE BANCSHARES INC (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'WAYSON KONRAD' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — WAYSON KONRAD (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article eaab24c0-18ff-4862-bc11-f5efc0050414: 1 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — JPMorgan Chase Financial Co. LLC (Insider Trading)
+
+Candidates
+  JPM = 90
+
+Winner
+  JPM
+
+Confidence
+  90
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 7ee3b653-26cb-4fac-ad81-63beadac3b94: 0 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — DEL CASTILLO CACHO GUILLERMO (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article f47db743-ae97-4743-a15c-f5cc18f0076a: 0 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — GS Finance Corp. (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Emma Moppert' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'New Orleans' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'NEW ORLEANS' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Emma' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Jones Walker' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Bill' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 047340a0-c7e2-498e-b1b1-bc121422b3cf: 0 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Jones Walker Welcomes Environmental Litigator Emma Moppert in New Orleans
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'San Antonio' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Texas' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 8994604d-fd61-49d1-b45b-b6ee2a6f0d86: 0 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Yale-Trained Plastic Surgeon Introduces Advanced Breast Implant Revision Program in San Antonio
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 782e2bcc-7c3f-4075-acb2-ea5e13423c02: 0 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Why nVent Electric Crushed Estimates Again (Hint: It's Not Just Due to AI Data Centers)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Accenture' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article e0a38533-77e0-43df-a058-9ed003db55b1: 1 tickers, 0 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Accenture vs. Microsoft: What Diverging Revenue Growth Paths Tell Investors
+
+Candidates
+  MSFT = 90
+
+Winner
+  MSFT
+
+Confidence
+  90
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 3ae302f7-1728-47cd-9556-e7f4ee015e70: 1 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Bloom Energy vs. NextEra Energy: Is a Fuel Cell Upstart or Renewable Energy Titan the Better Buy in 2026?
+
+Candidates
+  NEE = 90
+
+Winner
+  NEE
+
+Confidence
+  90
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article ae99fdb4-4b52-4106-a8d0-1a1aab2a1542: 1 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+AWS Achieves Fastest Growth in 18 Quarters. And That May Not Even Be the Best Part of Amazon’s Latest Earnings Report.
+
+Candidates
+  AMZN = 90
+
+Winner
+  AMZN
+
+Confidence
+  90
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article e52d90cb-d2ca-4b13-97a1-3d831c2fbd31: 0 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Nano Nuclear Energy Surges: What's Driving the Rally Today?
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article ae57f98e-86f8-4436-b6f6-58a7d54c5fc3: 0 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Pfizer Yields 6.8%, Trades at 8.5X Earnings, and Has a Promising Late-Stage Weight Loss Drug. Why Are So Many Investors Still Ignoring the Stock?
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article b40e5555-52a7-421a-98f8-79c410645bec: 0 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+AST SpaceMobile vs. Intuitive Machines: Which Space Infrastructure Stock Is a Better Buy in 2026?
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Down' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 9fe3e60e-a550-4d85-a740-b16f2df6f92b: 1 tickers, 0 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Why Micron Stock Was Up and Down Today
+
+Candidates
+  MU = 90
+
+Winner
+  MU
+
+Confidence
+  90
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 3c17ae1b-d5e6-4011-a3f6-70e448b1f784: 0 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Forget SpaceX's Upcoming Q2 Results. History Says You Should Wait at Least This Long Before Buying SpaceX Stock.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 226e2444-8b5f-4a70-a439-e78685802389: 0 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Drax Group H1 Earnings Call Highlights
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Informa H1 Earnings Call Highlights' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Informa H1 Earnings Call Highlights
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article fd46e66f-bc0f-496b-9f9d-36bff9aeb37d: 0 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Stellantis Stock Drops as Turnaround Takes Time
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Suze Orman’s' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+‘Which bucket do I draw from first?’ Suze Orman’s strategy to help low-income retirees maximize withdrawals
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Elon Musk’s' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Minnesota' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'the First Amendment' → Other (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Trigger Billions' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Elon Musk’s xAI Says Minnesota’s ‘Clumsy’ Nudify-App Ban Violates the First Amendment and Could Trigger Billions of Dollars in Fines
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Boost' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'U.S. PCE Inflation Data' → EconomicIndicator (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article f9dd0718-8784-47a9-9813-577ab693c343: 1 tickers, 0 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Stocks Climb Before the Open as Microsoft Provides a Boost, U.S. PCE Inflation Data and More Big Tech Earnings on Tap
+
+Candidates
+  MSFT = 65
+
+Winner
+  NULL
+
+Reason
+  No sufficiently relevant company detected (best: MSFT=65)
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Morning Bid: Long bond takes fright
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 74b89123-39da-48fd-b7c7-fc9f72691349: 0 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+XRP Hits Its Most Oversold Levels Ever: Has the Bottom Finally Arrived?
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'BELLEVILLE' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Ill.' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Illinois' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 84f57ba0-c70d-42b4-8597-0d58255bf7e8: 0 tickers, 3 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Illinois American Water Celebrates One Year of Expanded Income-Based Discount Program
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'York Region' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Canada' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'LONDON' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'ON' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 2f739399-c7e9-4934-b3ed-b49548cfe34b: 0 tickers, 4 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Power Sustainable Infrastructure Credit Closes $135M project financing to Convertus for Flagship Biofuel Facility in York Region
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'STOCKHOLM' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 34b2bdf0-868a-4eff-815f-22acf91beadb: 0 tickers, 3 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Change in the number of shares and votes in AB Electrolux
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'N.Y.' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Adequan' → Other (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Canine Injection' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 31532acb-7cfb-42da-bd71-e2670e7a3995: 0 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+American Regent, Inc. Animal Health Issues Nationwide Recall of two lots of Adequan® Canine and two lots of Adequan® i.m. due to visible glass fiber material in the product
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'HAGENS BERMAN' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'NASDAQ' → Exchange (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Hagens Berman' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Hagens Berman Sobol' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Shapiro LLP' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article c30633d6-6588-43b9-b01b-fefeebcfe503: 1 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+HAGENS BERMAN, SOBOL SHAPIRO LLP ALERT: GeneDx Holdings Corp. (NASDAQ: WGS) Investors Urged to Contact Hagens Berman; Securities Fraud Class Action Filed, August 3, 2026 Lead Plaintiff Deadline
+
+Candidates
+  WGS = 170
+
+Winner
+  WGS
+
+Confidence
+  170
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'HAGENS BERMAN' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Hagens Berman' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Hagens Berman Sobol' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Shapiro LLP' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 79d62ddc-ce86-4dc2-aba9-0d99e4884350: 1 tickers, 2 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+HAGENS BERMAN, SOBOL SHAPIRO LLP ALERT: GRAIL, Inc. (NASDAQ: GRAL) Investors Urged to Contact Hagens Berman; Securities Fraud Class Action Filed, August 4, 2026 Lead Plaintiff Deadline
+
+Candidates
+  GRAL = 170
+
+Winner
+  GRAL
+
+Confidence
+  170
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Should You Buy Lyft Stock Before Aug. 6?
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article e374ba24-6cac-45a0-8a42-5b9ccca92300: 0 tickers, 3 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+This Historic 6-Gigawatt SMR Program Could Be a Game Changer for NuScale Stock
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Colombia' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Peso Strengthens' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Colombia to Build Up Reserves as Peso Strengthens to 7-Year High
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Trump Casts Doubt' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Wesley Clark' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'US' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Iran' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Clark' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Iranian' → Other (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'IRGC' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Russia' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'China' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Bloomberg' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 08377696-e978-40a8-ae9b-77908392f02e: 0 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Trump Casts Doubt on New Iran Negotiations as War Drags On
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Michigan' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'David Gura' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Nancy Cook' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Bloomberg Opinions' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Ronald Brownstein' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Democratic' → Other (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Bloomberg' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 67c42b84-f016-43ec-9560-59f75754c5be: 0 tickers, 1 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+The Future of the Democratic Party Runs Through Michigan
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Messaging' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Clarida' → Country (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Federal Reserve' → GovernmentAgency (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Richard Clarida' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Tom Keene' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Fed' → GovernmentAgency (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Kevin Warsh' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Bloomberg' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article 4e79516f-1fee-4baf-9dda-a8d406efab70: 0 tickers, 3 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Fed Needs Clear Inflation Target and Messaging, Clarida Says
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'European' → Other (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Claudio Panseri' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Anna Edwards' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Guy Johnson' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:101 — [entity_resolution] 'Bloomberg' → Person (skipped — not ticker-eligible)
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:155 — [entity_resolution] article e2f8944b-3529-4297-9613-98399d1dcf4d: 0 tickers, 3 unresolved
+2026-07-31 15:50:09 | DEBUG    | sentiment_analysis.nlp.pipeline:72 — [primary_scorer]
+----------------------------------------
+Title:
+Very Positive on European Stocks: UBS’s Panseri
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-07-31 15:50:09 | INFO     | sentiment_analysis.nlp.pipeline:188 — [nlp] Batch complete — processed 50/50 articles
+2026-07-31 15:50:09 | INFO     | sentiment_analysis.sentiment.pipeline:107 — [sentiment] Analyzing 17 SEC articles via SEC Analyzer.
+2026-07-31 15:50:09 | INFO     | sentiment_analysis.sentiment.pipeline:130 — [sentiment] SEC breakdown: 16 Form4, 0 8-K, 1 10-Q, 0 S-1, 0 SC13G scored.
+2026-07-31 15:50:09 | INFO     | sentiment_analysis.sentiment.pipeline:141 — [sentiment] Analyzing 33 articles via FinBERT.
+2026-07-31 15:50:12 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:148 — [finbert] Loading model 'peyterho/finbert-macro-sentiment'...
+2026-07-31 15:50:13 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:160 — [finbert] No GPU detected — using CPU
+2026-07-31 15:50:13 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:172 — [finbert] Model loaded successfully in 0.8s  | labels=['positive', 'negative', 'neutral']
+2026-07-31 15:50:13 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:182 — [finbert] Warm-up complete.
+2026-07-31 15:50:16 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:126 — [finbert] Scored 33 articles in 2.5s
+2026-07-31 15:50:16 | INFO     | sentiment_analysis.sentiment.pipeline:205 — [sentiment] Stored 50 results.
+2026-07-31 15:50:16 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=111 — all 8 expected columns present.
+2026-07-31 15:50:16 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=111: fetched 11532 rows.
+2026-07-31 15:50:16 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=121 — all 7 expected columns present.
+2026-07-31 15:50:16 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=121: fetched 11532 rows.
+2026-07-31 15:50:17 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=131 — all 5 expected columns present.
+2026-07-31 15:50:17 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=131: fetched 11532 rows.
+2026-07-31 15:50:17 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=141 — all 6 expected columns present.
+2026-07-31 15:50:17 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=141: fetched 11532 rows.
+2026-07-31 15:50:17 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=161 — all 9 expected columns present.
+2026-07-31 15:50:17 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=161: fetched 11532 rows.
+2026-07-31 15:50:17 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=171 — all 8 expected columns present.
+2026-07-31 15:50:17 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=171: fetched 11532 rows.
+2026-07-31 15:50:17 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:341 — [finviz] Merged frame: 11532 tickers x 64 columns.
+2026-07-31 15:50:19 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:444 — [finviz] Parsed 11531 ticker rows for upsert.
+2026-07-31 15:50:19 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Bulk fetch: 11531 tickers updated
+2026-07-31 15:50:27 | DEBUG    | sentiment_analysis.ingestion.scheduler:183 — [alerts] Evaluating 1 active alerts.
+2026-07-31 15:50:27 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=111 — all 8 expected columns present.
+2026-07-31 15:50:27 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=111: fetched 11532 rows.
+2026-07-31 15:50:27 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=121 — all 7 expected columns present.
+2026-07-31 15:50:27 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=121: fetched 11532 rows.
+2026-07-31 15:50:28 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=131 — all 5 expected columns present.
+2026-07-31 15:50:28 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=131: fetched 11532 rows.
+2026-07-31 15:50:28 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=141 — all 6 expected columns present.
+2026-07-31 15:50:28 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=141: fetched 11532 rows.
+2026-07-31 15:50:28 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=161 — all 9 expected columns present.
+2026-07-31 15:50:28 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=161: fetched 11532 rows.
+2026-07-31 15:50:29 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=171 — all 8 expected columns present.
+2026-07-31 15:50:29 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=171: fetched 11532 rows.
+2026-07-31 15:50:29 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:341 — [finviz] Merged frame: 11532 tickers x 64 columns.
+2026-07-31 15:50:30 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:444 — [finviz] Parsed 11531 ticker rows for upsert.
+2026-07-31 15:50:30 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Bulk fetch: 11531 tickers updated
+2026-07-31 15:50:47 | DEBUG    | sentiment_analysis.ingestion.scheduler:98 — [price] Upserted 11531 price records.
+2026-07-31 15:50:47 | DEBUG    | sentiment_analysis.ingestion.scheduler:150 — [snapshot] Daily snapshots already recorded for today — skipped.
+2026-07-31 15:50:47 | DEBUG    | sentiment_analysis.ingestion.scheduler:183 — [alerts] Evaluating 1 active alerts.
+2026-07-31 15:50:47 | INFO     | __main__:189 — Ingestion pipeline running.  Press Ctrl+C to stop.
+2026-07-31 15:51:14 | DEBUG    | sentiment_analysis.ingestion.scheduler:98 — [price] Upserted 11531 price records.
+2026-07-31 15:51:14 | DEBUG    | sentiment_analysis.ingestion.scheduler:150 — [snapshot] Daily snapshots already recorded for today — skipped.
+2026-07-31 15:51:27 | DEBUG    | sentiment_analysis.ingestion.scheduler:183 — [alerts] Evaluating 1 active alerts.
+2026-07-31 15:51:27 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=111 — all 8 expected columns present.
+2026-07-31 15:51:27 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=111: fetched 11532 rows.
+2026-07-31 15:51:27 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=121 — all 7 expected columns present.
+2026-07-31 15:51:27 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=121: fetched 11532 rows.
+2026-07-31 15:51:27 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:544 — [finviz] v=131: fetch failed — 429 Client Error: Too Many Requests for url: https://elite.finviz.com/export?v=131&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-07-31 15:51:27 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:544 — [finviz] v=141: fetch failed — 429 Client Error: Too Many Requests for url: https://elite.finviz.com/export?v=141&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-07-31 15:51:27 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:544 — [finviz] v=161: fetch failed — 429 Client Error: Too Many Requests for url: https://elite.finviz.com/export?v=161&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-07-31 15:51:28 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=171 — all 8 expected columns present.
+2026-07-31 15:51:28 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=171: fetched 11532 rows.
+2026-07-31 15:51:28 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:327 — [finviz] v=131 returned no data — affected columns will be NULL this cycle.
+2026-07-31 15:51:28 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:327 — [finviz] v=141 returned no data — affected columns will be NULL this cycle.
+2026-07-31 15:51:28 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:327 — [finviz] v=161 returned no data — affected columns will be NULL this cycle.
+2026-07-31 15:51:28 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:341 — [finviz] Merged frame: 11532 tickers x 31 columns.
+2026-07-31 15:51:29 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:444 — [finviz] Parsed 11531 ticker rows for upsert.
+2026-07-31 15:51:29 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Bulk fetch: 11531 tickers updated
+2026-07-31 15:51:55 | DEBUG    | sentiment_analysis.ingestion.scheduler:98 — [price] Upserted 11531 price records.
+2026-07-31 15:51:56 | DEBUG    | sentiment_analysis.ingestion.scheduler:150 — [snapshot] Daily snapshots already recorded for today — skipped.
+2026-07-31 15:52:27 | DEBUG    | sentiment_analysis.ingestion.scheduler:183 — [alerts] Evaluating 1 active alerts.
+2026-07-31 15:52:27 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=111 — all 8 expected columns present.
+2026-07-31 15:52:27 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=111: fetched 11532 rows.
+2026-07-31 15:52:27 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=121 — all 7 expected columns present.
+2026-07-31 15:52:27 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=121: fetched 11532 rows.
+2026-07-31 15:52:27 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=131 — all 5 expected columns present.
+2026-07-31 15:52:27 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=131: fetched 11532 rows.
+2026-07-31 15:52:28 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=141 — all 6 expected columns present.
+2026-07-31 15:52:28 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=141: fetched 11532 rows.
+2026-07-31 15:52:28 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=161 — all 9 expected columns present.
+2026-07-31 15:52:28 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=161: fetched 11532 rows.
+2026-07-31 15:52:28 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:229 — [finviz] v=171 — all 8 expected columns present.
+2026-07-31 15:52:28 | DEBUG    | sentiment_analysis.ingestion.finviz_ingestor:541 — [finviz] v=171: fetched 11532 rows.
+2026-07-31 15:52:28 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:341 — [finviz] Merged frame: 11532 tickers x 64 columns.
+2026-07-31 15:52:30 | INFO     | sentiment_analysis.ingestion.finviz_ingestor:444 — [finviz] Parsed 11531 ticker rows for upsert.
+2026-07-31 15:52:30 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Bulk fetch: 11531 tickers updated
+2026-07-31 15:52:49 | INFO     | __main__:199 — Pipeline stopped cleanly.
+2026-07-31 15:52:49 | INFO     | __main__:277 — Dashboard process terminated.
