@@ -211,7 +211,7 @@ async def _job_evaluate_alerts() -> None:
                             SELECT AVG(avg_sentiment) AS avg_score
                             FROM ticker_sentiment_summary
                             WHERE ticker = :t
-                              AND window = '24hr'
+                              AND "window" = '24hr'
                               AND calculated_at > NOW() - INTERVAL '24 hours'
                         """),
                         {"t": ticker},

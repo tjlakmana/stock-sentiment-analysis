@@ -9,6 +9,8 @@ import math
 
 import dash
 import pandas as pd
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 
@@ -87,6 +89,34 @@ _RECENT_NEWS_SQL = """
         ingested_at DESC
     LIMIT 20
 """
+
+# ── Message Density chart config ─────────────────────────────────────────
+
+_TF_OPTIONS = [
+    {"label": "1D", "value": "1D"},
+    {"label": "5D", "value": "5D"},
+    {"label": "1M", "value": "1M"},
+    {"label": "3M", "value": "3M"},
+    {"label": "6M", "value": "6M"},
+    {"label": "1Y", "value": "1Y"},
+]
+
+_TF_CONFIG: dict[str, dict] = {
+    "1D":  {"days": 1,   "bucket": "hour",  "price_trunc": None},
+    "5D":  {"days": 5,   "bucket": "day",   "price_trunc": None},
+    "1M":  {"days": 30,  "bucket": "day",   "price_trunc": None},
+    "3M":  {"days": 90,  "bucket": "week",  "price_trunc": "week"},
+    "6M":  {"days": 180, "bucket": "week",  "price_trunc": "week"},
+    "1Y":  {"days": 365, "bucket": "month", "price_trunc": "month"},
+}
+
+_SENT_BAR_COLOR: dict[str, str] = {
+    "Bullish":          "rgba(0, 230, 118, 0.55)",
+    "Somewhat Bullish": "rgba(105, 240, 174, 0.55)",
+    "Neutral":          "rgba(130, 177, 255, 0.55)",
+    "Somewhat Bearish": "rgba(255, 138, 128, 0.55)",
+    "Bearish":          "rgba(255, 82, 82, 0.55)",
+}
 
 # ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -212,6 +242,166 @@ def _tv_src(ticker: str) -> str:
         "&save_image=false&hide_side_toolbar=false"
         "&allow_symbol_change=false&studies=%5B%5D"
     )
+
+
+# ── Density chart builders ────────────────────────────────────────────────
+
+def _empty_density_fig(msg: str = "No data available") -> go.Figure:
+    fig = go.Figure()
+    fig.update_layout(
+        plot_bgcolor="#131722",
+        paper_bgcolor="#0e1117",
+        height=360,
+        margin={"l": 50, "r": 50, "t": 20, "b": 40},
+        xaxis={"visible": False},
+        yaxis={"visible": False},
+        annotations=[{
+            "text": msg,
+            "xref": "paper", "yref": "paper",
+            "x": 0.5, "y": 0.5,
+            "showarrow": False,
+            "font": {"size": 15, "color": "#555"},
+        }],
+    )
+    return fig
+
+
+def _build_density_chart(ticker: str, tf: str) -> go.Figure:
+    cfg = _TF_CONFIG.get(tf, _TF_CONFIG["1M"])
+    days = cfg["days"]
+    bucket = cfg["bucket"]
+    price_trunc = cfg["price_trunc"]
+
+    if price_trunc is None:
+        price_sql = f"""
+            SELECT snapshot_date::date AS bucket, price
+            FROM ticker_snapshot_history
+            WHERE ticker = :ticker
+              AND snapshot_date >= CURRENT_DATE - {days}
+            ORDER BY bucket
+        """
+    else:
+        price_sql = f"""
+            SELECT DATE_TRUNC('{price_trunc}', snapshot_date::timestamp)::date AS bucket,
+                   AVG(price) AS price
+            FROM ticker_snapshot_history
+            WHERE ticker = :ticker
+              AND snapshot_date >= CURRENT_DATE - {days}
+            GROUP BY bucket
+            ORDER BY bucket
+        """
+    price_df = query_df(price_sql, {"ticker": ticker})
+
+    art_sql = f"""
+        WITH bucketed AS (
+            SELECT
+                DATE_TRUNC('{bucket}', ingested_at) AS bucket,
+                title,
+                sentiment_label,
+                source_name,
+                ROW_NUMBER() OVER (
+                    PARTITION BY DATE_TRUNC('{bucket}', ingested_at)
+                    ORDER BY ingested_at DESC
+                ) AS rn
+            FROM rss_articles
+            WHERE :ticker = ANY(tickers)
+              AND ingested_at >= NOW() - INTERVAL '{days} days'
+        )
+        SELECT
+            bucket,
+            COUNT(*) AS article_count,
+            MAX(CASE WHEN rn = 1 THEN title END) AS top_title,
+            MAX(CASE WHEN rn = 1 THEN sentiment_label END) AS top_sentiment,
+            MAX(CASE WHEN rn = 1 THEN source_name END) AS top_source
+        FROM bucketed
+        GROUP BY bucket
+        ORDER BY bucket
+    """
+    art_df = query_df(art_sql, {"ticker": ticker})
+
+    if price_df.empty and art_df.empty:
+        return _empty_density_fig(f"No price or news data found for {ticker}.")
+
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    if not price_df.empty:
+        fig.add_trace(
+            go.Scatter(
+                x=price_df["bucket"],
+                y=price_df["price"],
+                name="Price",
+                line={"color": "#82b1ff", "width": 2},
+                mode="lines",
+                hovertemplate="$%{y:,.2f}<extra>Price</extra>",
+            ),
+            secondary_y=False,
+        )
+
+    if not art_df.empty:
+        hover_texts = []
+        for _, row in art_df.iterrows():
+            cnt   = int(row.get("article_count") or 0)
+            title = str(row.get("top_title") or "—")
+            if len(title) > 72:
+                title = title[:72] + "…"
+            sent  = str(row.get("top_sentiment") or "—").strip()
+            src   = str(row.get("top_source") or "—").replace("_", " ").title()
+            more  = f" <i>(+{cnt - 1} more)</i>" if cnt > 1 else ""
+            hover_texts.append(
+                f"<b>{cnt} article{'s' if cnt != 1 else ''}</b>{more}<br>"
+                f"{title}<br>"
+                f"<span style='opacity:.7'>{sent} · {src}</span>"
+            )
+
+        bar_colors = [
+            _SENT_BAR_COLOR.get(str(s).strip(), "rgba(130, 177, 255, 0.55)")
+            for s in art_df["top_sentiment"].fillna("Neutral")
+        ]
+
+        fig.add_trace(
+            go.Bar(
+                x=art_df["bucket"],
+                y=art_df["article_count"],
+                name="Articles",
+                marker_color=bar_colors,
+                hovertext=hover_texts,
+                hovertemplate="%{hovertext}<extra>Articles</extra>",
+            ),
+            secondary_y=True,
+        )
+
+    fig.update_layout(
+        plot_bgcolor="#131722",
+        paper_bgcolor="#0e1117",
+        font={"color": "#cdd6f4", "family": "Inter, system-ui, sans-serif", "size": 12},
+        legend={
+            "orientation": "h", "y": 1.06, "x": 0,
+            "bgcolor": "rgba(0,0,0,0)", "font": {"size": 12},
+        },
+        hovermode="x unified",
+        margin={"l": 60, "r": 60, "t": 10, "b": 40},
+        height=360,
+        bargap=0.35,
+        xaxis={"gridcolor": "#1a1f35", "linecolor": "#282a36", "tickcolor": "#282a36"},
+    )
+    fig.update_yaxes(
+        title_text="Price ($)",
+        secondary_y=False,
+        gridcolor="#1a1f35",
+        tickfont={"color": "#82b1ff"},
+        title_font={"color": "#82b1ff"},
+        tickprefix="$",
+        linecolor="#282a36",
+    )
+    fig.update_yaxes(
+        title_text="Articles",
+        secondary_y=True,
+        gridcolor="rgba(0,0,0,0)",
+        tickfont={"color": "#00c896"},
+        title_font={"color": "#00c896"},
+        linecolor="#282a36",
+    )
+    return fig
 
 
 # ── UI building blocks ────────────────────────────────────────────────────
@@ -531,6 +721,30 @@ def _render_page(ticker: str) -> html.Div:
                 style={"width": "100%", "height": "100%",
                        "border": "none", "display": "block"},
             )],
+        ),
+    ])
+
+    # ─────────────────────────────────────────────────────────────────────
+    # SECTION 2b — Message Density vs. Price
+    # ─────────────────────────────────────────────────────────────────────
+
+    density_section = html.Div(className="sw-section", children=[
+        html.Div(className="sw-density-header", children=[
+            html.Div("Message Density vs. Price", className="sw-section-title"),
+            dcc.RadioItems(
+                id="stock-tf-radio",
+                options=_TF_OPTIONS,
+                value="1M",
+                inline=True,
+                className="sw-tf-radio",
+                inputStyle={"display": "none"},
+            ),
+        ]),
+        dcc.Graph(
+            id="stock-density-chart",
+            style={"height": "360px"},
+            config={"displayModeBar": False, "responsive": True},
+            figure=_empty_density_fig("Loading…"),
         ),
     ])
 
@@ -865,6 +1079,7 @@ def _render_page(ticker: str) -> html.Div:
         header,
         metrics,
         chart,
+        density_section,
         news_section,
         sentiment_section,
         financial_highlights,
@@ -930,3 +1145,14 @@ def _toggle_watchlist(_, ticker):
     else:
         watchlist_add(ticker)
         return "⭐ Watching", "sw-wl-btn sw-wl-btn-active"
+
+
+@callback(
+    Output("stock-density-chart", "figure"),
+    Input("stock-tf-radio",       "value"),
+    State("stock-ticker-store",   "data"),
+)
+def _update_density_chart(tf, ticker):
+    if not ticker:
+        raise PreventUpdate
+    return _build_density_chart(ticker, tf or "1M")

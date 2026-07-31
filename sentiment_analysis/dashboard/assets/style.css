@@ -266,55 +266,6 @@ body {
     text-decoration: none;
 }
 
-/* ── Intelligence Strip ─────────────────────────────────────────────────── */
-.intel-strip {
-    display:       flex;
-    align-items:   center;
-    gap:           10px;
-    height:        34px;
-    padding:       0 14px;
-    background:    #0c0c14;
-    border:        1px solid #1a1a28;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    font-size:     11px;
-    overflow:      hidden;
-}
-.intel-icon  { font-size: 11px; flex-shrink: 0; }
-.intel-label {
-    font-size:      9px;
-    font-weight:    700;
-    letter-spacing: 1px;
-    color:          #30304a;
-    font-family:    monospace;
-    flex-shrink:    0;
-}
-.intel-sep {
-    width:      1px;
-    height:     14px;
-    background: #20202e;
-    flex-shrink: 0;
-}
-.intel-group  { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-.intel-kv-key { font-size: 10px; color: #404058; }
-.intel-kv-val { font-size: 10px; color: #505068; }
-.intel-bull   { color: #2a8a58; }
-.intel-bear   { color: #8a3030; }
-.intel-mono   { font-family: monospace; }
-.intel-stat   { font-size: 10px; color: #404058; white-space: nowrap; }
-.intel-s-bull { color: #2a8a58; }
-.intel-s-neut { color: #404078; }
-.intel-s-bear { color: #8a3030; }
-.intel-count  { font-size: 10px; color: #383850; white-space: nowrap; }
-.intel-future {
-    font-size:      8px;
-    font-weight:    700;
-    letter-spacing: 1.2px;
-    color:          #1c1c2a;
-    font-family:    monospace;
-    margin-left:    auto;
-    flex-shrink:    0;
-}
 
 .no-results {
     padding: 52px; text-align: center;
@@ -2167,4 +2118,48 @@ body {
     font-size: 12px;
     max-width: 420px;
     word-break: break-word;
+}
+
+/* ── Stock Workspace — Message Density vs. Price ─────────────────────── */
+.sw-density-header {
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    margin-bottom:   12px;
+}
+.sw-density-header .sw-section-title {
+    margin-bottom: 0;
+}
+
+.sw-tf-radio {
+    display: flex;
+    gap:     4px;
+}
+.sw-tf-radio .option-inline {
+    display: inline-flex;
+}
+.sw-tf-radio input[type="radio"] {
+    display: none !important;
+}
+.sw-tf-radio label {
+    padding:        4px 14px;
+    border:         1px solid #2a2e42;
+    border-radius:  4px;
+    color:          #666;
+    cursor:         pointer;
+    font-size:      12px;
+    font-weight:    600;
+    letter-spacing: 0.03em;
+    transition:     all 0.15s ease;
+    background:     transparent;
+    user-select:    none;
+}
+.sw-tf-radio label:hover {
+    color:        #aaa;
+    border-color: rgba(61, 90, 254, 0.35);
+}
+.sw-tf-radio input[type="radio"]:checked + label {
+    background:   #1a2040;
+    border-color: #3d5afe;
+    color:        #82b1ff;
 }

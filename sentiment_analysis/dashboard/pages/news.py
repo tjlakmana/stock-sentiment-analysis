@@ -21,15 +21,43 @@ dash.register_page(__name__, path="/", name="News", title="News Feed")
 
 PAGE_SIZE = 50
 
-SOURCE_OPTIONS = [
-    {"label": "All Sources",                    "value": "all"},
-    {"label": "PR Newswire",                    "value": "pr_newswire"},
-    {"label": "Globe Newswire — Financial",     "value": "globe_newswire_finance"},
-    {"label": "Globe Newswire — M&A",           "value": "globe_newswire_ma"},
-    {"label": "SEC — 8-K Major Events",         "value": "sec_edgar"},
-    {"label": "SEC — Insider Trading (Form 4)", "value": "sec_form4"},
-    {"label": "FDA Press Releases",             "value": "fda"},
-]
+_SOURCE_LABEL_MAP: dict[str, str] = {
+    # Financial news outlets
+    "cnbc_finance":            "CNBC — Finance",
+    "cnbc_earnings":           "CNBC — Earnings",
+    "yahoo_finance_news":      "Yahoo Finance",
+    "marketwatch_news":        "MarketWatch",
+    "wsj_markets":             "WSJ — Markets",
+    "wsj_business":            "WSJ — Business",
+    "ft_markets":              "Financial Times",
+    "bloomberg_markets":       "Bloomberg Markets",
+    "motley_fool":             "Motley Fool",
+    # Press release wires
+    "pr_newswire":             "PR Newswire",
+    "globe_newswire_finance":  "GlobeNewswire — Financial",
+    "globe_newswire_ma":       "GlobeNewswire — M&A",
+    "globe_newswire_earnings": "GlobeNewswire — Earnings",
+    "globe_newswire_company":  "GlobeNewswire — Company",
+    # SEC EDGAR
+    "sec_edgar":               "SEC — 8-K Major Events",
+    "sec_form4":               "SEC — Insider Trading (Form 4)",
+    "sec_10q":                 "SEC — Quarterly Reports (10-Q)",
+    "sec_s1":                  "SEC — IPO Filings (S-1)",
+    "sec_sc13g":               "SEC — Large Investor (SC 13G)",
+    # Regulatory
+    "fda":                     "FDA Press Releases",
+    "fed_reserve":             "Federal Reserve",
+    "fed_reserve_monetary":    "Federal Reserve — Monetary Policy",
+    "ftc_news":                "FTC Press Releases",
+    # Technology
+    "techcrunch":              "TechCrunch",
+    "arstechnica":             "Ars Technica",
+    "venturebeat":             "VentureBeat",
+    "zdnet":                   "ZDNet",
+    # Healthcare / Biotech
+    "fierce_biotech":          "Fierce Biotech",
+    "stat_news":               "STAT News",
+}
 
 SENTIMENT_OPTIONS = [
     {"label": "All Sentiment",    "value": "all"},
@@ -58,12 +86,41 @@ REFRESH_OPTIONS = [
 ]
 
 _SOURCE_META: dict[str, tuple[str, str, str]] = {
-    "pr_newswire":            ("PRN", "#38a4c8", "PR Newswire"),
-    "globe_newswire_finance": ("GNW", "#8860c0", "Globe Newswire"),
-    "globe_newswire_ma":      ("GNW", "#8860c0", "Globe Newswire"),
-    "sec_edgar":              ("8-K",  "#c87820", "SEC Edgar"),
-    "sec_form4":              ("F-4",  "#c87820", "SEC Form 4"),
-    "fda":                    ("FDA", "#c84040", "FDA"),
+    # Press release wires
+    "pr_newswire":             ("PRN",  "#38a4c8", "PR Newswire"),
+    "globe_newswire_finance":  ("GNW",  "#8860c0", "Globe Newswire"),
+    "globe_newswire_ma":       ("GNW",  "#8860c0", "Globe Newswire"),
+    "globe_newswire_earnings": ("GNW",  "#8860c0", "Globe Newswire"),
+    "globe_newswire_company":  ("GNW",  "#8860c0", "Globe Newswire"),
+    # SEC EDGAR
+    "sec_edgar":               ("8-K",  "#c87820", "SEC Edgar"),
+    "sec_form4":               ("F-4",  "#c87820", "SEC Form 4"),
+    "sec_10q":                 ("10-Q", "#c87820", "SEC 10-Q"),
+    "sec_s1":                  ("S-1",  "#c87820", "SEC S-1"),
+    "sec_sc13g":               ("13G",  "#c87820", "SEC 13G"),
+    # Regulatory
+    "fda":                     ("FDA",  "#c84040", "FDA"),
+    "fed_reserve":             ("FED",  "#5080c0", "Federal Reserve"),
+    "fed_reserve_monetary":    ("FED",  "#5080c0", "Federal Reserve"),
+    "ftc_news":                ("FTC",  "#4870a0", "FTC"),
+    # Financial news
+    "cnbc_finance":            ("CNBC", "#c82020", "CNBC"),
+    "cnbc_earnings":           ("CNBC", "#c82020", "CNBC"),
+    "yahoo_finance_news":      ("YFN",  "#6001d2", "Yahoo Finance"),
+    "marketwatch_news":        ("MKW",  "#1e88e5", "MarketWatch"),
+    "wsj_markets":             ("WSJ",  "#c8941a", "WSJ"),
+    "wsj_business":            ("WSJ",  "#c8941a", "WSJ"),
+    "ft_markets":              ("FT",   "#c8621a", "Fin. Times"),
+    "bloomberg_markets":       ("BBG",  "#e85d04", "Bloomberg"),
+    "motley_fool":             ("MF",   "#cc0099", "Motley Fool"),
+    # Technology
+    "techcrunch":              ("TC",   "#0aa9e2", "TechCrunch"),
+    "arstechnica":             ("ARS",  "#cc4c00", "Ars Technica"),
+    "venturebeat":             ("VB",   "#1aa69a", "VentureBeat"),
+    "zdnet":                   ("ZDN",  "#e00001", "ZDNet"),
+    # Healthcare / Biotech
+    "fierce_biotech":          ("FBT",  "#7aab3a", "Fierce Biotech"),
+    "stat_news":               ("STAT", "#2d7bcc", "STAT News"),
 }
 
 _SENTIMENT_STYLE: dict[str, dict] = {
@@ -313,12 +370,41 @@ _CAT_STYLE: dict[str, tuple[str, str, str]] = {
 }
 
 _SOURCE_CAT: dict[str, str] = {
-    "sec_edgar":              "SEC",
-    "sec_form4":              "Insider",
-    "fda":                    "FDA",
-    "globe_newswire_ma":      "M&A",
-    "globe_newswire_finance": "Press",
-    "pr_newswire":            "Press",
+    # SEC
+    "sec_edgar":               "SEC",
+    "sec_form4":               "Insider",
+    "sec_10q":                 "SEC",
+    "sec_s1":                  "IPO",
+    "sec_sc13g":               "SEC",
+    # Regulatory
+    "fda":                     "FDA",
+    "fed_reserve":             "Macro",
+    "fed_reserve_monetary":    "Macro",
+    "ftc_news":                "Press",
+    # Press wires
+    "globe_newswire_ma":       "M&A",
+    "globe_newswire_finance":  "Press",
+    "globe_newswire_earnings": "Earnings",
+    "globe_newswire_company":  "Press",
+    "pr_newswire":             "Press",
+    # Financial news
+    "cnbc_finance":            "Press",
+    "cnbc_earnings":           "Earnings",
+    "yahoo_finance_news":      "Press",
+    "marketwatch_news":        "Press",
+    "wsj_markets":             "Press",
+    "wsj_business":            "Press",
+    "ft_markets":              "Press",
+    "bloomberg_markets":       "Press",
+    "motley_fool":             "Press",
+    # Technology
+    "techcrunch":              "Press",
+    "arstechnica":             "Press",
+    "venturebeat":             "Press",
+    "zdnet":                   "Press",
+    # Healthcare
+    "fierce_biotech":          "Biotech",
+    "stat_news":               "Biotech",
 }
 
 _KW_CATS: list[tuple[str, list[str]]] = [
@@ -539,30 +625,6 @@ def _build_count_where(cat_name: str) -> tuple[str, dict]:
     return " AND ".join(conds), params
 
 
-# ── AI Intelligence Strip (compact placeholder) ────────────────────────────
-
-
-_INTEL_STRIP = html.Div(
-    className="intel-strip",
-    children=[
-        html.Span("⚡", className="intel-icon"),
-        html.Span("INTELLIGENCE", className="intel-label"),
-        html.Div(className="intel-sep"),
-        html.Div([
-            html.Span("Sentiment ", className="intel-kv-key"),
-            html.Span("Moderately Bullish", className="intel-kv-val intel-bull"),
-            html.Span(" +0.24", className="intel-kv-val intel-bull intel-mono"),
-        ], className="intel-group"),
-        html.Div(className="intel-sep"),
-        html.Span("● 58% Bull",    className="intel-stat intel-s-bull"),
-        html.Span("● 28% Neutral", className="intel-stat intel-s-neut"),
-        html.Span("● 14% Bear",    className="intel-stat intel-s-bear"),
-        html.Div(className="intel-sep"),
-        html.Span("247 articles · 24h", className="intel-count"),
-        html.Span("AI ANALYSIS COMING SOON", className="intel-future"),
-    ],
-)
-
 
 # ── Layout ────────────────────────────────────────────────────────────────
 
@@ -608,9 +670,6 @@ layout = html.Div(
         dcc.Store(id="news-page",        data=1),
         dcc.Store(id="news-fetch-store", data={"done_at": None}),
 
-        # ── AI Intelligence Strip ─────────────────────────────────────────
-        _INTEL_STRIP,
-
         # ── Filter row ────────────────────────────────────────────────────
         html.Div(
             className="filter-bar",
@@ -625,7 +684,7 @@ layout = html.Div(
                 ),
                 dbc.Select(
                     id="news-source",
-                    options=SOURCE_OPTIONS,
+                    options=[{"label": "All Sources", "value": "all"}],
                     value="all",
                     className="filter-select",
                     style={**_SELECT_H},
@@ -921,6 +980,27 @@ def _update_feed(n, category, keyword, source, sentiment, time_range, page,
     paging  = _render_pagination(current_page, total_pages)
 
     return rows, count_text, updated, paging
+
+
+@callback(
+    Output("news-source", "options"),
+    Input("news-refresh",    "n_intervals"),
+    Input("news-fetch-store","data"),
+    Input("url",             "pathname"),
+)
+def _update_source_options(n, fetch_store, pathname):
+    if pathname not in (None, "/"):
+        raise PreventUpdate
+    df = query_df(
+        "SELECT DISTINCT source_name FROM rss_articles "
+        "WHERE source_name IS NOT NULL ORDER BY source_name"
+    )
+    active_sources = set(df["source_name"].tolist()) if not df.empty else set()
+    opts = [{"label": "All Sources", "value": "all"}]
+    for src in sorted(active_sources, key=lambda s: _SOURCE_LABEL_MAP.get(s, s)):
+        label = _SOURCE_LABEL_MAP.get(src, src.replace("_", " ").title())
+        opts.append({"label": label, "value": src})
+    return opts
 
 
 @callback(

@@ -102,14 +102,36 @@ PRICE_OPTIONS = [
 ]
 
 CHG_OPTIONS = [
-    {"label": "Any Change",  "value": "all"},
-    {"label": "Up 5%+",      "value": "up5"},
-    {"label": "Up 2–5%",     "value": "up2_5"},
-    {"label": "Up 0–2%",     "value": "up0_2"},
-    {"label": "Down 0–2%",   "value": "dn0_2"},
-    {"label": "Down 2–5%",   "value": "dn2_5"},
-    {"label": "Down 5%+",    "value": "dn5"},
+    {"label": "All",       "value": "all"},
+    {"label": "Up 1%",     "value": "up1"},
+    {"label": "Up 2%",     "value": "up2"},
+    {"label": "Up 3%",     "value": "up3"},
+    {"label": "Up 4%",     "value": "up4"},
+    {"label": "Up 5%",     "value": "up5"},
+    {"label": "Up 10%",    "value": "up10"},
+    {"label": "Up 15%",    "value": "up15"},
+    {"label": "Up 20%",    "value": "up20"},
+    {"label": "Down 1%",   "value": "dn1"},
+    {"label": "Down 2%",   "value": "dn2"},
+    {"label": "Down 3%",   "value": "dn3"},
+    {"label": "Down 4%",   "value": "dn4"},
+    {"label": "Down 5%",   "value": "dn5"},
+    {"label": "Down 10%",  "value": "dn10"},
+    {"label": "Down 15%",  "value": "dn15"},
+    {"label": "Down 20%",  "value": "dn20"},
+    {"label": "Custom",    "value": "custom"},
 ]
+
+# Maps each CHG_OPTIONS preset value to a (lo, hi) bound pair.
+# None means "no bound on that side".  Add new presets here only.
+_MAP_CHG: dict[str, tuple] = {
+    "up1":  (1,    None),  "up2":  (2,    None),  "up3":  (3,    None),
+    "up4":  (4,    None),  "up5":  (5,    None),  "up10": (10,   None),
+    "up15": (15,   None),  "up20": (20,   None),
+    "dn1":  (None, -1),    "dn2":  (None, -2),    "dn3":  (None, -3),
+    "dn4":  (None, -4),    "dn5":  (None, -5),    "dn10": (None, -10),
+    "dn15": (None, -15),   "dn20": (None, -20),
+}
 
 VOLUME_OPTIONS = [
     {"label": "Any Volume",  "value": "all"},
@@ -474,20 +496,19 @@ def _apply_price_filter(df: pd.DataFrame, price: str) -> pd.DataFrame:
     return df[mask] if mask is not None else df
 
 
-def _apply_chg_pct_filter(df: pd.DataFrame, chg: str) -> pd.DataFrame:
+def _apply_chg_pct_filter(
+    df: pd.DataFrame, chg: str,
+    custom_min=None, custom_max=None,
+) -> pd.DataFrame:
     if not chg or chg == "all":
         return df
-    v = df["change_pct"].fillna(0)
-    masks = {
-        "up5":   v >= 5,
-        "up2_5": (v >= 2)  & (v < 5),
-        "up0_2": (v >= 0)  & (v < 2),
-        "dn0_2": (v > -2)  & (v < 0),
-        "dn2_5": (v >= -5) & (v < -2),
-        "dn5":   v <= -5,
-    }
-    mask = masks.get(chg)
-    return df[mask] if mask is not None else df
+    if chg == "custom":
+        return _apply_range_filter(df, "change_pct", custom_min, custom_max)
+    bounds = _MAP_CHG.get(chg)
+    if bounds is None:
+        return df
+    lo, hi = bounds
+    return _apply_range_filter(df, "change_pct", lo, hi)
 
 
 def _apply_volume_filter(df: pd.DataFrame, vol: str) -> pd.DataFrame:
@@ -1155,7 +1176,63 @@ layout = html.Div(
                 html.Div(className="filter-row", children=[
                     _fi("Market Cap", "screener-mktcap",    MKTCAP_OPTIONS, "all"),
                     _fi("Price ($)",  "screener-price",     PRICE_OPTIONS,  "all"),
-                    _fi("Change %",   "screener-chg-pct",   CHG_OPTIONS,    "all"),
+                    html.Div([
+                        html.Label("Change %", className="filter-label"),
+                        dbc.Select(
+                            id="screener-chg-pct",
+                            options=CHG_OPTIONS,
+                            value="all",
+                            className="filter-select",
+                            style={**_SH},
+                        ),
+                        html.Div(
+                            id="scr-chg-custom-row",
+                            style={"display": "none"},
+                            children=[
+                                html.Div(
+                                    style={
+                                        "display":     "flex",
+                                        "alignItems":  "center",
+                                        "gap":         "5px",
+                                        "marginTop":   "6px",
+                                    },
+                                    children=[
+                                        dcc.Input(
+                                            id="scr-chg-custom-min",
+                                            type="number",
+                                            placeholder="Min",
+                                            debounce=True,
+                                            className="filter-input",
+                                            style={
+                                                "height":      "30px",
+                                                "width":       "62px",
+                                                "textAlign":   "center",
+                                                "padding":     "0 4px",
+                                                "flex":        "none",
+                                            },
+                                        ),
+                                        html.Span("%", style={"fontSize": "12px", "color": "#666"}),
+                                        html.Span("–",  style={"fontSize": "12px", "color": "#555"}),
+                                        dcc.Input(
+                                            id="scr-chg-custom-max",
+                                            type="number",
+                                            placeholder="Max",
+                                            debounce=True,
+                                            className="filter-input",
+                                            style={
+                                                "height":      "30px",
+                                                "width":       "62px",
+                                                "textAlign":   "center",
+                                                "padding":     "0 4px",
+                                                "flex":        "none",
+                                            },
+                                        ),
+                                        html.Span("%", style={"fontSize": "12px", "color": "#666"}),
+                                    ],
+                                ),
+                            ],
+                        ),
+                    ], className="filter-item"),
                     _fi("Volume",     "screener-volume",    VOLUME_OPTIONS, "all"),
                 ]),
                 html.Div(className="filter-row", children=[
@@ -1409,6 +1486,8 @@ _ALL_FILTER_INPUTS = [
     Input("screener-country",       "value"),
     Input("screener-price",         "value"),
     Input("screener-chg-pct",       "value"),
+    Input("scr-chg-custom-min",     "value"),
+    Input("scr-chg-custom-max",     "value"),
     Input("screener-volume",        "value"),
     Input("screener-avg-volume",    "value"),
     Input("screener-news-time",     "value"),
@@ -1468,6 +1547,8 @@ def _reset_screener_page(*_):
     Output("screener-news-time",     "value"),
     Output("screener-news-keywords", "value"),
     Output("scr-news-custom-state",  "data"),
+    Output("scr-chg-custom-min",     "value"),
+    Output("scr-chg-custom-max",     "value"),
     # Fundamental dropdowns
     Output("scr-pe",  "value"), Output("scr-fpe", "value"),
     Output("scr-peg", "value"), Output("scr-ps",  "value"),
@@ -1502,6 +1583,7 @@ def _reset_filters(_):
     return (
         "all", "all", "all", "all", "all", "all", "all",
         "all", "all", "market_cap", "", "any", "", {},
+        None, None,
         # 41 × "any" for all dropdown filters
         *( ["any"] * 41 ),
     )
@@ -1562,7 +1644,9 @@ def _toggle_screener_star(n_clicks_list, version):
 )
 def _update_screener(n, refresh_clicks,
                      order, sort_dir, search,
-                     sector, mktcap, country, price, chg_pct, volume, avg_volume,
+                     sector, mktcap, country, price, chg_pct,
+                     chg_custom_min, chg_custom_max,
+                     volume, avg_volume,
                      news_time, news_keywords, news_custom_state,
                      pe, fpe, peg, ps, pb, eps, roe, de, cr, qr, dy,
                      rsi, sma20, sma50, sma200, avgvol, relvol, h52, l52,
@@ -1598,7 +1682,7 @@ def _update_screener(n, refresh_clicks,
     df = _apply_country_filter(df, country or "all")
     df = _apply_mktcap_filter(df, mktcap or "all")
     df = _apply_price_filter(df, price or "all")
-    df = _apply_chg_pct_filter(df, chg_pct or "all")
+    df = _apply_chg_pct_filter(df, chg_pct or "all", chg_custom_min, chg_custom_max)
     df = _apply_volume_filter(df, volume or "all")
     df = _apply_avg_volume_filter(df, avg_volume or "all")
 
@@ -1690,6 +1774,16 @@ def _update_screener(n, refresh_clicks,
 
 
 # ── News filter callbacks ──────────────────────────────────────────────────
+
+@callback(
+    Output("scr-chg-custom-row", "style"),
+    Input("screener-chg-pct", "value"),
+)
+def _toggle_chg_custom_row(value):
+    if value == "custom":
+        return {}
+    return {"display": "none"}
+
 
 @callback(
     Output("scr-news-custom-panel", "style"),
