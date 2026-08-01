@@ -31,8 +31,11 @@ The application is deployed on [Railway](https://railway.app). The service start
 ### Screener Page
 ![Screener](<Images/Screenshot 2026-08-01 004724.png>)
 
-### Watchlist Page 
+### Charts Page 
 ![Charts](<Images/Screenshot 2026-08-01 004737.png>)
+
+### Watchlist Page
+![watchlist](<Images/Screenshot 2026-08-01 004748.png>)
 
 ### Alert Page
 ![Alert](<Images/Screenshot 2026-08-01 004805.png>)
