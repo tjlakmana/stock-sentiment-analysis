@@ -13,8 +13,10 @@ on the others.  One IngestionLog row is written per feed per poll cycle.
 from __future__ import annotations
 
 import re
+import socket
 import ssl
 import time
+import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from typing import List, Optional, Set
@@ -40,6 +42,45 @@ _ssl_ctx.verify_mode = ssl.CERT_NONE
 _FEED_OPENER = urllib.request.build_opener(
     urllib.request.HTTPSHandler(context=_ssl_ctx)
 )
+
+
+def _fetch_feed_bytes(url: str, max_retries: int = 2) -> bytes:
+    """Fetch RSS feed bytes, retrying up to *max_retries* times on network errors.
+
+    Uses exponential backoff (1 s, 2 s) between attempts so transient
+    connectivity blips don't permanently skip a feed.
+
+    Args:
+        url: Full URL of the RSS/Atom feed.
+        max_retries: Number of additional attempts after the first failure.
+
+    Returns:
+        Raw response bytes suitable for passing to ``feedparser.parse()``.
+
+    Raises:
+        urllib.error.HTTPError | urllib.error.URLError | socket.timeout:
+            If every attempt fails, the last exception is re-raised so the
+            caller can log it and continue to the next feed.
+    """
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "Mozilla/5.0 (compatible; FeedFetcher/1.0)"},
+    )
+    last_exc: Exception = RuntimeError("no fetch attempts made")
+    for attempt in range(max_retries + 1):
+        try:
+            with _FEED_OPENER.open(req, timeout=20) as resp:
+                return resp.read()
+        except (urllib.error.HTTPError, urllib.error.URLError, socket.timeout, OSError) as exc:
+            last_exc = exc
+            if attempt < max_retries:
+                wait = 2 ** attempt  # 1 s then 2 s
+                logger.warning(
+                    f"[feed-fetch] Attempt {attempt + 1}/{max_retries + 1} failed "
+                    f"for {url}: {exc!r} — retrying in {wait}s"
+                )
+                time.sleep(wait)
+    raise last_exc
 
 
 def _is_english(title: str, summary: str = "") -> bool:
@@ -332,16 +373,11 @@ class RSSIngestor:
 
         try:
             logger.info(f"[{log_source}] Fetching {feed_url}")
-            # Pre-fetch bytes with our urllib opener so we control the SSL
-            # context and User-Agent.  Passing raw bytes to feedparser triggers
-            # its more lenient fallback XML parser — important for feeds like
-            # SEC EDGAR whose Atom XML uses non-standard encoding declarations.
-            req = urllib.request.Request(
-                feed_url,
-                headers={"User-Agent": "Mozilla/5.0 (compatible; FeedFetcher/1.0)"},
-            )
-            with _FEED_OPENER.open(req, timeout=20) as resp:
-                raw_bytes = resp.read()
+            # Pre-fetch bytes with retry so transient network errors don't
+            # permanently skip a feed.  Passing raw bytes to feedparser triggers
+            # its more lenient fallback XML parser — important for SEC EDGAR
+            # whose Atom XML uses non-standard encoding declarations.
+            raw_bytes = _fetch_feed_bytes(feed_url)
             feed = feedparser.parse(raw_bytes)
 
             if feed.bozo:

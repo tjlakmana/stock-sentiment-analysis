@@ -198,14 +198,19 @@ def run_migrations() -> None:
 # Pipeline
 # ---------------------------------------------------------------------------
 
-async def _run_pipeline() -> None:
+async def _run_pipeline(dashboard_proc_ref: list) -> None:
     """
     Initialise the database, launch the scheduler, and keep the event loop alive.
 
-    The asyncio event loop must be running before this is called; use
-    ``asyncio.run(_run_pipeline())`` from the synchronous entry point.
-    The scheduler runs jobs as asyncio coroutines — ``asyncio.sleep`` keeps the
-    loop spinning between job firings without busy-waiting.
+    Also monitors the Dash child process every 30 s and restarts it automatically
+    if it has exited — this prevents Railway from seeing a dead port 8050 without
+    the parent process knowing.
+
+    Args:
+        dashboard_proc_ref: A one-element list holding the current
+            ``subprocess.Popen`` instance (or ``None`` when ``--no-ui`` is set).
+            Using a list lets this coroutine replace the reference when it restarts
+            the child, and ``main()`` can read the final value in the finally block.
 
     Raises:
         KeyboardInterrupt: Caught internally; triggers clean scheduler shutdown.
@@ -215,9 +220,16 @@ async def _run_pipeline() -> None:
 
     logger.info("Ingestion pipeline running.  Press Ctrl+C to stop.")
     try:
-        # Keep the event loop alive; scheduler jobs run as async coroutines
+        # Keep the event loop alive; scheduler jobs run as async coroutines.
+        # Every iteration also checks whether the Dash child is still alive.
         while True:
             await asyncio.sleep(30)
+            proc = dashboard_proc_ref[0]
+            if proc is not None and proc.poll() is not None:
+                logger.warning(
+                    f"Dashboard subprocess exited (code {proc.returncode}) — restarting."
+                )
+                dashboard_proc_ref[0] = _launch_dashboard()
     except (KeyboardInterrupt, asyncio.CancelledError):
         pass
     finally:
@@ -239,11 +251,17 @@ def _launch_dashboard() -> subprocess.Popen:
     asyncio event loop.  The child inherits stdout/stderr so any startup crash
     (e.g. missing dash_bootstrap_components) prints directly to the terminal.
 
+    ``cwd`` is pinned to the project root so the subprocess can always import
+    ``sentiment_analysis`` even if the parent process's working directory differs
+    (e.g. on a Railway restart after an OOM kill).
+
     Returns:
         subprocess.Popen: The running dashboard process (call .terminate() to stop).
     """
+    project_root = Path(__file__).parent.parent
     proc = subprocess.Popen(
         [sys.executable, "-m", "sentiment_analysis.dashboard.dash_app"],
+        cwd=str(project_root),
         # Inherit parent's stdout/stderr so any startup crash prints to the terminal
         stdout=None,
         stderr=None,
@@ -308,20 +326,23 @@ def main() -> None:
 
     run_migrations()
 
-    dashboard_proc: subprocess.Popen | None = None
+    # One-element list so _run_pipeline() can update the reference when it
+    # restarts the child, and the finally block always terminates the latest pid.
+    dashboard_proc_ref: list = [None]
 
     if not args.no_ui:
-        dashboard_proc = _launch_dashboard()
+        dashboard_proc_ref[0] = _launch_dashboard()
 
     try:
-        asyncio.run(_run_pipeline())
+        asyncio.run(_run_pipeline(dashboard_proc_ref))
     finally:
-        if dashboard_proc is not None:
-            dashboard_proc.terminate()
+        proc = dashboard_proc_ref[0]
+        if proc is not None:
+            proc.terminate()
             try:
-                dashboard_proc.wait(timeout=5)
+                proc.wait(timeout=5)
             except subprocess.TimeoutExpired:
-                dashboard_proc.kill()
+                proc.kill()
             logger.info("Dashboard process terminated.")
 
 

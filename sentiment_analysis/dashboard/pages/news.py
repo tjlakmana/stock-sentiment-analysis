@@ -270,14 +270,33 @@ _fetch_result: dict = {"count": 0, "error": False}
 
 
 def _run_ingest_thread(count_before: int) -> None:
+    # asyncio.run() is intentionally NOT used here.  asyncio.run() closes the
+    # event loop when the coroutine finishes, but async_engine (module-level
+    # asyncpg pool) keeps connections alive inside that now-closed loop.
+    # On a subsequent Fetch click, asyncpg detects the loop mismatch and can
+    # segfault, killing the Dash process.  Instead we create the loop manually,
+    # dispose async_engine first (closes all asyncpg connections cleanly while
+    # the loop is still open), then close the loop.
     import asyncio
+    from sentiment_analysis.storage.database import async_engine
+
     error = False
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     try:
         from sentiment_analysis.ingestion.rss_ingestor import RSSIngestor
-        asyncio.run(RSSIngestor().run())
+        loop.run_until_complete(RSSIngestor().run())
     except Exception:
+        logger.exception("RSS ingest thread raised an unhandled exception")
         error = True
     finally:
+        try:
+            loop.run_until_complete(async_engine.dispose())
+        except Exception:
+            pass
+        loop.close()
+        asyncio.set_event_loop(None)
+
         count_after = count_before
         try:
             df = query_df("SELECT COUNT(*) AS total FROM rss_articles")
