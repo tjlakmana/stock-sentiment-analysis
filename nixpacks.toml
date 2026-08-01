@@ -1,0 +1,25 @@
+# nixpacks.toml — Railway/Nixpacks build configuration
+#
+# Why stdenv.cc.cc.lib is required:
+#
+#   numpy, pandas, torch, spacy, and other packages are installed as pre-compiled
+#   binary wheels.  Their .so files have a dynamic ELF dependency on libstdc++.so.6
+#   (GCC's C++ runtime), which is NOT checked at pip-install time — only at import
+#   time when the OS dynamic linker loads the shared object.
+#
+#   In a Nix environment, libraries live in /nix/store/<hash>/lib rather than the
+#   standard FHS paths (/usr/lib etc.).  The linker only finds them if
+#   LD_LIBRARY_PATH includes the relevant store path.  Nixpacks does not include
+#   stdenv.cc.cc.lib in its default Python environment because pip installs pre-built
+#   wheels and no C++ compiler is invoked during the build.  Without this package
+#   declared here, LD_LIBRARY_PATH never includes a path containing libstdc++.so.6,
+#   and every C++ extension import (numpy, torch, spacy) fails with:
+#
+#     ImportError: libstdc++.so.6: cannot open shared object file
+#
+#   Adding stdenv.cc.cc.lib causes Nixpacks to include the GCC runtime in the Nix
+#   environment and add its lib/ directory to LD_LIBRARY_PATH, making the library
+#   findable at runtime for both the main process and any subprocess it spawns.
+
+[phases.setup]
+nixPkgs = ['stdenv.cc.cc.lib']
