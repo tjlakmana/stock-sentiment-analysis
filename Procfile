@@ -1,1 +1,1 @@
-web: python -m sentiment_analysis.main
+web: cd /app && python -m sentiment_analysis.main
