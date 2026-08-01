@@ -1,4 +1,7 @@
-"""Add last_seen_at to alerts
+﻿"""Add last_seen_at to alerts
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 021
 Revises: 020

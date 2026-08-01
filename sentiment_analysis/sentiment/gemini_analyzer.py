@@ -1,4 +1,9 @@
 """
+Module: gemini_analyzer.py
+Purpose: Batch financial news sentiment analysis via Google Gemini API with structured JSON output
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Gemini-based sentiment analysis engine.
 
 Uses gemini-2.5-flash with structured output (response_schema=list[ArticleSentiment])
@@ -19,18 +24,54 @@ from sentiment_analysis.config import settings
 
 
 class ArticleSentiment(BaseModel):
-    """Pydantic schema for a single article sentiment result."""
+    """
+    Pydantic schema matching the structured JSON output from the Gemini API.
+
+    The ``response_schema=list[ArticleSentiment]`` parameter in generate_content()
+    instructs Gemini to return a JSON array where each element validates against
+    this schema — eliminating the need to parse or validate free-form JSON.
+
+    Attributes:
+        id: Echo of the article's integer index in the batch (0-based).
+        label: Qualitative sentiment label from the model.
+        score: Numeric sentiment score; negative is bearish, positive is bullish.
+    """
     id: int
     label: Literal["positive", "negative", "neutral", "mixed"]
     score: float  # -1.0 (bearish) → +1.0 (bullish)
 
 
 def compute_confidence(score: float) -> float:
-    """Distance from neutral, scaled to 0–1 (0.5 raw → 1.0 confidence)."""
+    """
+    Convert a raw sentiment score to a confidence measure.
+
+    Gemini doesn't return per-prediction probabilities so we approximate
+    confidence as distance from neutral (0.0).  A score of ±0.5 or greater
+    is treated as maximum confidence (1.0); near-neutral scores near 0.0
+    map to near-zero confidence.
+
+    Args:
+        score: Sentiment score in [-1.0, +1.0].
+
+    Returns:
+        float: Confidence in [0.0, 1.0].
+    """
     return min(abs(score) * 2.0, 1.0)
 
 
 def score_to_label(score: float) -> str:
+    """
+    Map a numeric sentiment score to a 5-tier human-readable label.
+
+    Thresholds (±0.15 and ±0.35) are shared with FinBERTAnalyzer and the
+    dashboard colour palette — any change here must be mirrored in both places.
+
+    Args:
+        score: Float sentiment score in [-1.0, +1.0].
+
+    Returns:
+        str: One of 'Bullish', 'Somewhat Bullish', 'Neutral', 'Somewhat Bearish', 'Bearish'.
+    """
     if score >= 0.35:
         return "Bullish"
     elif score >= 0.15:
@@ -45,8 +86,22 @@ def score_to_label(score: float) -> str:
 
 class GeminiAnalyzer:
     """
-    Wraps the Google Gemini API client.
-    Instantiate once as a module-level singleton; client is lazy-loaded.
+    Google Gemini API wrapper for financial news batch sentiment analysis.
+
+    The Gemini client is lazy-loaded on the first analyze_batch() call to avoid
+    import-time errors when GEMINI_API_KEY is not configured (e.g. dev environments
+    running only the ingestion pipeline without sentiment).
+
+    Used as the fallback analyzer when FinBERT raises an exception.  In normal
+    operation FinBERT handles all non-SEC articles; Gemini only activates on
+    model loading failures or out-of-memory errors.
+
+    Example:
+        analyzer = GeminiAnalyzer()
+        results = analyzer.analyze_batch([
+            {"article_id": uuid, "headline": "Apple beats Q4 estimates", "cleaned_text": "..."}
+        ])
+        # results[0] = {"article_id": uuid, "sentiment_label": "Bullish", "sentiment_score": 0.72, ...}
     """
 
     def __init__(self) -> None:

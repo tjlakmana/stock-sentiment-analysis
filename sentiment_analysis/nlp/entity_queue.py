@@ -1,4 +1,9 @@
 """
+Module: entity_queue.py
+Purpose: Persist entities that could not be mapped to a ticker into a frequency-ranked review queue
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Unresolved entity queue backed by the unresolved_entities PostgreSQL table.
 
 When an entity extracted from an article cannot be mapped to a known ticker

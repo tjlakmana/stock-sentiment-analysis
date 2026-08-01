@@ -1,4 +1,9 @@
 """
+Module: screener.py
+Purpose: Dash page with a Finviz-style filterable ticker screener table backed by live price data
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Screener page — Finviz-style dense ticker table with real-time price data.
 """
 from __future__ import annotations

@@ -1,4 +1,9 @@
 """
+Module: dash_app.py
+Purpose: Plotly Dash multi-page application factory — layout, sidebar nav, and topbar callbacks
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Stock Sentiment — Plotly Dash multi-page application (Phase 5A)
 
 Run:
@@ -13,7 +18,7 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import Dash, Input, Output, callback, dcc, html
 
-from sentiment_analysis.ingestion.ticker_list import SP500_TICKERS
+from sentiment_analysis.nlp.ticker_list import SP500_TICKERS
 
 # ── App instance ──────────────────────────────────────────────────────────
 

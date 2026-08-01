@@ -1,4 +1,9 @@
 """
+Module: stock.py
+Purpose: Dash page providing a per-ticker research workspace at /stock/<TICKER>
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Stock Workspace — per-ticker research page at /stock/<TICKER>.
 
 Single scrollable page. No tabs. All sections visible on load.

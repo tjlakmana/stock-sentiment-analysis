@@ -1,4 +1,7 @@
-"""008 — create sentiment_spikes table
+﻿"""008 — create sentiment_spikes table
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 008
 Revises: 007

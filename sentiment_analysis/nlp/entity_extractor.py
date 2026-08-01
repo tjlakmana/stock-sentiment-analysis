@@ -1,4 +1,9 @@
 """
+Module: entity_extractor.py
+Purpose: Three-pass ticker extraction from article text without requiring external NLP models
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Named entity extraction and ticker resolution.
 
 Three-pass matching for each article:
@@ -17,11 +22,12 @@ from uuid import UUID
 
 from loguru import logger
 
-from sentiment_analysis.ingestion.ticker_list import extract_tickers
+from sentiment_analysis.nlp.ticker_list import extract_tickers
 from sentiment_analysis.nlp.ticker_mapper import TickerMapper
 
-# Pass 3: title-case phrases that may be company names.
-# Matches sequences of 1–6 title-case words joined by spaces, & or -.
+# Pass 3 regex: matches title-case phrases that may be company names.
+# Examples it captures: "Apple Inc", "Goldman Sachs", "Johnson & Johnson", "T-Mobile"
+# Upper-bounds at 6 words to avoid matching entire sentences like "The Federal Reserve Board".
 _TITLE_PHRASE_RE = re.compile(
     r"\b([A-Z][a-zA-Z]{1,}(?:[\s&\-][A-Z][a-zA-Z]{1,}){0,5})\b"
 )

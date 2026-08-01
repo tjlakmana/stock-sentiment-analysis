@@ -1,4 +1,9 @@
 """
+Module: db.py
+Purpose: Synchronous database helpers for Dash callbacks using NullPool to prevent connection leaks
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Synchronous database helpers for Dash callbacks.
 All functions use a NullPool psycopg2 engine so Dash can safely call them
 from synchronous callback threads without connection-pool leaks.

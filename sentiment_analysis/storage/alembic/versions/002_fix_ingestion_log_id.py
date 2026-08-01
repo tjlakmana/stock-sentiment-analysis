@@ -1,4 +1,4 @@
-"""Fix ingestion_log.id auto-increment
+﻿"""Fix ingestion_log.id auto-increment
 
 Migration 001 created the id column via sa.Sequence() which generates
 CREATE SEQUENCE DDL but does not attach DEFAULT nextval(...) to the column,
@@ -6,6 +6,9 @@ leaving id as bare INTEGER NOT NULL with no server-side default.
 
 This migration attaches the sequence as the column default and advances it
 past any rows that were manually inserted during debugging.
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 002
 Revises: 001

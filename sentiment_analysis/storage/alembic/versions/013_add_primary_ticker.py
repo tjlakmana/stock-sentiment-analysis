@@ -1,4 +1,7 @@
-"""013 — add primary_ticker to rss_articles
+﻿"""013 — add primary_ticker to rss_articles
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 013
 Revises: 012

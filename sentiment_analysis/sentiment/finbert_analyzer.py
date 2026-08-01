@@ -1,4 +1,9 @@
 """
+Module: finbert_analyzer.py
+Purpose: FinBERT-based local sentiment analysis for financial news articles (primary analyzer)
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 FinBERT-based financial news sentiment analyzer.
 
 Model: peyterho/finbert-macro-sentiment

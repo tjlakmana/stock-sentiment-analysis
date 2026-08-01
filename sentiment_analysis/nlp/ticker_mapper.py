@@ -1,4 +1,9 @@
 """
+Module: ticker_mapper.py
+Purpose: Map company name text to ticker symbols using exact and fuzzy matching across 500+ entries
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Company-name-to-ticker mapping with fuzzy matching support.
 
 Builds a unified lookup table from three layers:
@@ -413,7 +418,7 @@ def _build_full_map() -> dict[str, str]:
     """Merge base map, extended map, and overrides into one normalized dict."""
     # Import base map from ticker_list to avoid duplication
     try:
-        from sentiment_analysis.ingestion.ticker_list import _COMPANY_TICKER_MAP as _base
+        from sentiment_analysis.nlp.ticker_list import _COMPANY_TICKER_MAP as _base
         base = {k.lower(): v for k, v in _base.items()}
     except ImportError:
         base = {}

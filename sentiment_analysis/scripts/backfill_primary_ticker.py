@@ -1,4 +1,9 @@
 """
+Module: backfill_primary_ticker.py
+Purpose: One-time script to populate primary_ticker for all existing articles missing that field
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 One-time backfill: compute primary_ticker for all existing rss_articles.
 
 Run from the project root:

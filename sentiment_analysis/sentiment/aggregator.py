@@ -1,4 +1,9 @@
 """
+Module: aggregator.py
+Purpose: Aggregate per-ticker sentiment scores across time windows and detect article-volume spikes
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Ticker sentiment aggregation and spike detection.
 
 Runs after each Gemini batch to:
@@ -17,6 +22,9 @@ from sqlalchemy import select, text
 from sentiment_analysis.storage.database import get_async_session
 from sentiment_analysis.storage.models import SentimentSpike, TickerSentimentSummary
 
+# The three rolling windows used for sentiment summaries.
+# 1hr is most reactive; 24hr smooths intraday noise for end-of-day decisions.
+# The dashboard queries the '24hr' window by default for top-level ticker cards.
 _WINDOWS: dict[str, str] = {
     "1hr":  "1 hour",
     "4hr":  "4 hours",
@@ -25,7 +33,15 @@ _WINDOWS: dict[str, str] = {
 
 
 async def aggregate_ticker_sentiment() -> None:
-    """Write per-ticker sentiment summaries for all three time windows."""
+    """
+    Write per-ticker sentiment summaries for all three time windows (1hr/4hr/24hr).
+
+    Runs serially across the three windows so a failure in one window does not
+    block the others.  Each window is independent — they all read from rss_articles
+    and write to ticker_sentiment_summary.
+
+    Called at the end of every sentiment pipeline run.
+    """
     for window_name, interval in _WINDOWS.items():
         try:
             await _aggregate_window(window_name, interval)
@@ -34,8 +50,22 @@ async def aggregate_ticker_sentiment() -> None:
 
 
 async def detect_spikes() -> None:
-    """Flag tickers whose current 15-min article count exceeds 2× their rolling avg."""
+    """
+    Detect and record tickers whose article volume spikes above 2× their rolling average.
+
+    Uses 15-minute buckets to compare the most recent bucket against the trailing
+    average.  Requires at least 3 historical buckets (45 minutes of data) before
+    triggering — this prevents false alerts at pipeline startup when there is
+    no rolling baseline yet.
+
+    Spike threshold is 2.0× (100% above rolling average) to filter out minor
+    variations.  Spike records are written to the sentiment_spikes table and
+    consumed by the alerts scheduler.
+    """
     async with get_async_session() as session:
+        # SQL: group article counts into 15-minute buckets using integer division
+        # of the minute component (0-14→0, 15-29→1, 30-44→2, 45-59→3).
+        # unnest(tickers) expands the ARRAY column so we count per-ticker.
         result = await session.execute(text("""
             SELECT
                 unnest(tickers)                                           AS ticker,
@@ -83,9 +113,20 @@ async def detect_spikes() -> None:
 # ── Private ──────────────────────────────────────────────────────────────────
 
 async def _aggregate_window(window_name: str, interval: str) -> None:
+    """
+    Compute and write ticker sentiment summaries for one time window.
+
+    Args:
+        window_name: Label stored in the DB (e.g. '24hr').
+        interval:    PostgreSQL INTERVAL string (e.g. '24 hours').
+    """
     window_start = datetime.now(timezone.utc) - _to_timedelta(interval)
 
     async with get_async_session() as session:
+        # SQL: compute per-ticker averages from rss_articles for the time window.
+        # Thresholds ±0.15 match the 'Somewhat Bullish/Bearish' boundary used by
+        # score_to_label() in gemini_analyzer.py so the bucket counts align with labels.
+        # HAVING COUNT(*) >= 2 suppresses single-article noise.
         agg = await session.execute(text(f"""
             SELECT
                 unnest(tickers)                                              AS ticker,
@@ -121,6 +162,8 @@ async def _aggregate_window(window_name: str, interval: str) -> None:
             )
             prev_avg = prev.scalar_one_or_none()
 
+            # ±0.05 dead-band prevents momentum flickering between "improving" and
+            # "stable" when the score barely moves — common during quiet sessions.
             if prev_avg is None:
                 momentum = "stable"
             elif float(avg_s) > prev_avg + 0.05:

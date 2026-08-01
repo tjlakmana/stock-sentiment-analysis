@@ -1,4 +1,9 @@
 """
+Module: pipeline.py
+Purpose: Orchestrate per-article sentiment routing through SEC, FinBERT, and Gemini analyzers
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Sentiment analysis pipeline orchestrator.
 
 Picks up articles whose NLP preprocessing is done (cleaned_text IS NOT NULL)

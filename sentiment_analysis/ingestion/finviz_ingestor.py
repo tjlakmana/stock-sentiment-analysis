@@ -1,4 +1,9 @@
 """
+Module: finviz_ingestor.py
+Purpose: Fetch fundamental, technical, and pricing data for all SP500 tickers via Finviz Elite exports
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Finviz Elite bulk screener ingestor.
 
 Fetches fundamental, technical, ownership, and performance data for all tickers

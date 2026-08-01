@@ -1,9 +1,12 @@
 """
-Database engine and session factories.
+Module: database.py
+Purpose: Database engine and session factories for both async pipeline and sync dashboard access
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Two engines are maintained:
-  - async_engine  (asyncpg)   — used by the ingestion pipeline
-  - sync_engine   (psycopg2)  — used by the Streamlit dashboard (read-only)
+  - async_engine  (asyncpg)   — used by the ingestion pipeline (APScheduler jobs)
+  - sync_engine   (psycopg2)  — used by the Dash/Streamlit dashboard (read-only queries)
 
 Both are configured from the same DATABASE_URL environment variable.
 The sync URL is auto-derived by stripping the '+asyncpg' driver specifier.
@@ -23,6 +26,10 @@ from sentiment_analysis.config import settings
 # Async engine — ingestion pipeline
 # ---------------------------------------------------------------------------
 
+# pool_size=5: five persistent connections cover the pipeline's concurrent jobs
+# (RSS, NLP, sentiment, prices, alerts) without exhausting Railway's connection limit.
+# pool_pre_ping=True: issues a SELECT 1 before each checkout — critical on Railway
+# where idle connections are silently dropped after ~15 minutes.
 async_engine = create_async_engine(
     settings.database_url,
     pool_size=5,

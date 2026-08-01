@@ -1,4 +1,7 @@
-"""Initial schema: tweets, rss_articles, ingestion_log
+﻿"""Initial schema: tweets, rss_articles, ingestion_log
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 001
 Revises:

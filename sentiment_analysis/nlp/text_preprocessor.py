@@ -1,4 +1,9 @@
 """
+Module: text_preprocessor.py
+Purpose: Clean and normalise raw RSS article text into lemmatised tokens for NLP downstream processing
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Text preprocessing pipeline for financial news articles.
 
 Cleans raw HTML/RSS article text into a normalised, lemmatised string
@@ -24,7 +29,13 @@ from nltk.tokenize import word_tokenize
 
 
 def _ensure_nltk_data() -> None:
-    """Download required NLTK corpora if not already present."""
+    """
+    Download required NLTK corpora if not already present on this machine.
+
+    SSL verification is disabled temporarily because corporate networks with SSL
+    inspection present self-signed certificates that fail NLTK's default HTTPS
+    verification.  The original context is always restored in the finally block.
+    """
     # Disable cert verification for corporate networks with SSL inspection
     _orig = ssl._create_default_https_context
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -47,7 +58,15 @@ def _ensure_nltk_data() -> None:
 
 _ensure_nltk_data()
 
-# ── Financial terms that must survive stopword removal ──────────────────────
+# ============================================================
+# FINANCIAL DOMAIN VOCABULARY
+# ============================================================
+
+# Financial terms that must survive NLTK stopword removal.
+# Standard NLTK stopwords include common English words; several finance-specific
+# terms (e.g. "high", "low", "hold", "buy", "sell") happen to appear on that list.
+# We whitelist them here so they are not stripped from cleaned_text, which would
+# otherwise lose important market-direction signals before embedding/indexing.
 _FINANCIAL_KEEP: frozenset[str] = frozenset({
     "bull", "bear", "short", "long", "squeeze", "rally", "crash",
     "merger", "acquisition", "earnings", "revenue", "guidance",
@@ -94,7 +113,20 @@ _CASHTAG_RE = re.compile(r"\$[A-Z]{1,5}\b")
 
 
 def _penn_to_wn(tag: str) -> str:
-    """Convert Penn Treebank POS tag to WordNet POS for lemmatisation."""
+    """
+    Convert a Penn Treebank POS tag to its WordNet equivalent for lemmatisation.
+
+    NLTK's pos_tag() returns Penn Treebank tags (JJ, VB, RB, NN…) while
+    WordNetLemmatizer.lemmatize() expects WordNet part-of-speech constants.
+    Defaulting unmapped tags to NOUN (wn.NOUN) is safe for financial text where
+    most content words are nouns (companies, products, metrics).
+
+    Args:
+        tag: Penn Treebank POS tag string (e.g. 'JJ', 'VBD', 'NNS').
+
+    Returns:
+        str: WordNet POS constant (wn.ADJ, wn.VERB, wn.ADV, or wn.NOUN).
+    """
     if tag.startswith("J"):
         return wn.ADJ
     if tag.startswith("V"):
@@ -106,15 +138,33 @@ def _penn_to_wn(tag: str) -> str:
 
 class TextPreprocessor:
     """
-    Stateless text cleaner.  Instantiate once and call .preprocess() per article.
+    Stateless financial text cleaner and lemmatiser.
+
+    Instantiate once at the module level and call .preprocess() for each article.
+    The instance carries no state so it is safe to use from multiple coroutines
+    via asyncio.to_thread().
+
+    Example:
+        preprocessor = TextPreprocessor()
+        cleaned = preprocessor.preprocess("Apple Inc. (AAPL) beat earnings estimates.")
+        # → "apple inc aapl beat earning estimate"
     """
 
     def preprocess(self, text: str) -> str:
         """
-        Full pipeline: clean → normalise → tokenise → filter → lemmatise.
+        Run the full preprocessing pipeline on a raw article title + summary.
 
-        Returns a space-joined string of processed tokens.
-        An empty input or one that yields no tokens returns an empty string.
+        Pipeline stages:
+          1. _clean()      — strip HTML, normalise unicode, expand contractions, lowercase
+          2. _tokenise()   — NLTK word_tokenize (handles punctuation correctly)
+          3. _filter()     — remove stopwords (but keep financial terms), drop single-chars
+          4. _lemmatise()  — reduce to base forms via WordNet (run → running → run)
+
+        Args:
+            text: Raw article text (may contain HTML entities, unicode, contractions).
+
+        Returns:
+            str: Space-joined string of cleaned tokens, or '' if input is blank.
         """
         if not text or not text.strip():
             return ""

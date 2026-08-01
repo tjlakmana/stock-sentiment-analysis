@@ -1,8 +1,11 @@
-"""Add cleaned_text column to rss_articles
+﻿"""Add cleaned_text column to rss_articles
 
 Stores the NLP-preprocessed (tokenised, lemmatised, stopword-filtered)
 version of each article's title+summary.  NULL means the article has not
 yet been processed by the Phase 3 NLP pipeline.
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 003
 Revises: 002

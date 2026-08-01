@@ -1,4 +1,9 @@
 """
+Module: formatters.py
+Purpose: Shared display formatters for converting raw DB values to human-readable dashboard strings
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Shared display formatters for the dashboard.
 
 All formatters return strings ready for the UI.

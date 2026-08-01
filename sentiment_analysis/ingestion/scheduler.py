@@ -1,4 +1,9 @@
 """
+Module: scheduler.py
+Purpose: Configure and start APScheduler jobs for RSS polling, NLP, sentiment, prices, and alerts
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 APScheduler setup for the ingestion pipeline.
 
 Jobs:

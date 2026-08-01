@@ -1,4 +1,9 @@
 """
+Module: primary_company_scorer.py
+Purpose: Score candidate tickers to determine which single company an article is primarily about
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Primary Company Scorer — post-extraction stage.
 
 Takes the candidate tickers already found by the 3-pass extraction system
@@ -29,6 +34,10 @@ import re
 from dataclasses import dataclass, field
 from typing import Optional
 
+# 70 points means the winning company scored at least one of:
+#   title name hit (60) + first-paragraph hit (30), OR
+#   title ticker hit (60) + cashtag (15), etc.
+# Below 70 almost always means the article is about macro news, not a specific company.
 CONFIDENCE_THRESHOLD = 70
 
 # Legal suffixes to strip when building a short company name for matching.
@@ -46,6 +55,15 @@ def _short_name(company_name: str) -> str:
 
 @dataclass
 class ScoringResult:
+    """
+    Result of scoring all candidate tickers for one article.
+
+    Attributes:
+        primary_ticker: The winning ticker, or None if no candidate cleared the threshold.
+        winner_score: The raw score of the winning candidate (0 if no winner).
+        all_scores: Mapping of every candidate ticker to its score (for logging/debug).
+        reason: Human-readable explanation of why primary_ticker is None (when it is).
+    """
     primary_ticker: Optional[str]
     winner_score: int
     all_scores: dict[str, int] = field(default_factory=dict)
@@ -54,9 +72,23 @@ class ScoringResult:
 
 class PrimaryCompanyScorer:
     """
-    Stateless scorer — safe to share across threads.
+    Heuristic scorer that identifies the single company an article is primarily about.
 
-    Instantiate once as a module-level singleton in nlp/pipeline.py.
+    Stateless and thread-safe — instantiate once as a module-level singleton.
+    The score() method uses title/paragraph position and mention frequency as
+    proximity signals, which are highly correlated with topicality in financial news.
+
+    Example:
+        scorer = PrimaryCompanyScorer()
+        result = scorer.score(
+            title="Apple reports record Q4 earnings",
+            summary="AAPL beat Wall Street estimates...",
+            new_tickers=["AAPL", "MSFT"],
+            resolved_dicts=[],
+            company_names={"AAPL": "Apple Inc.", "MSFT": "Microsoft Corp"},
+        )
+        # result.primary_ticker == "AAPL"
+        # result.winner_score   == 150  (title name 60 + title ticker 60 + first-para 30)
     """
 
     def score(

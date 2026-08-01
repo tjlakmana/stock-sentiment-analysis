@@ -1,4 +1,9 @@
 """
+Module: alerts.py
+Purpose: Dash page for managing price/sentiment alert rules and viewing their firing history
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Alerts page — create, edit, toggle, and delete price/sentiment alert rules
 with a live history of every firing.
 """

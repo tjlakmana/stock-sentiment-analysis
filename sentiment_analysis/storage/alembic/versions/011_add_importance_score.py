@@ -1,4 +1,7 @@
-"""011 — add importance_score and importance_label to rss_articles
+﻿"""011 — add importance_score and importance_label to rss_articles
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 011
 Revises: 010

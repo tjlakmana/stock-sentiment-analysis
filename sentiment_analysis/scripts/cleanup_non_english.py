@@ -1,4 +1,9 @@
 """
+Module: cleanup_non_english.py
+Purpose: One-time scan and deletion of non-English articles using production language detection logic
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 One-time cleanup of non-English articles in rss_articles.
 
 Scans all existing articles and re-runs the production language detection

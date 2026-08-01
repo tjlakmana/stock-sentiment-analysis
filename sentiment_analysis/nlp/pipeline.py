@@ -1,4 +1,9 @@
 """
+Module: pipeline.py
+Purpose: Orchestrate NLP preprocessing — text cleaning, entity extraction, and primary-company scoring for unprocessed articles
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 NLP preprocessing pipeline orchestrator.
 
 Processes unprocessed rss_articles (cleaned_text IS NULL) in batches of 50:
@@ -25,7 +30,12 @@ from sentiment_analysis.nlp.text_preprocessor import TextPreprocessor
 from sentiment_analysis.storage.database import get_async_session
 from sentiment_analysis.storage.models import ExtractedEntity, RSSArticle, TickerPrice
 
-# Module-level singletons — loaded once, reused across scheduler invocations
+# ============================================================
+# MODULE-LEVEL SINGLETONS
+# ============================================================
+# All three objects are expensive to initialise (NLTK downloads, spaCy model load,
+# rapidfuzz index build) — they are created lazily on the first run_nlp_pipeline()
+# call and then reused across every subsequent scheduler invocation.
 _preprocessor: Optional[TextPreprocessor] = None
 _extractor: Optional[EntityResolutionPipeline] = None
 _scorer: Optional[PrimaryCompanyScorer] = None
@@ -74,12 +84,21 @@ def _log_scoring(title: str, scores: dict[str, int], primary_ticker, winner_scor
 
 async def run_nlp_pipeline(batch_size: int = 50) -> None:
     """
-    Entry point called by the scheduler every 10 minutes.
+    Process one batch of unprocessed articles through the NLP pipeline.
 
-    Fetches up to ``batch_size`` articles where cleaned_text IS NULL,
-    processes each, and writes results back to the database.
+    Called by the scheduler every 10 minutes.  Processes up to ``batch_size``
+    articles where cleaned_text IS NULL (meaning the RSS ingestor wrote them
+    but NLP has not run yet).  Each article goes through three CPU-bound stages
+    offloaded to a thread pool via asyncio.to_thread() so the event loop stays
+    responsive to other scheduler jobs.
+
+    Args:
+        batch_size: Maximum number of articles to process in a single call.
+                    Default 50 keeps each run under ~30 seconds on CPU.
     """
     # ── Fetch unprocessed articles + company name lookup ───────────────────
+    # cleaned_text IS NULL is the NLP pipeline's "not yet processed" sentinel.
+    # We load the newest articles first so recent news gets scored before old articles.
     async with get_async_session() as session:
         result = await session.execute(
             select(RSSArticle)

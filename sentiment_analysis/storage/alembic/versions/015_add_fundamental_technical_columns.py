@@ -1,4 +1,7 @@
-"""015 — add fundamental and technical columns to ticker_prices
+﻿"""015 — add fundamental and technical columns to ticker_prices
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 015
 Revises: 014

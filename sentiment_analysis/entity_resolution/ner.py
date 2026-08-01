@@ -1,4 +1,9 @@
 """
+Module: ner.py
+Purpose: spaCy-based named entity extraction producing typed spans for the resolution pipeline
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Named Entity Recognition using spaCy.
 
 Loads en_core_web_sm once as a process-level singleton (lazy, thread-safe).

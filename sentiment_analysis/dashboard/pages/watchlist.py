@@ -1,4 +1,9 @@
 """
+Module: watchlist.py
+Purpose: Dash page displaying the user's personal watchlist with live price and sentiment data
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Watchlist page — personal dashboard for tracked companies.
 Route: /watchlist
 """

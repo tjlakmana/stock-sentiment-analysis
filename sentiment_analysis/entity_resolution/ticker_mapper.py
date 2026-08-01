@@ -1,4 +1,9 @@
 """
+Module: ticker_mapper.py
+Purpose: Re-export TickerMapper from nlp/ to keep the entity_resolution package self-contained
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Ticker mapper for the Entity Resolution Engine.
 
 Re-exports TickerMapper from nlp/ticker_mapper.py — the full company-name

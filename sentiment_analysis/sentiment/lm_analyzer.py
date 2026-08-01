@@ -1,4 +1,9 @@
 """
+Module: lm_analyzer.py
+Purpose: Loughran-McDonald financial dictionary sentiment scorer for SEC filing articles
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Loughran-McDonald financial dictionary sentiment analyzer.
 
 Used exclusively for SEC filing articles (8-K, Form 4, 10-Q, S-1, SC 13G).
@@ -10,10 +15,39 @@ from pysentiment2 import LM
 
 
 class LMAnalyzer:
+    """
+    Loughran-McDonald (LM) financial dictionary wrapper.
+
+    The LM dictionary was built specifically from 10-K filings and has much
+    higher precision on SEC filing language than general-purpose dictionaries.
+    Words like "liability" and "leverage" are negative in LM but neutral in
+    standard sentiment dictionaries.
+
+    Example:
+        analyzer = LMAnalyzer()
+        result = analyzer.score_text("Revenue increased, but net loss widened.")
+        # result = {"label": "negative", "score": -0.05, "confidence": 0.15, ...}
+    """
+
     def __init__(self) -> None:
+        """Load the Loughran-McDonald dictionary via pysentiment2."""
         self.lm = LM()
 
     def score_text(self, text: str) -> dict:
+        """
+        Score a single text using positive and negative word counts.
+
+        net_score = (positive_count - negative_count) / total_token_count
+        Labels: positive if net_score >= 0.15, negative if <= -0.15, else neutral.
+        Confidence is scaled so a net_score of 0.33 maps to 1.0 (saturates early
+        because LM text rarely uses more than ~1/3 sentiment-laden words).
+
+        Args:
+            text: Raw article text (title + summary combined).
+
+        Returns:
+            dict: Keys are 'label', 'score', 'confidence', 'positive_words', 'negative_words'.
+        """
         tokens = self.lm.tokenize(text)
         score  = self.lm.get_score(tokens)
 
@@ -45,6 +79,15 @@ class LMAnalyzer:
         }
 
     def score_batch(self, articles: list) -> list:
+        """
+        Score a list of articles.
+
+        Args:
+            articles: List of dicts with keys 'id', 'title', 'summary'.
+
+        Returns:
+            list[dict]: Each dict has 'id', 'label', 'score', 'confidence'.
+        """
         results = []
         for article in articles:
             text   = f"{article.get('title', '')} {article.get('summary', '')}"

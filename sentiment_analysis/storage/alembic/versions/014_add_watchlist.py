@@ -1,4 +1,7 @@
-"""014 — create watchlist table
+﻿"""014 — create watchlist table
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 014
 Revises: 013

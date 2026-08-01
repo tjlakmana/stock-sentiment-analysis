@@ -1,4 +1,9 @@
 """
+Module: classifier.py
+Purpose: Classify named entities into an 18-type taxonomy to filter non-tradeable entities
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Entity Classifier — maps entity text + spaCy label to our 18-type taxonomy.
 
 Only entities classified as "Company" or "ETF" proceed to ticker resolution.

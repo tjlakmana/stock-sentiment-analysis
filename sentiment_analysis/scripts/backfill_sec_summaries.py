@@ -1,4 +1,9 @@
 """
+Module: backfill_sec_summaries.py
+Purpose: Enrich SEC article summaries and clean titles for records with missing or short summaries
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Backfill SEC article summaries and clean titles for existing database records.
 
 For each SEC article whose summary is NULL or shorter than 50 characters:

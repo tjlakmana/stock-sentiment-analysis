@@ -1,4 +1,7 @@
-"""Create alerts and alert_history tables
+﻿"""Create alerts and alert_history tables
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 019
 Revises: 018

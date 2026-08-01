@@ -1,4 +1,9 @@
 """
+Module: news.py
+Purpose: Dash page showing a live paginated article stream with source/ticker filtering
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 News Feed page — live article stream with filters, manual fetch, and pagination.
 """
 from __future__ import annotations

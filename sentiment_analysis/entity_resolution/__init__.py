@@ -1,4 +1,9 @@
 """
+Module: __init__.py
+Purpose: Package entry-point exposing the EntityResolutionPipeline for external use
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Entity Resolution Engine — multi-stage pipeline for identifying publicly
 traded companies in financial news articles.
 

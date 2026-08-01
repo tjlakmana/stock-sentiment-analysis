@@ -1,4 +1,9 @@
 """
+Module: sec_analyzer.py
+Purpose: Rule-based keyword sentiment analyzer for SEC EDGAR filings that runs locally with no API calls
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Rule-based sentiment analyzer for SEC EDGAR filings.
 
 Simple keyword matching — going concern check first, then form-specific rules.
@@ -6,6 +11,14 @@ Always returns a result; defaults to Neutral 0.0 when nothing matches.
 """
 from __future__ import annotations
 
+# ============================================================
+# KEYWORD LISTS
+# ============================================================
+
+# Going-concern language is the highest-priority signal — any appearance in any
+# filing type is an immediate strong-bearish override.  These exact phrases are
+# required by SEC disclosure rules when auditors have doubts about a company's
+# ability to continue operations.
 _GOING_CONCERN = (
     "going concern",
     "substantial doubt",
@@ -47,7 +60,38 @@ def _contains(text: str, phrases: tuple) -> bool:
 
 
 class SECAnalyzer:
+    """
+    Rule-based sentiment analyzer tuned for SEC EDGAR filing sources.
+
+    All methods are synchronous and produce a result dict immediately —
+    there are no external API calls, rate limits, or model loading delays.
+    This makes SEC articles fast to process and always available.
+
+    Result dict format:
+        {"label": str, "score": float, "confidence": float}
+
+    Example:
+        analyzer = SECAnalyzer()
+        result = analyzer.score_article(
+            source_name="rss:sec_edgar",
+            title="Company files Chapter 11 bankruptcy",
+            summary="...",
+        )
+        # result == {"label": "bearish", "score": -0.70, "confidence": 0.80}
+    """
+
     def score_article(self, source_name: str, title: str, summary: str) -> dict:
+        """
+        Score a single SEC filing article with form-specific keyword rules.
+
+        Args:
+            source_name: Feed identifier (e.g. 'rss:sec_edgar', 'rss:sec_form4').
+            title: Article headline from the RSS feed.
+            summary: Article body text.
+
+        Returns:
+            dict: Keys are 'label' (str), 'score' (float), 'confidence' (float).
+        """
         text = ((title or "") + " " + (summary or "")).lower()
 
         # Going concern — highest priority, overrides all form-specific rules
@@ -67,6 +111,15 @@ class SECAnalyzer:
             return _NEUTRAL
 
     def score_batch(self, articles: list) -> list:
+        """
+        Score a list of SEC articles.
+
+        Args:
+            articles: List of dicts with keys 'id', 'source_name', 'title', 'summary'.
+
+        Returns:
+            list[dict]: Each dict has 'id' plus the keys from score_article().
+        """
         results = []
         for a in articles:
             r = self.score_article(

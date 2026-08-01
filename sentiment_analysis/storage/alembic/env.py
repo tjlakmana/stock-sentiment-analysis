@@ -1,4 +1,9 @@
 """
+Module: env.py
+Purpose: Alembic environment — wires the ORM metadata and DATABASE_URL to online and offline migrations
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Alembic migration environment.
 
 Supports both offline (SQL script generation) and online (live DB) modes.

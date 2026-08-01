@@ -1,9 +1,20 @@
 """
-SQLAlchemy ORM models for the sentiment analysis pipeline.
+Module: models.py
+Purpose: SQLAlchemy ORM models defining the PostgreSQL schema for the full sentiment analysis pipeline
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
-Schema is deliberately TimescaleDB-compatible: TIMESTAMPTZ columns on every
-table and GIN indexes on the `tickers` arrays allow Phase 5 to convert
-`tweets` and `rss_articles` to hypertables with a single ALTER TABLE call.
+Schema design notes:
+  - All timestamp columns use TIMESTAMPTZ (timezone-aware) for correctness across DST
+  - GIN indexes on ARRAY(String) `tickers` columns enable efficient array-contains queries
+    (e.g. WHERE 'AAPL' = ANY(tickers)) used throughout the pipeline and dashboard
+  - The schema is TimescaleDB-compatible so rss_articles can be converted to a
+    hypertable with a single ALTER TABLE call in a future phase
+
+Table relationships:
+  rss_articles ─┬─< extracted_entities (CASCADE delete)
+                └─< alert_history (via alerts.id CASCADE)
+  alerts ──────────< alert_history (CASCADE delete)
 """
 from __future__ import annotations
 
@@ -32,7 +43,24 @@ class Base(DeclarativeBase):
 
 
 class Tweet(Base):
-    """Raw tweet record ingested from the Twitter/X v2 Recent Search endpoint."""
+    """
+    Raw tweet record ingested from the Twitter/X v2 Recent Search endpoint.
+
+    Kept for Phase 1 backwards compatibility — the live pipeline no longer
+    ingests tweets (API access was restricted), but the table is preserved so
+    historical tweet data is not lost.
+
+    Attributes:
+        id: Twitter's own string-format tweet ID (primary key).
+        text: Full tweet body text.
+        author_id: Twitter user ID string of the author.
+        created_at: When the tweet was posted (timezone-aware).
+        retweet_count: Retweet count at ingestion time.
+        like_count: Like count at ingestion time.
+        tickers: Array of ticker symbols extracted from tweet text.
+        raw_json: Complete Twitter API v2 response object for this tweet.
+        ingested_at: When we stored the tweet (server-set default).
+    """
 
     __tablename__ = "tweets"
 
@@ -57,7 +85,31 @@ class Tweet(Base):
 
 
 class RSSArticle(Base):
-    """Raw RSS article record from any of the configured news feeds."""
+    """
+    Raw RSS article record from any of the configured news feeds.
+
+    Central table of the pipeline: the RSS ingestor writes it, NLP fills
+    cleaned_text and tickers, and the sentiment pipeline fills the
+    sentiment_* columns.  A NULL cleaned_text means NLP hasn't run yet;
+    a NULL sentiment_analyzed_at means sentiment hasn't run yet.
+
+    Attributes:
+        id: Server-generated UUID primary key (gen_random_uuid()).
+        title: Article headline from the RSS feed.
+        summary: Article body or excerpt from the RSS feed.
+        url: Canonical article URL — UNIQUE constraint prevents re-ingestion.
+        published_at: Publication timestamp from the feed's <pubDate>.
+        source_name: Feed identifier matching settings.rss_feeds keys.
+        tickers: Ticker symbols extracted by the 3-pass NLP extractor.
+        raw_json: Original feedparser entry dict for debugging.
+        ingested_at: When we stored the article (server-set default).
+        cleaned_text: Lemmatised, stop-word-filtered text for NLP; NULL = unprocessed.
+        sentiment_label: Human-readable label ('Bullish' / 'Bearish' / etc.).
+        sentiment_score: Float in [-1.0, +1.0]; positive = bullish.
+        sentiment_confidence: Model confidence (0.0–1.0).
+        sentiment_analyzed_at: When sentiment ran; NULL = not yet analyzed.
+        primary_ticker: The single company this article is primarily about, per scorer.
+    """
 
     __tablename__ = "rss_articles"
 
@@ -384,12 +436,27 @@ class Alert(Base):
     """
     User-defined alert rule for a single ticker.
 
-    Supported alert_type values: 'price' | 'sentiment'
+    Supported alert_type values: 'price' | 'sentiment' | 'breaking_news' | 'volume_spike'
     Supported operator values:   '>'     | '<'
 
     When is_active is True the scheduler evaluates this rule every minute
-    and writes a row to alert_history if the condition fires.  A 1-hour
-    cooldown prevents the same alert from firing on consecutive ticks.
+    and writes a row to alert_history if the condition fires.
+
+    Edge-detection model (price / sentiment alerts):
+      - condition_met tracks whether the condition was TRUE on the *previous* evaluation.
+      - Alert fires when condition flips False→True (rising edge only).
+      - This prevents repeated firings every minute while the condition holds.
+
+    Attributes:
+        id: Auto-increment integer primary key.
+        ticker: Stock symbol this alert monitors.
+        alert_type: 'price', 'sentiment', 'breaking_news', or 'volume_spike'.
+        operator: '>' or '<' for price/sentiment comparisons.
+        threshold: The numeric value to compare against.
+        is_active: When False the scheduler skips evaluation entirely.
+        condition_met: Current condition state (used for edge detection).
+        last_seen_at: High-water mark for breaking_news and volume_spike alert types.
+        created_at / updated_at: Audit timestamps.
     """
 
     __tablename__ = "alerts"

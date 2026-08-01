@@ -1,4 +1,7 @@
-"""012 — drop importance_score and importance_label from rss_articles
+﻿"""012 — drop importance_score and importance_label from rss_articles
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 012
 Revises: 011

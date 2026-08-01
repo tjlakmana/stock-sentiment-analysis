@@ -1,4 +1,7 @@
-"""006 — add sentiment columns to rss_articles
+﻿"""006 — add sentiment columns to rss_articles
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 006
 Revises: 005

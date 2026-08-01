@@ -1,4 +1,7 @@
-"""Add roa, gross_margin, operating_margin, net_margin, beta to ticker_prices
+﻿"""Add roa, gross_margin, operating_margin, net_margin, beta to ticker_prices
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 016
 Revises: 015

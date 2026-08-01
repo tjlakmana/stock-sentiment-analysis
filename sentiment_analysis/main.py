@@ -1,4 +1,9 @@
 """
+Module: main.py
+Purpose: Application entry point — starts the ingestion pipeline and optionally the Dash monitoring dashboard
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Phase 2 entry point — starts the ingestion pipeline and monitoring dashboard.
 
 Usage
@@ -55,6 +60,18 @@ async def _init_db() -> None:
 # ---------------------------------------------------------------------------
 
 def run_migrations() -> None:
+    """
+    Apply idempotent schema patches needed for Railway cold-start compatibility.
+
+    Uses ``ADD COLUMN IF NOT EXISTS`` and ``CREATE TABLE IF NOT EXISTS`` so every
+    statement is safe to run on an already-up-to-date schema.  This supplements
+    Alembic rather than replacing it — proper Alembic migrations track version
+    history; this function handles columns/tables that may have been added by
+    ``Base.metadata.create_all`` without the server_default that Alembic would set.
+
+    Raises:
+        sqlalchemy.exc.OperationalError: If the database connection fails.
+    """
     from sqlalchemy import create_engine, text
 
     sync_url = settings.database_url.replace("+asyncpg", "+psycopg2")
@@ -182,7 +199,17 @@ def run_migrations() -> None:
 # ---------------------------------------------------------------------------
 
 async def _run_pipeline() -> None:
-    """Initialise the DB, start the scheduler, and run until interrupted."""
+    """
+    Initialise the database, launch the scheduler, and keep the event loop alive.
+
+    The asyncio event loop must be running before this is called; use
+    ``asyncio.run(_run_pipeline())`` from the synchronous entry point.
+    The scheduler runs jobs as asyncio coroutines — ``asyncio.sleep`` keeps the
+    loop spinning between job firings without busy-waiting.
+
+    Raises:
+        KeyboardInterrupt: Caught internally; triggers clean scheduler shutdown.
+    """
     await _init_db()
     scheduler = await start_scheduler()
 
@@ -204,7 +231,17 @@ async def _run_pipeline() -> None:
 # ---------------------------------------------------------------------------
 
 def _launch_dashboard() -> subprocess.Popen:
-    """Start the Plotly Dash dashboard as a child process on port 8050."""
+    """
+    Start the Plotly Dash dashboard as a detached child process on port 8050.
+
+    A subprocess is used instead of running in the same process because Dash's
+    development server calls ``signal.signal`` which conflicts with APScheduler's
+    asyncio event loop.  The child inherits stdout/stderr so any startup crash
+    (e.g. missing dash_bootstrap_components) prints directly to the terminal.
+
+    Returns:
+        subprocess.Popen: The running dashboard process (call .terminate() to stop).
+    """
     proc = subprocess.Popen(
         [sys.executable, "-m", "sentiment_analysis.dashboard.dash_app"],
         # Inherit parent's stdout/stderr so any startup crash prints to the terminal
@@ -220,6 +257,17 @@ def _launch_dashboard() -> subprocess.Popen:
 # ---------------------------------------------------------------------------
 
 def main() -> None:
+    """
+    CLI entry point for the full pipeline.
+
+    Parses ``--no-ui`` flag, configures loguru (console + rotating file),
+    runs schema migration, optionally starts the dashboard subprocess, then
+    launches the async ingestion pipeline.  The dashboard process is always
+    terminated cleanly on exit, even if the pipeline crashes.
+
+    Args:
+        (none — reads sys.argv via argparse)
+    """
     parser = argparse.ArgumentParser(description="Stock Sentiment Phase 2 Pipeline")
     parser.add_argument(
         "--no-ui",

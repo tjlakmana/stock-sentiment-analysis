@@ -1,4 +1,7 @@
-"""Add condition_met to alerts
+﻿"""Add condition_met to alerts
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 020
 Revises: 019

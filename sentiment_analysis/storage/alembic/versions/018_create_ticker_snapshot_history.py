@@ -1,4 +1,7 @@
-"""Create ticker_snapshot_history table
+﻿"""Create ticker_snapshot_history table
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 018
 Revises: 017

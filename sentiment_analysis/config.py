@@ -1,6 +1,13 @@
 """
-Central configuration for the stock sentiment analysis system.
-All settings are loaded from environment variables via python-dotenv.
+Module: config.py
+Purpose: Central configuration for the stock sentiment analysis system — all settings loaded from environment variables
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
+Settings are resolved from environment variables at import time using python-dotenv.
+A module-level ``settings`` singleton is created so every other module can do::
+
+    from sentiment_analysis.config import settings
 """
 from __future__ import annotations
 
@@ -17,12 +24,35 @@ load_dotenv(Path(__file__).parent / ".env")
 # Imported here so the default watchlist covers the full S&P 500 without
 # requiring a massive env-var string.  ticker_list.py has no project imports,
 # so there is no circular dependency.
-from sentiment_analysis.ingestion.ticker_list import SP500_TICKERS as _SP500_TICKERS
+from sentiment_analysis.nlp.ticker_list import SP500_TICKERS as _SP500_TICKERS
 
 
 @dataclass
 class Settings:
-    """Application settings resolved from the process environment."""
+    """
+    Application settings resolved from the process environment.
+
+    Every field has a default factory that reads from ``os.getenv`` so the
+    object is valid immediately after construction (no extra init call needed).
+    ``__post_init__`` runs after the dataclass fills fields to normalise the
+    database URL into the asyncpg dialect and validate it is present.
+
+    Attributes:
+        database_url: Async PostgreSQL URL (postgresql+asyncpg://...) for the pipeline.
+        log_level: Loguru log level (DEBUG / INFO / WARNING / ERROR).
+        gemini_api_key: Google Gemini API key for LLM sentiment analysis.
+        finviz_token: Finviz Elite auth token for bulk screener export.
+        ticker_watchlist: List of tickers the pipeline monitors.
+        finbert_positive_threshold: Score threshold above which FinBERT labels "Bullish".
+        finbert_negative_threshold: Score threshold below which FinBERT labels "Bearish".
+        rss_poll_interval: Minutes between RSS feed ingestion runs.
+        rss_feeds: Dict of feed_name → URL for all configured RSS/Atom sources.
+
+    Example:
+        from sentiment_analysis.config import settings
+        print(settings.database_url)
+        print(settings.finbert_positive_threshold)
+    """
 
     # ------------------------------------------------------------------ #
     # Database  (resolved in __post_init__)                               #
@@ -200,12 +230,27 @@ class Settings:
     )
 
     def __post_init__(self) -> None:
+        """
+        Normalise and validate the database URL after dataclass initialisation.
+
+        Checks DATABASE_URL, POSTGRES_URL, and POSTGRESQL_URL in that order so
+        the app works on Railway (which injects DATABASE_URL) as well as on
+        local setups where developers may use any of the three names.
+
+        The asyncpg driver is required for the async pipeline; psycopg2 is only
+        used by the synchronous dashboard and alembic (via sync_database_url).
+
+        Raises:
+            RuntimeError: If no database URL is found in the environment.
+        """
         url = (
             os.environ.get("DATABASE_URL") or
             os.environ.get("POSTGRES_URL") or
             os.environ.get("POSTGRESQL_URL") or
             ""
         )
+        # Railway and older Heroku deployments use the bare "postgres://" scheme;
+        # SQLAlchemy 2.x requires the full "postgresql+asyncpg://" dialect string.
         if url.startswith("postgres://"):
             url = url.replace("postgres://", "postgresql+asyncpg://", 1)
         elif url.startswith("postgresql://") and "+asyncpg" not in url:

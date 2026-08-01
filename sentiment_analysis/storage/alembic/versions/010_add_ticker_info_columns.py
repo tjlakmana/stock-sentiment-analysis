@@ -1,4 +1,7 @@
-"""010 — add company info columns to ticker_prices
+﻿"""010 — add company info columns to ticker_prices
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 010
 Revises: 009

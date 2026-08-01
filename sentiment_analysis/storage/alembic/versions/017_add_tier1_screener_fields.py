@@ -1,4 +1,7 @@
-"""Add Tier 1 screener fields: short interest, performance, analyst, growth, ATR, ownership
+﻿"""Add Tier 1 screener fields: short interest, performance, analyst, growth, ATR, ownership
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 017
 Revises: 016

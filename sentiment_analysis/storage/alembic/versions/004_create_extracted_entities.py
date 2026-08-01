@@ -1,7 +1,10 @@
-"""Create extracted_entities table
+﻿"""Create extracted_entities table
 
 Stores the named entities extracted by spaCy NER that were successfully
 resolved to a ticker symbol.  One row per entity per article.
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 004
 Revises: 003

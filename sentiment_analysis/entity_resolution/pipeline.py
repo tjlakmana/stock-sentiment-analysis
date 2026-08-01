@@ -1,4 +1,9 @@
 """
+Module: pipeline.py
+Purpose: Five-stage entity resolution orchestrator mapping article text to company tickers
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Entity Resolution Pipeline — production-ready orchestrator.
 
 Drop-in replacement for the legacy EntityExtractor.  The extract() method

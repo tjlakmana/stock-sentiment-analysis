@@ -1,4 +1,9 @@
 """
+Module: ticker_list.py
+Purpose: S&P 500 constituent tickers, common ETFs, and three-pass ticker extraction utility
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 S&P 500 constituent tickers, common ETFs, and a three-pass extraction utility.
 
 `extract_tickers(text)` is the public API used by the RSS ingestor to tag
@@ -137,7 +142,10 @@ _CASHTAG_RE = re.compile(r"\$([A-Z]{1,5}(?:\.[A-Z])?)\b")
 # Catches inline tickers like "AAPL" in "Apple (AAPL) reports..."
 _BARE_TICKER_RE = re.compile(r"\b([A-Z]{1,5})\b")
 
-# Tokens that look like tickers but aren't — filtered out in Pass 2
+# Tokens that look like tickers but aren't — filtered out in Pass 2.
+# These are uppercase acronyms / abbreviations that appear in financial text
+# and would otherwise match single-letter or short tickers (e.g. "US" vs "US" ticker).
+# Kept as a frozenset for O(1) membership testing per token.
 _STOP_WORDS: frozenset = frozenset({
     "A", "I", "AN", "OR", "AND", "THE", "IN", "ON", "AT", "BY", "FOR",
     "OF", "TO", "IS", "ARE", "WAS", "BE", "AS", "IF", "UP", "DO",
@@ -151,6 +159,8 @@ _STOP_WORDS: frozenset = frozenset({
 # SEC filing form codes that create false ticker matches when the bare-uppercase
 # scanner sees the letter after the hyphen in e.g. "8-K" (hyphen is non-word,
 # so \b matches before K and _BARE_TICKER_RE captures it as the ticker K).
+# Pre-stripping these codes before Pass 2 prevents false positive like:
+#   "8-K" → K (Kellanova), "10-Q" → Q, "S-1" → standalone "S" etc.
 _FILING_CODE_RE: re.Pattern = re.compile(
     r"\b(?:10-K|10-Q|8-K|10-KSB|10-QSB|S-1|S-3|S-4|S-11|DEF\s*14A|SC\s*13[GD])\b",
     re.IGNORECASE,

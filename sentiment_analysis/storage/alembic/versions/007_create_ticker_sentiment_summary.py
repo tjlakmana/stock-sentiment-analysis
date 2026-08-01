@@ -1,4 +1,7 @@
-"""007 — create ticker_sentiment_summary table
+﻿"""007 — create ticker_sentiment_summary table
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 007
 Revises: 006

@@ -1,4 +1,7 @@
-"""009 — create ticker_prices table
+﻿"""009 — create ticker_prices table
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 009
 Revises: 008

@@ -1,4 +1,9 @@
 """
+Module: charts.py
+Purpose: Dash page embedding a full-screen TradingView advanced chart widget
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Charts page — full-screen TradingView advanced chart.
 """
 import dash

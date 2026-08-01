@@ -1,4 +1,9 @@
 """
+Module: confidence.py
+Purpose: Compute confidence scores for entity type classification and ticker resolution
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Confidence scoring for Entity Resolution Engine results.
 
 Two orthogonal scores:

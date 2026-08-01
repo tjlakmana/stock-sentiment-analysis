@@ -1,4 +1,9 @@
 """
+Module: company_resolver.py
+Purpose: Resolve Company entity text to a ticker symbol using explicit patterns and TickerMapper
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Company Resolver — maps a Company-classified entity to a ticker symbol.
 
 Resolution signals (in priority order):

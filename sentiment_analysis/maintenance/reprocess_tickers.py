@@ -1,4 +1,9 @@
 """
+Module: reprocess_tickers.py
+Purpose: Reprocess tickers[] and primary_ticker for all articles after ticker-extraction quality fixes
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Reprocess tickers[] and primary_ticker for existing articles after the
 ticker-extraction quality fixes applied to ticker_list.py:
 
@@ -44,7 +49,7 @@ import psycopg2.extras
 
 # Import the FIXED extractor — this module is already patched, so running it
 # here produces the corrected ticker set.
-from sentiment_analysis.ingestion.ticker_list import extract_tickers
+from sentiment_analysis.nlp.ticker_list import extract_tickers
 
 # ── Constants ────────────────────────────────────────────────────────────────
 

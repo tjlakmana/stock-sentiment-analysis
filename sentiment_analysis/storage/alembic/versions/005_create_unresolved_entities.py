@@ -1,8 +1,11 @@
-"""Create unresolved_entities table
+﻿"""Create unresolved_entities table
 
 Review queue for named entities that could not be automatically mapped to a
 ticker symbol.  Duplicate entity texts (same entity_text + status='pending')
 increment frequency rather than inserting a new row.
+
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
 
 Revision ID: 005
 Revises: 004

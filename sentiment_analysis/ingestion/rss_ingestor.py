@@ -1,4 +1,9 @@
 """
+Module: rss_ingestor.py
+Purpose: Poll RSS feeds, deduplicate articles, extract tickers, and persist to the database
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 RSS feed ingestor using feedparser.
 
 Polls all feeds defined in config.settings.rss_feeds every N minutes.
@@ -20,7 +25,7 @@ from loguru import logger
 from sqlalchemy import select
 
 from sentiment_analysis.config import settings
-from sentiment_analysis.ingestion.ticker_list import extract_tickers
+from sentiment_analysis.nlp.ticker_list import extract_tickers
 from sentiment_analysis.storage.database import get_async_session
 from sentiment_analysis.storage.models import IngestionLog, RSSArticle
 

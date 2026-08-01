@@ -1,4 +1,9 @@
 """
+Module: dashboard.py
+Purpose: Streamlit ingestion monitoring dashboard with live feed, health metrics, and alert views
+Part of: Stock Sentiment Analysis Dashboard
+Author: Tjoet Aliya Lakmana
+
 Ingestion Monitoring Dashboard
 ================================
 Real-time Streamlit dashboard for pipeline health and raw feed visibility.
