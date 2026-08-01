@@ -26,16 +26,16 @@ The application is deployed on [Railway](https://railway.app). The service start
 ## Screenshots
 
 ### News Page
-![News](Images/Screenshot 2026-08-01 004701.png)
+![News](<Images/Screenshot 2026-08-01 004701.png>)
 
 ### Screener Page
-![Screener](Images/Screenshot 2026-08-01 004724.png)
+![Screener](<Images/Screenshot 2026-08-01 004724.png>)
 
 ### Watchlist Page 
-![Charts](Images/Screenshot 2026-08-01 004737.png)
+![Charts](<Images/Screenshot 2026-08-01 004737.png>)
 
 ### Alert Page
-![Alert](Images/Screenshot 2026-08-01 004805.png)
+![Alert](<Images/Screenshot 2026-08-01 004805.png>)
 
 ---
 
