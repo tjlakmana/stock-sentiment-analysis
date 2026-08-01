@@ -33,6 +33,9 @@ import sys
 import time
 from pathlib import Path
 
+if "/app" not in sys.path:
+    sys.path.insert(0, "/app")
+
 from loguru import logger
 
 from sentiment_analysis.config import settings
@@ -276,9 +279,18 @@ def _launch_dashboard() -> subprocess.Popen:
     logger.info(f"  subprocess cwd     = {project_root}")
     # END TEMPORARY
 
+    # Build a child environment that explicitly includes /app on PYTHONPATH.
+    # The parent process finds sentiment_analysis because python -m sets sys.path[0]
+    # to the cwd.  The subprocess does not inherit that sys.path entry — it builds
+    # its own — so PYTHONPATH must be set explicitly to guarantee the package is
+    # findable regardless of where ld or the shell resolves the executable.
+    env = os.environ.copy()
+    env["PYTHONPATH"] = "/app"
+
     proc = subprocess.Popen(
         cmd,
-        cwd=str(project_root),
+        cwd="/app",
+        env=env,
         # Inherit parent's stdout/stderr so any startup crash prints to the terminal
         stdout=None,
         stderr=None,
