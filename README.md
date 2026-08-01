@@ -25,7 +25,17 @@ The application is deployed on [Railway](https://railway.app). The service start
 
 ## Screenshots
 
-![Dashboard Screenshot](docs/screenshot.png)
+### News Page
+![News](Images/Screenshot 2026-08-01 004701.png)
+
+### Screener Page
+![Screener](Images/Screenshot 2026-08-01 004724.png)
+
+### Watchlist Page 
+![Charts](Images/Screenshot 2026-08-01 004737.png)
+
+### Alert Page
+![Alert](Images/Screenshot 2026-08-01 004805.png)
 
 ---
 
@@ -581,5 +591,4 @@ Please keep PRs focused — one feature or fix per PR. For large changes, open a
 **Tjoet Aliya Lakmana**  
 Penn State University  
 Internship project under **Dr. Kaamran Raahemifar**
-
-[GitHub](https://github.com/tjlakmana) · [Email](mailto:ta.lakmana@gmail.com)
+Email: ta.lakmana@gmail.com
