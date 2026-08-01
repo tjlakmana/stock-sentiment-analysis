@@ -27,8 +27,10 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import os
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 from loguru import logger
@@ -259,14 +261,40 @@ def _launch_dashboard() -> subprocess.Popen:
         subprocess.Popen: The running dashboard process (call .terminate() to stop).
     """
     project_root = Path(__file__).parent.parent
+    cmd = [sys.executable, "-m", "sentiment_analysis.dashboard.dash_app"]
+
+    # TEMPORARY — remove once Railway environment is understood.
+    # Using INFO so these appear regardless of LOG_LEVEL setting.
+    logger.info("=== _launch_dashboard() env dump ===")
+    logger.info(f"  os.getcwd()        = {os.getcwd()}")
+    logger.info(f"  project_root       = {project_root}")
+    logger.info(f"  __file__ resolved  = {Path(__file__).resolve()}")
+    logger.info(f"  sys.executable     = {sys.executable}")
+    logger.info(f"  PYTHONPATH env     = {os.environ.get('PYTHONPATH')}")
+    logger.info(f"  sys.path           = {sys.path}")
+    logger.info(f"  subprocess command = {cmd}")
+    logger.info(f"  subprocess cwd     = {project_root}")
+    # END TEMPORARY
+
     proc = subprocess.Popen(
-        [sys.executable, "-m", "sentiment_analysis.dashboard.dash_app"],
+        cmd,
         cwd=str(project_root),
         # Inherit parent's stdout/stderr so any startup crash prints to the terminal
         stdout=None,
         stderr=None,
     )
-    logger.info(f"Dashboard started (PID {proc.pid})  →  http://localhost:8050")
+
+    # Popen() only means the OS created the process — wait briefly then verify
+    # it is still alive before declaring success.
+    time.sleep(1)
+    if proc.poll() is not None:
+        logger.error(
+            f"Dashboard subprocess exited immediately (exit code {proc.returncode}). "
+            "Check stderr above for the import error or traceback."
+        )
+    else:
+        logger.info(f"Dashboard started successfully (PID {proc.pid})  →  http://localhost:8050")
+
     return proc
 
 

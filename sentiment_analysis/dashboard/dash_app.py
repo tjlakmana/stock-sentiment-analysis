@@ -12,11 +12,24 @@ Run:
 """
 from __future__ import annotations
 
+import os
+import sys
 from datetime import datetime
+from pathlib import Path
 
 import dash
 import dash_bootstrap_components as dbc
 from dash import Dash, Input, Output, callback, dcc, html
+
+# TEMPORARY — print before any sentiment_analysis import so Railway logs show
+# the child environment regardless of whether the import succeeds or fails.
+print("=== dash_app.py env dump ===", flush=True)
+print(f"  os.getcwd()       = {os.getcwd()}", flush=True)
+print(f"  __file__ resolved = {Path(__file__).resolve()}", flush=True)
+print(f"  sys.executable    = {sys.executable}", flush=True)
+print(f"  PYTHONPATH env    = {os.environ.get('PYTHONPATH')}", flush=True)
+print(f"  sys.path          = {sys.path}", flush=True)
+# END TEMPORARY
 
 from sentiment_analysis.nlp.ticker_list import SP500_TICKERS
 

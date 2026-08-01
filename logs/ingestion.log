@@ -58453,3 +58453,2269 @@ Reason
 2026-07-31 15:52:30 | INFO     | sentiment_analysis.ingestion.scheduler:72 — [finviz] Bulk fetch: 11531 tickers updated
 2026-07-31 15:52:49 | INFO     | __main__:199 — Pipeline stopped cleanly.
 2026-07-31 15:52:49 | INFO     | __main__:277 — Dashboard process terminated.
+2026-08-01 05:09:13 | INFO     | __main__:320 — ============================================================
+2026-08-01 05:09:13 | INFO     | __main__:321 — Stock Sentiment Analysis — Phase 2 starting
+2026-08-01 05:09:13 | INFO     | __main__:322 —   DB URL   : postgresql+asyncpg://postgres:1074@localhost:5432/…
+2026-08-01 05:09:13 | INFO     | __main__:323 —   Log level: INFO
+2026-08-01 05:09:13 | INFO     | __main__:324 —   Watchlist: A, AAL, AAP, AAPL, ABBV, ABC, ABMD, ABT, ACN, ACGL, ADBE, ADI, ADM, ADP, ADSK, AEE, AEP, AES, AFL, AIG, AIZ, AJG, AKAM, ALB, ALGN, ALK, ALL, ALLE, AMAT, AMCR, AMD, AME, AMGN, AMP, AMT, AMZN, ANET, ANSS, AON, AOS, APA, APD, APH, APTV, ARE, ATO, AVB, AVGO, AVY, AWK, AXP, AXON, AZO, BA, BAC, BALL, BAX, BBWI, BBY, BCR, BDX, BEN, BF.B, BG, BIIB, BIO, BK, BKNG, BKR, BLK, BLDR, BMY, BR, BRO, BSX, BWA, BX, BXP, C, CAG, CAH, CARR, CAT, CB, CBOE, CBRE, CCI, CCL, CDNS, CDW, CE, CEG, CF, CFG, CHD, CHRW, CHTR, CI, CINF, CL, CLX, CMA, CMCSA, CME, CMG, CMI, CMS, CNC, CNP, COF, COO, COP, COR, COST, CPB, CPRT, CPT, CRL, CRM, CSCO, CSGP, CSX, CTAS, CTLT, CTRA, CTSH, CTVA, CVS, CVX, CZR, D, DAL, DAY, DD, DE, DECK, DFS, DG, DGX, DHI, DHR, DIS, DISH, DLR, DLTR, DOC, DOV, DOW, DPZ, DRI, DTE, DUK, DVA, DVN, DXC, DXCM, EA, EBAY, ECL, ED, EFX, EG, EIX, EL, ELV, EMN, EMR, ENPH, EOG, EPAM, EQIX, EQR, EQT, ES, ESS, ETN, ETR, ETSY, EVRG, EW, EXC, EXPD, EXPE, EXR, F, FANG, FAST, FCX, FDS, FDX, FE, FFIV, FI, FICO, FIS, FISV, FITB, FLT, FMC, FOX, FOXA, FRT, FSLR, FTNT, FTV, GD, GE, GDDY, GEHC, GEN, GEV, GILD, GIS, GL, GLW, GM, GNRC, GOOG, GOOGL, GPC, GPN, GPS, GRMN, GS, GWW, HAL, HAS, HBAN, HCA, HD, HES, HIG, HII, HLT, HOLX, HON, HPE, HPQ, HRL, HSIC, HST, HSY, HUBB, HUM, HWM, IBM, ICE, IDXX, IEX, IFF, ILMN, INCY, INTC, INTU, INVH, IP, IPG, IQV, IR, IRM, ISRG, IT, ITW, IVZ, J, JBL, JBHT, JCI, JKHY, JNJ, JNPR, JPM, K, KDP, KEY, KEYS, KHC, KIM, KLAC, KMB, KMI, KMX, KO, KR, KVUE, L, LDOS, LEN, LH, LHX, LIN, LKQ, LLY, LMT, LNC, LNT, LOW, LRCX, LULU, LUMN, LUV, LVS, LW, LYB, LYV, MA, MAA, MAR, MAS, MCD, MCHP, MCK, MCO, MDLZ, MDT, MET, META, MGM, MHK, MKC, MKTX, MLM, MMC, MMM, MNST, MO, MOH, MOS, MPC, MPWR, MRK, MRO, MRNA, MS, MSCI, MSFT, MSI, MTB, MTCH, MTD, MU, NCLH, NDAQ, NDSN, NEE, NEM, NFLX, NI, NKE, NOC, NOW, NRG, NSC, NTAP, NTRS, NUE, NVDA, NVR, NWL, NWS, NWSA, NXPI, O, ODFL, OKE, OMC, ON, ORCL, ORLY, OTIS, OXY, PANW, PARA, PAYC, PAYX, PCAR, PCG, PEAK, PEG, PEP, PFE, PFG, PG, PGR, PH, PHM, PKG, PKI, PLD, PM, PNC, PNR, PNW, PODD, POOL, PPG, PPL, PRU, PSA, PSX, PTC, PTVE, PWR, PXD, PYPL, QCOM, QRVO, RCL, RE, REG, REGN, RF, RHI, RJF, RL, RMD, ROK, ROL, ROP, ROST, RSG, RTX, RVTY, SBAC, SBUX, SCHW, SEE, SHW, SJM, SLB, SNA, SNPS, SO, SOLV, SPG, SPGI, SRE, STE, STLD, STT, STX, STZ, SWK, SWKS, SYF, SYK, SYY, T, TAP, TDG, TDY, TECH, TEL, TER, TFC, TFX, TGT, TJX, TMO, TMUS, TPR, TRGP, TRMB, TROW, TRV, TSCO, TSLA, TSN, TT, TTWO, TXN, TXT, TYL, UA, UAA, UAL, UDR, UHS, ULTA, UNH, UNP, UPS, URI, USB, V, VFC, VICI, VLO, VMC, VNO, VRSK, VRSN, VRTX, VST, VTR, VTRS, VZ, WAB, WAT, WBA, WBD, WDAY, WDC, WEC, WELL, WFC, WHR, WLK, WM, WMB, WMT, WRB, WRK, WST, WTW, WY, WYNN, XEL, XOM, XRAY, XYL, YUM, ZBH, ZBRA, ZION, ZTS, SPY, QQQ, IWM, DIA, GLD, SLV, TLT, HYG, LQD, VTI, VOO, VEA, VWO, EFA, EEM, XLF, XLK, XLE, XLV, XLI, XLY, XLP, XLU, XLB, XLRE, PLTR, RIVN, LCID, SOFI, GME, AMC, BB, NOK, COIN, HOOD, ROKU, SNAP, UBER, LYFT, ABNB, DASH, PINS, TWTR, SHOP, SQ, PYPL, AFRM, UPST
+2026-08-01 05:09:13 | INFO     | __main__:325 — ============================================================
+2026-08-01 05:09:14 | INFO     | __main__:194 — [startup] schema columns verified/added
+2026-08-01 05:09:14 | INFO     | __main__:269 — Dashboard started (PID 9480)  →  http://localhost:8050
+2026-08-01 05:09:14 | INFO     | __main__:55 — Database schema verified / created.
+2026-08-01 05:09:14 | INFO     | sentiment_analysis.ingestion.scheduler:441 — Scheduler configured — RSS every 5m, NLP every 10m, Sentiment every 5m, Finviz prices every 1m, Alerts every 1m, Cleanup daily at midnight ET
+2026-08-01 05:09:14 | INFO     | sentiment_analysis.ingestion.scheduler:453 — Scheduler started — running initial pass.
+2026-08-01 05:09:14 | INFO     | sentiment_analysis.ingestion.scheduler:370 — [cleanup] Deleted 0 rows older than 2 days.
+2026-08-01 05:09:14 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:cnbc_finance] Fetching https://www.cnbc.com/id/100003114/device/rss/rss.html
+2026-08-01 05:09:14 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:cnbc_finance] Stored 6/30 new articles.
+2026-08-01 05:09:14 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:cnbc_earnings] Fetching https://www.cnbc.com/id/15839135/device/rss/rss.html
+2026-08-01 05:09:14 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:cnbc_earnings] Stored 0/30 new articles.
+2026-08-01 05:09:14 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:yahoo_finance_news] Fetching https://finance.yahoo.com/news/rssindex
+2026-08-01 05:09:14 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:yahoo_finance_news] Stored 31/42 new articles.
+2026-08-01 05:09:14 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:marketwatch_news] Fetching https://feeds.marketwatch.com/marketwatch/marketpulse/
+2026-08-01 05:09:15 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:marketwatch_news] Stored 0/30 new articles.
+2026-08-01 05:09:15 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:wsj_markets] Fetching https://feeds.a.dj.com/rss/RSSMarketsMain.xml
+2026-08-01 05:09:15 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:wsj_markets] Stored 0/20 new articles.
+2026-08-01 05:09:15 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:wsj_business] Fetching https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml
+2026-08-01 05:09:15 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:wsj_business] Stored 0/20 new articles.
+2026-08-01 05:09:15 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:ft_markets] Fetching https://www.ft.com/markets?format=rss
+2026-08-01 05:09:15 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:ft_markets] Stored 7/25 new articles.
+2026-08-01 05:09:15 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:bloomberg_markets] Fetching https://feeds.bloomberg.com/markets/news.rss
+2026-08-01 05:09:15 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:bloomberg_markets] Stored 20/20 new articles.
+2026-08-01 05:09:15 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:motley_fool] Fetching https://www.fool.com/feeds/index.aspx?id=fool-headlines
+2026-08-01 05:09:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:motley_fool] Stored 50/50 new articles.
+2026-08-01 05:09:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:pr_newswire] Fetching https://www.prnewswire.com/rss/news-releases-list.rss
+2026-08-01 05:09:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:pr_newswire] Stored 20/20 new articles.
+2026-08-01 05:09:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:globe_newswire_finance] Fetching https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services
+2026-08-01 05:09:20 | WARNING  | sentiment_analysis.ingestion.rss_ingestor:78 — [feed-fetch] Attempt 1/3 failed for https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services: <HTTPError 503: 'Service Unavailable'> — retrying in 1s
+2026-08-01 05:09:21 | WARNING  | sentiment_analysis.ingestion.rss_ingestor:78 — [feed-fetch] Attempt 2/3 failed for https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services: <HTTPError 503: 'Service Unavailable'> — retrying in 2s
+2026-08-01 05:09:23 | ERROR    | sentiment_analysis.ingestion.rss_ingestor:496 — [rss:globe_newswire_finance] Unexpected error: HTTP Error 503: Service Unavailable
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 350, in <module>
+    main()
+    └ <function main at 0x00000132A3899C60>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 337, in main
+    asyncio.run(_run_pipeline(dashboard_proc_ref))
+    │       │   │             └ [<Popen: returncode: None args: ['C:\\Users\\talak\\Downloads\\Stock Sentimen...>]
+    │       │   └ <function _run_pipeline at 0x00000132A3899B20>
+    │       └ <function run at 0x000001328F0667A0>
+    └ <module 'asyncio' from 'C:\\Users\\talak\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 196, in run
+    return runner.run(main)
+           │      │   └ <coroutine object _run_pipeline at 0x00000132A38B1A80>
+           │      └ <function Runner.run at 0x000001328F0E6200>
+           └ <asyncio.runners.Runner object at 0x000001328F2BCAD0>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 119, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<_run_pipeline() running at C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x000001328F0E3D80>
+           │    └ <ProactorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x000001328F2BCAD0>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x000001328F0E3CE0>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x000001328F0E5B20>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 2060, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x000001328F067600>
+    └ <Handle Task.task_wakeup()>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup()>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup()>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup()>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 219, in _run_pipeline
+    scheduler = await start_scheduler()
+                      └ <function start_scheduler at 0x00000132A38999E0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\scheduler.py", line 456, in start_scheduler
+    await _job_rss()
+          └ <function _job_rss at 0x00000132A02D3740>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\scheduler.py", line 54, in _job_rss
+    await _get_rss().run()
+          └ <function _get_rss at 0x000001328F38B7E0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 357, in run
+    await self._process_feed(source_name, feed_url)
+          │    │             │            └ 'https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services'
+          │    │             └ 'globe_newswire_finance'
+          │    └ <function RSSIngestor._process_feed at 0x00000132A298C680>
+          └ <sentiment_analysis.ingestion.rss_ingestor.RSSIngestor object at 0x00000132A38D1A90>
+
+> File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 380, in _process_feed
+    raw_bytes = _fetch_feed_bytes(feed_url)
+                │                 └ 'https://www.globenewswire.com/RssFeed/subjectcode/15-Financial%20Services'
+                └ <function _fetch_feed_bytes at 0x00000132A289B7E0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 83, in _fetch_feed_bytes
+    raise last_exc
+          └ <HTTPError 503: 'Service Unavailable'>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 72, in _fetch_feed_bytes
+    with _FEED_OPENER.open(req, timeout=20) as resp:
+         │            │    └ <urllib.request.Request object at 0x00000132A3807EE0>
+         │            └ <function OpenerDirector.open at 0x00000132900F6980>
+         └ <urllib.request.OpenerDirector object at 0x00000132A28E1940>
+
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 495, in open
+    response = meth(req, response)
+               │    │    └ <http.client.HTTPResponse object at 0x00000132A28ABFD0>
+               │    └ <urllib.request.Request object at 0x00000132A3807EE0>
+               └ <bound method HTTPErrorProcessor.http_response of <urllib.request.HTTPErrorProcessor object at 0x00000132A28E2270>>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 604, in http_response
+    response = self.parent.error(
+               │    │      └ <function OpenerDirector.error at 0x00000132900F6AC0>
+               │    └ <urllib.request.OpenerDirector object at 0x00000132A28E1940>
+               └ <urllib.request.HTTPErrorProcessor object at 0x00000132A28E2270>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 533, in error
+    return self._call_chain(*args)
+           │    │            └ ({'default': [<urllib.request.HTTPDefaultErrorHandler object at 0x00000132A28E1D30>], 301: [<urllib.request.HTTPRedirectHandl...
+           │    └ <function OpenerDirector._call_chain at 0x00000132900F68E0>
+           └ <urllib.request.OpenerDirector object at 0x00000132A28E1940>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 466, in _call_chain
+    result = func(*args)
+             │     └ (<urllib.request.Request object at 0x00000132A3807EE0>, <http.client.HTTPResponse object at 0x00000132A28ABFD0>, 503, 'Servic...
+             └ <bound method HTTPDefaultErrorHandler.http_error_default of <urllib.request.HTTPDefaultErrorHandler object at 0x00000132A28E1...
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 613, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+          │         │   │         │     │    │     └ <http.client.HTTPResponse object at 0x00000132A28ABFD0>
+          │         │   │         │     │    └ <http.client.HTTPMessage object at 0x00000132A38B5270>
+          │         │   │         │     └ 'Service Unavailable'
+          │         │   │         └ 503
+          │         │   └ <property object at 0x00000132900EB650>
+          │         └ <urllib.request.Request object at 0x00000132A3807EE0>
+          └ <class 'urllib.error.HTTPError'>
+
+urllib.error.HTTPError: HTTP Error 503: Service Unavailable
+2026-08-01 05:09:23 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:globe_newswire_ma] Fetching https://www.globenewswire.com/RssFeed/subjectcode/14-Mergers%20and%20Acquisitions
+2026-08-01 05:09:38 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:globe_newswire_ma] Stored 0/20 new articles.
+2026-08-01 05:09:38 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:globe_newswire_earnings] Fetching https://www.globenewswire.com/RssFeed/subjectcode/05-Earnings
+2026-08-01 05:09:58 | WARNING  | sentiment_analysis.ingestion.rss_ingestor:78 — [feed-fetch] Attempt 1/3 failed for https://www.globenewswire.com/RssFeed/subjectcode/05-Earnings: TimeoutError('The read operation timed out') — retrying in 1s
+2026-08-01 05:10:19 | WARNING  | sentiment_analysis.ingestion.rss_ingestor:78 — [feed-fetch] Attempt 2/3 failed for https://www.globenewswire.com/RssFeed/subjectcode/05-Earnings: TimeoutError('The read operation timed out') — retrying in 2s
+2026-08-01 05:10:41 | ERROR    | sentiment_analysis.ingestion.rss_ingestor:496 — [rss:globe_newswire_earnings] Unexpected error: The read operation timed out
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 350, in <module>
+    main()
+    └ <function main at 0x00000132A3899C60>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 337, in main
+    asyncio.run(_run_pipeline(dashboard_proc_ref))
+    │       │   │             └ [<Popen: returncode: None args: ['C:\\Users\\talak\\Downloads\\Stock Sentimen...>]
+    │       │   └ <function _run_pipeline at 0x00000132A3899B20>
+    │       └ <function run at 0x000001328F0667A0>
+    └ <module 'asyncio' from 'C:\\Users\\talak\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 196, in run
+    return runner.run(main)
+           │      │   └ <coroutine object _run_pipeline at 0x00000132A38B1A80>
+           │      └ <function Runner.run at 0x000001328F0E6200>
+           └ <asyncio.runners.Runner object at 0x000001328F2BCAD0>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 119, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<_run_pipeline() running at C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x000001328F0E3D80>
+           │    └ <ProactorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x000001328F2BCAD0>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x000001328F0E3CE0>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x000001328F0E5B20>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 2060, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x000001328F067600>
+    └ <Handle Task.task_wakeup()>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup()>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup()>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup()>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 219, in _run_pipeline
+    scheduler = await start_scheduler()
+                      └ <function start_scheduler at 0x00000132A38999E0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\scheduler.py", line 456, in start_scheduler
+    await _job_rss()
+          └ <function _job_rss at 0x00000132A02D3740>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\scheduler.py", line 54, in _job_rss
+    await _get_rss().run()
+          └ <function _get_rss at 0x000001328F38B7E0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 357, in run
+    await self._process_feed(source_name, feed_url)
+          │    │             │            └ 'https://www.globenewswire.com/RssFeed/subjectcode/05-Earnings'
+          │    │             └ 'globe_newswire_earnings'
+          │    └ <function RSSIngestor._process_feed at 0x00000132A298C680>
+          └ <sentiment_analysis.ingestion.rss_ingestor.RSSIngestor object at 0x00000132A38D1A90>
+
+> File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 380, in _process_feed
+    raw_bytes = _fetch_feed_bytes(feed_url)
+                │                 └ 'https://www.globenewswire.com/RssFeed/subjectcode/05-Earnings'
+                └ <function _fetch_feed_bytes at 0x00000132A289B7E0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 83, in _fetch_feed_bytes
+    raise last_exc
+          └ TimeoutError('The read operation timed out')
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 72, in _fetch_feed_bytes
+    with _FEED_OPENER.open(req, timeout=20) as resp:
+         │            │    └ <urllib.request.Request object at 0x00000132A37C7DD0>
+         │            └ <function OpenerDirector.open at 0x00000132900F6980>
+         └ <urllib.request.OpenerDirector object at 0x00000132A28E1940>
+
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 489, in open
+    response = self._open(req, data)
+               │    │     │    └ None
+               │    │     └ <urllib.request.Request object at 0x00000132A37C7DD0>
+               │    └ <function OpenerDirector._open at 0x00000132900F6A20>
+               └ <urllib.request.OpenerDirector object at 0x00000132A28E1940>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 506, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+             │    │           │    │            │         └ 'https'
+             │    │           │    │            └ 'https'
+             │    │           │    └ {'unknown': [<urllib.request.UnknownHandler object at 0x00000132A28E1A90>], 'http': [<urllib.request.HTTPHandler object at 0x...
+             │    │           └ <urllib.request.OpenerDirector object at 0x00000132A28E1940>
+             │    └ <function OpenerDirector._call_chain at 0x00000132900F68E0>
+             └ <urllib.request.OpenerDirector object at 0x00000132A28E1940>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 466, in _call_chain
+    result = func(*args)
+             │     └ (<urllib.request.Request object at 0x00000132A37C7DD0>,)
+             └ <bound method HTTPSHandler.https_open of <urllib.request.HTTPSHandler object at 0x00000132A28E0050>>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 1367, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           │    │       │    │      │                └ <urllib.request.Request object at 0x00000132A37C7DD0>
+           │    │       │    │      └ <class 'http.client.HTTPSConnection'>
+           │    │       │    └ <module 'http.client' from 'C:\\Users\\talak\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\http\\client.py'>
+           │    │       └ <module 'http' from 'C:\\Users\\talak\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\http\\__init__.py'>
+           │    └ <function AbstractHTTPHandler.do_open at 0x000001329010C9A0>
+           └ <urllib.request.HTTPSHandler object at 0x00000132A28E0050>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 1323, in do_open
+    r = h.getresponse()
+        │ └ <function HTTPConnection.getresponse at 0x000001328FE9B920>
+        └ <http.client.HTTPSConnection object at 0x00000132A38C09F0>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 1459, in getresponse
+    response.begin()
+    │        └ <function HTTPResponse.begin at 0x000001328FE99800>
+    └ <http.client.HTTPResponse object at 0x00000132A3F7BD60>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              │    └ <function HTTPResponse._read_status at 0x000001328FE99760>
+                              └ <http.client.HTTPResponse object at 0x00000132A3F7BD60>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 297, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               │    │           └ 65536
+               │    └ None
+               └ <http.client.HTTPResponse object at 0x00000132A3F7BD60>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\socket.py", line 723, in readinto
+    return self._sock.recv_into(b)
+           │    │               └ <memory at 0x00000132A37C7640>
+           │    └ None
+           └ <socket.SocketIO object at 0x00000132A4638160>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\ssl.py", line 1304, in recv_into
+    return self.read(nbytes, buffer)
+           │    │    │       └ <memory at 0x00000132A37C7640>
+           │    │    └ 8192
+           │    └ <function SSLSocket.read at 0x000001328EF623E0>
+           └ <ssl.SSLSocket [closed] fd=-1, family=2, type=1, proto=0>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\ssl.py", line 1138, in read
+    return self._sslobj.read(len, buffer)
+           │    │            │    └ <memory at 0x00000132A37C7640>
+           │    │            └ 8192
+           │    └ None
+           └ <ssl.SSLSocket [closed] fd=-1, family=2, type=1, proto=0>
+
+TimeoutError: The read operation timed out
+2026-08-01 05:10:41 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:globe_newswire_company] Fetching https://www.globenewswire.com/RssFeed/subjectcode/02-Company%20Announcement
+2026-08-01 05:10:42 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=111: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=111&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:10:42 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=121: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=121&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:10:42 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=131: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=131&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:10:42 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=141: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=141&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:10:42 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=161: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=161&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:10:42 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=171: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=171&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:10:42 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:323 — [finviz] Base view v=111 returned no data — aborting bulk fetch.
+2026-08-01 05:10:50 | WARNING  | sentiment_analysis.ingestion.rss_ingestor:78 — [feed-fetch] Attempt 1/3 failed for https://www.globenewswire.com/RssFeed/subjectcode/02-Company%20Announcement: <HTTPError 503: 'Service Unavailable'> — retrying in 1s
+2026-08-01 05:10:51 | WARNING  | sentiment_analysis.ingestion.rss_ingestor:78 — [feed-fetch] Attempt 2/3 failed for https://www.globenewswire.com/RssFeed/subjectcode/02-Company%20Announcement: <HTTPError 503: 'Service Unavailable'> — retrying in 2s
+2026-08-01 05:10:53 | ERROR    | sentiment_analysis.ingestion.rss_ingestor:496 — [rss:globe_newswire_company] Unexpected error: HTTP Error 503: Service Unavailable
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 350, in <module>
+    main()
+    └ <function main at 0x00000132A3899C60>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 337, in main
+    asyncio.run(_run_pipeline(dashboard_proc_ref))
+    │       │   │             └ [<Popen: returncode: None args: ['C:\\Users\\talak\\Downloads\\Stock Sentimen...>]
+    │       │   └ <function _run_pipeline at 0x00000132A3899B20>
+    │       └ <function run at 0x000001328F0667A0>
+    └ <module 'asyncio' from 'C:\\Users\\talak\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 196, in run
+    return runner.run(main)
+           │      │   └ <coroutine object _run_pipeline at 0x00000132A38B1A80>
+           │      └ <function Runner.run at 0x000001328F0E6200>
+           └ <asyncio.runners.Runner object at 0x000001328F2BCAD0>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 119, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<_run_pipeline() running at C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x000001328F0E3D80>
+           │    └ <ProactorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x000001328F2BCAD0>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x000001328F0E3CE0>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x000001328F0E5B20>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 2060, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x000001328F067600>
+    └ <Handle Task.task_wakeup()>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup()>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup()>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup()>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 219, in _run_pipeline
+    scheduler = await start_scheduler()
+                      └ <function start_scheduler at 0x00000132A38999E0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\scheduler.py", line 456, in start_scheduler
+    await _job_rss()
+          └ <function _job_rss at 0x00000132A02D3740>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\scheduler.py", line 54, in _job_rss
+    await _get_rss().run()
+          └ <function _get_rss at 0x000001328F38B7E0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 357, in run
+    await self._process_feed(source_name, feed_url)
+          │    │             │            └ 'https://www.globenewswire.com/RssFeed/subjectcode/02-Company%20Announcement'
+          │    │             └ 'globe_newswire_company'
+          │    └ <function RSSIngestor._process_feed at 0x00000132A298C680>
+          └ <sentiment_analysis.ingestion.rss_ingestor.RSSIngestor object at 0x00000132A38D1A90>
+
+> File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 380, in _process_feed
+    raw_bytes = _fetch_feed_bytes(feed_url)
+                │                 └ 'https://www.globenewswire.com/RssFeed/subjectcode/02-Company%20Announcement'
+                └ <function _fetch_feed_bytes at 0x00000132A289B7E0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 83, in _fetch_feed_bytes
+    raise last_exc
+          └ <HTTPError 503: 'Service Unavailable'>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 72, in _fetch_feed_bytes
+    with _FEED_OPENER.open(req, timeout=20) as resp:
+         │            │    └ <urllib.request.Request object at 0x00000132A37C7C50>
+         │            └ <function OpenerDirector.open at 0x00000132900F6980>
+         └ <urllib.request.OpenerDirector object at 0x00000132A28E1940>
+
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 495, in open
+    response = meth(req, response)
+               │    │    └ <http.client.HTTPResponse object at 0x00000132A3F9A980>
+               │    └ <urllib.request.Request object at 0x00000132A37C7C50>
+               └ <bound method HTTPErrorProcessor.http_response of <urllib.request.HTTPErrorProcessor object at 0x00000132A28E2270>>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 604, in http_response
+    response = self.parent.error(
+               │    │      └ <function OpenerDirector.error at 0x00000132900F6AC0>
+               │    └ <urllib.request.OpenerDirector object at 0x00000132A28E1940>
+               └ <urllib.request.HTTPErrorProcessor object at 0x00000132A28E2270>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 533, in error
+    return self._call_chain(*args)
+           │    │            └ ({'default': [<urllib.request.HTTPDefaultErrorHandler object at 0x00000132A28E1D30>], 301: [<urllib.request.HTTPRedirectHandl...
+           │    └ <function OpenerDirector._call_chain at 0x00000132900F68E0>
+           └ <urllib.request.OpenerDirector object at 0x00000132A28E1940>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 466, in _call_chain
+    result = func(*args)
+             │     └ (<urllib.request.Request object at 0x00000132A37C7C50>, <http.client.HTTPResponse object at 0x00000132A3F9A980>, 503, 'Servic...
+             └ <bound method HTTPDefaultErrorHandler.http_error_default of <urllib.request.HTTPDefaultErrorHandler object at 0x00000132A28E1...
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 613, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+          │         │   │         │     │    │     └ <http.client.HTTPResponse object at 0x00000132A3F9A980>
+          │         │   │         │     │    └ <http.client.HTTPMessage object at 0x00000132A7201DB0>
+          │         │   │         │     └ 'Service Unavailable'
+          │         │   │         └ 503
+          │         │   └ <property object at 0x00000132900EB650>
+          │         └ <urllib.request.Request object at 0x00000132A37C7C50>
+          └ <class 'urllib.error.HTTPError'>
+
+urllib.error.HTTPError: HTTP Error 503: Service Unavailable
+2026-08-01 05:10:53 | INFO     | sentiment_analysis.ingestion.scheduler:77 — [finviz] Bulk fetch: 0 tickers updated
+2026-08-01 05:10:53 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:sec_edgar] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&output=atom
+2026-08-01 05:10:54 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Marpai, Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:10:56 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Calisa Acquisition Corp filed 8-K on 2026-07-31.
+2026-08-01 05:10:56 | DEBUG    | sentiment_analysis.ingestion.scheduler:188 — [alerts] Evaluating 1 active alerts.
+2026-08-01 05:10:56 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: ChargePoint Holdings, Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:10:57 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: CDT Equity Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:10:58 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Nixxy, Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:00 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Wetouch Technology Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:00 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Edible Garden AG Inc filed 8-K on 2026-07-31.
+2026-08-01 05:11:01 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Catheter Precision, Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:02 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: BigBear.ai Holdings, Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:03 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: NORTHWEST BIOTHERAPEUTICS INC filed 8-K on 2026-07-31.
+2026-08-01 05:11:04 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Healthcare Realty Trust Inc filed 8-K on 2026-07-31.
+2026-08-01 05:11:05 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Onar Holding Corp filed 8-K on 2026-07-31.
+2026-08-01 05:11:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Plum Acquisition Corp. III filed 8-K on 2026-07-31.
+2026-08-01 05:11:07 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Market Technology Acquisition Corp filed 8-K on 2026-07-31.
+2026-08-01 05:11:08 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: bioAffinity Technologies, Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:09 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Clean Energy Technologies, Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:10 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: MASTEC INC filed 8-K on 2026-07-31.
+2026-08-01 05:11:11 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Oxford Square Capital Corp. filed 8-K on 2026-07-31.
+2026-08-01 05:11:12 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Agriculture & Natural Solutions Acquisition Corp filed 8-K on 2026-07-31.
+2026-08-01 05:11:12 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=de conf=0.71: 8-K - EQUITY RESIDENTIAL (0000906107) (Filer)
+2026-08-01 05:11:13 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: VASO Corp filed 8-K on 2026-07-31.
+2026-08-01 05:11:14 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Virtuix Holdings Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:14 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=111: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=111&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:11:14 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=121: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=121&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:11:14 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=131: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=131&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:11:14 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=141: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=141&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:11:14 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=161: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=161&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:11:14 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=171: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=171&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:11:14 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:323 — [finviz] Base view v=111 returned no data — aborting bulk fetch.
+2026-08-01 05:11:14 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Humacyte, Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:14 | INFO     | sentiment_analysis.ingestion.scheduler:77 — [finviz] Bulk fetch: 0 tickers updated
+2026-08-01 05:11:16 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: NOCERA, INC. filed 8-K on 2026-07-31.
+2026-08-01 05:11:16 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=de conf=0.57: 8-K - FRANKLIN WIRELESS CORP (0000722572) (Filer)
+2026-08-01 05:11:17 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: ATN International, Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:18 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Warner Music Group Corp. filed 8-K on 2026-07-31.
+2026-08-01 05:11:18 | DEBUG    | sentiment_analysis.ingestion.scheduler:188 — [alerts] Evaluating 1 active alerts.
+2026-08-01 05:11:19 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Calidi Biotherapeutics, Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:19 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: MIRA PHARMACEUTICALS, INC. filed 8-K on 2026-07-31.
+2026-08-01 05:11:19 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.57: 8-K - AVALONBAY COMMUNITIES INC (0000915912) (Filer)
+2026-08-01 05:11:20 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Transglobal Management Group, Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:21 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: T1 Energy Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:22 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: STURM RUGER & CO INC filed 8-K on 2026-07-31.
+2026-08-01 05:11:23 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Profusa, Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:24 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: DATZ WORLD HOLDINGS CORP. filed 8-K on 2026-07-31.
+2026-08-01 05:11:25 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Quince Therapeutics, Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:26 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: DELUXE CORP filed 8-K on 2026-07-31.
+2026-08-01 05:11:27 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Precipio, Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:27 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: CO2 Energy Transition Corp. filed 8-K on 2026-07-31.
+2026-08-01 05:11:29 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_edgar] SEC enriched: Cycurion, Inc. filed 8-K on 2026-07-31.
+2026-08-01 05:11:29 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:sec_edgar] Stored 37/40 new articles.
+2026-08-01 05:11:29 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:sec_form4] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom
+2026-08-01 05:11:29 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.71: 4 - Allen Zipporah (0002142412) (Reporting)
+2026-08-01 05:11:30 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Reformation Inc..
+2026-08-01 05:11:31 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Moore Joshua.
+2026-08-01 05:11:32 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Reformation Inc..
+2026-08-01 05:11:33 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Reformation Inc..
+2026-08-01 05:11:34 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of RAUCH STACEY.
+2026-08-01 05:11:34 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=de conf=0.57: 4 - Borenstein Hali (0001795710) (Reporting)
+2026-08-01 05:11:36 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Reformation Inc..
+2026-08-01 05:11:36 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=de conf=0.86: 4 - Kleine Brigitte (0002142128) (Reporting)
+2026-08-01 05:11:37 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Reformation Inc..
+2026-08-01 05:11:38 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Permira VI G.P. Ltd.
+2026-08-01 05:11:39 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of P6 GP Sarl.
+2026-08-01 05:11:40 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Refo SCSp.
+2026-08-01 05:11:41 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Reformation Inc..
+2026-08-01 05:11:42 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Permira VI L.P.1.
+2026-08-01 05:11:43 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Miller Steven Clive.
+2026-08-01 05:11:45 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Reformation Inc..
+2026-08-01 05:11:46 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Tchakarov Ivan.
+2026-08-01 05:11:47 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Reformation Inc..
+2026-08-01 05:11:48 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Neugeborn Yoram.
+2026-08-01 05:11:49 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Global Ship Lease, Inc..
+2026-08-01 05:11:50 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Coyle John Joseph.
+2026-08-01 05:11:51 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Reformation Inc..
+2026-08-01 05:11:52 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Allan David Robert Malcolm.
+2026-08-01 05:11:53 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Virtuix Holdings Inc..
+2026-08-01 05:11:55 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Adnani Amir.
+2026-08-01 05:11:55 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.71: 4 - URANIUM ENERGY CORP (0001334933) (Issuer)
+2026-08-01 05:11:56 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of MUNTER CAMERON.
+2026-08-01 05:11:57 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of CareCloud, Inc..
+2026-08-01 05:11:58 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of KORN BILL.
+2026-08-01 05:11:59 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of CareCloud, Inc..
+2026-08-01 05:12:00 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of Sharnak Lawrence Steven.
+2026-08-01 05:12:01 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of CareCloud, Inc..
+2026-08-01 05:12:03 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of CareCloud, Inc..
+2026-08-01 05:12:04 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of BUSQUET ANNE.
+2026-08-01 05:12:04 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.71: 4/A - Adnani Amir (0001346101) (Reporting)
+2026-08-01 05:12:05 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of URANIUM ENERGY CORP.
+2026-08-01 05:12:05 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.71: 4/A - Adnani Amir (0001346101) (Reporting)
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_form4] SEC enriched: Insider An insider transacted in of URANIUM ENERGY CORP.
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.71: 4/A - Adnani Amir (0001346101) (Reporting)
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:sec_form4] Stored 33/40 new articles.
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:sec_10q] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=10-Q&dateb=&owner=include&count=40&output=atom
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=de conf=0.71: 10-Q - OLENOX INDUSTRIES INC. (0001023994) (Filer)
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.71: 10-Q - DIGITAL REALTY TRUST, L.P. (0001494877) (Filer)
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.71: 10-Q - DIGITAL REALTY TRUST, INC. (0001297996) (Filer)
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=de conf=0.86: 10-Q - Bunker Hill Mining Corp. (0001407583) (Filer)
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.57: 10-Q - PROCORE TECHNOLOGIES, INC. (0001611052) (Filer)
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: Corteva, Inc. filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.71: 10-Q - EIDP, Inc. (0000030554) (Filer)
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: Amerant Bancorp Inc. filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: BLUE OWL CAPITAL INC. filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: HPS Net Lease Income REIT filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=de conf=0.57: 10-Q - ROPER TECHNOLOGIES INC (0000882835) (Filer)
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.57: 10-Q - ILLUMINA, INC. (0001110803) (Filer)
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: Dime Commercial Bancshares, Inc. /NY/ filed quarterly report (10-Q) on 2026-07-3
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.71: 10-Q - ALTEX INDUSTRIES INC (0000775057) (Filer)
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: Blue Star Foods Corp. filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: ASBURY AUTOMOTIVE GROUP INC filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.71: 10-Q - ADAMAS TRUST, INC. (0001273685) (Filer)
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.57: 10-Q - BANK OF AMERICA CORP /DE/ (0000070858) (Filer)
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: TRUIST FINANCIAL CORP filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=de conf=0.71: 10-Q - HOULIHAN LOKEY, INC. (0001302215) (Filer)
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.57: 10-Q - ALLIANCEBERNSTEIN L.P. (0001109448) (Filer)
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.57: 10-Q - TXNM ENERGY INC (0001108426) (Filer)
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.57: 10-Q - PUBLIC SERVICE CO OF NEW MEXICO (0000081023) (Filer)
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: TEXAS NEW MEXICO POWER CO filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: Meritage Homes CORP filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: nVent Electric plc filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: TETRA TECH INC filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: Elme Communities filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: MSA Safety Inc filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: AUTONATION, INC. filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:06 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=de conf=0.57: 10-Q - ALLIANCEBERNSTEIN HOLDING L.P. (0000825313) (Filer)
+2026-08-01 05:12:06 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: Bank of New York Mellon Corp filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:07 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.71: 10-Q - Regional Management Corp. (0001519401) (Filer)
+2026-08-01 05:12:07 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=de conf=0.57: 10-Q - FUSE GROUP HOLDING INC. (0001636051) (Filer)
+2026-08-01 05:12:07 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: Extra Space Storage Inc. filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:07 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: First Western Financial Inc filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:07 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: CubeSmart, L.P. filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:07 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_10q] SEC enriched: CubeSmart filed quarterly report (10-Q) on 2026-07-31.
+2026-08-01 05:12:07 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=de conf=0.71: 10-Q - Artisan Partners Asset Management Inc. (0001517302) (
+2026-08-01 05:12:07 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=de conf=0.86: 10-Q - FEDERATED HERMES, INC. (0001056288) (Filer)
+2026-08-01 05:12:07 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:sec_10q] Stored 20/40 new articles.
+2026-08-01 05:12:07 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:sec_s1] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=S-1&dateb=&owner=include&count=40&output=atom
+2026-08-01 05:12:08 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_s1] SEC enriched: BIOVIE INC. filed IPO registration (S-1) on 2026-07-31.
+2026-08-01 05:12:08 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=de conf=1.00: S-1/A - Bitwise NEAR ETF (0002067111) (Filer)
+2026-08-01 05:12:08 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=de conf=0.57: S-1 - DATA I/O CORP (0000351998) (Filer)
+2026-08-01 05:12:08 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_s1] SEC enriched: Flash Sports & Media Holdings, Inc. filed IPO registration (S-1) on 2026-07-31.
+2026-08-01 05:12:08 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=de conf=1.00: S-1 - VivoSim Labs, INC. (0001497253) (Filer)
+2026-08-01 05:12:08 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_s1] SEC enriched: Agassi Sports Entertainment Corp. filed IPO registration (S-1) on 2026-07-31.
+2026-08-01 05:12:08 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_s1] SEC enriched: TCGX Acquisition Corp. filed IPO registration (S-1) on 2026-07-31.
+2026-08-01 05:12:08 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_s1] SEC enriched: SharonAI Holdings Inc. filed IPO registration (S-1) on 2026-07-31.
+2026-08-01 05:12:08 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_s1] SEC enriched: Creatd, Inc. filed IPO registration (S-1) on 2026-07-31.
+2026-08-01 05:12:08 | DEBUG    | sentiment_analysis.ingestion.rss_ingestor:441 — [rss:sec_s1] SEC enriched: GridAI Technologies Corp. filed IPO registration (S-1) on 2026-07-31.
+2026-08-01 05:12:08 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.71: S-1 - SHF Holdings, Inc. (0001854963) (Filer)
+2026-08-01 05:12:08 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.71: S-1/A - SHF Holdings, Inc. (0001854963) (Filer)
+2026-08-01 05:12:08 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.71: S-1/A - POWERDYNE INTERNATIONAL, INC. (0001435617) (Filer)
+2026-08-01 05:12:08 | ERROR    | sentiment_analysis.ingestion.rss_ingestor:496 — [rss:sec_s1] Unexpected error: (sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "uq_rss_articles_url"
+DETAIL:  Key (url)=(https://www.sec.gov/Archives/edgar/data/1580149/000152013826000299/0001520138-26-000299-index.htm) already exists.
+[SQL: INSERT INTO rss_articles (title, summary, url, published_at, source_name, tickers, raw_json, cleaned_text, sentiment_label, sentiment_score, sentiment_confidence, sentiment_analyzed_at, primary_ticker) VALUES ($1::VARCHAR, $2::VARCHAR, $3::VARCHAR, $4::TIMESTAMP WITH TIME ZONE, $5::VARCHAR, $6::VARCHAR[], $7::JSONB, $8::VARCHAR, $9::VARCHAR, $10::FLOAT, $11::FLOAT, $12::TIMESTAMP WITH TIME ZONE, $13::VARCHAR) RETURNING rss_articles.id, rss_articles.ingested_at]
+[parameters: ('S-1 — BIOVIE INC.', 'BIOVIE INC. filed IPO registration (S-1) on 2026-07-31.', 'https://www.sec.gov/Archives/edgar/data/1580149/000152013826000299/0001520138-26-000299-index.htm', datetime.datetime(2026, 7, 31, 21, 29, 17, tzinfo=datetime.timezone.utc), 'sec_s1', [], '{"title": "S-1 \\u2014 BIOVIE INC.", "summary": "BIOVIE INC. filed IPO registration (S-1) on 2026-07-31.", "url": "https://www.sec.gov/Archives/edgar/data/1580149/000152013826000299/0001520138-26-000299-index.htm", "published": "", "source": "sec_s1", "tags": ["S-1/A"]}', None, None, None, None, None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+Traceback (most recent call last):
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 550, in _prepare_and_execute
+    self._rows = deque(await prepared_stmt.fetch(*parameters))
+    │    │       │           │             │      └ ('S-1 — BIOVIE INC.', 'BIOVIE INC. filed IPO registration (S-1) on 2026-07-31.', 'https://www.sec.gov/Archives/edgar/data/158...
+    │    │       │           │             └ <function PreparedStatement.fetch at 0x00000132A27C3920>
+    │    │       │           └ <asyncpg.prepared_stmt.PreparedStatement object at 0x00000132A562E390>
+    │    │       └ <class 'collections.deque'>
+    │    └ <member '_rows' of 'AsyncAdapt_asyncpg_cursor' objects>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A5641060>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\asyncpg\prepared_stmt.py", line 177, in fetch
+    data = await self.__bind_execute(args, 0, timeout)
+                 │                   │        └ None
+                 │                   └ ('S-1 — BIOVIE INC.', 'BIOVIE INC. filed IPO registration (S-1) on 2026-07-31.', 'https://www.sec.gov/Archives/edgar/data/158...
+                 └ <asyncpg.prepared_stmt.PreparedStatement object at 0x00000132A562E390>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\asyncpg\prepared_stmt.py", line 268, in __bind_execute
+    data, status, _ = await self.__do_execute(
+                            └ <asyncpg.prepared_stmt.PreparedStatement object at 0x00000132A562E390>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\asyncpg\prepared_stmt.py", line 257, in __do_execute
+    return await executor(protocol)
+                 │        └ <asyncpg.protocol.protocol.Protocol object at 0x00000132A3745FF0>
+                 └ <function PreparedStatement.__bind_execute.<locals>.<lambda> at 0x00000132A7202020>
+  File "asyncpg/protocol/protocol.pyx", line 205, in bind_execute
+    return await waiter
+
+asyncpg.exceptions.UniqueViolationError: duplicate key value violates unique constraint "uq_rss_articles_url"
+DETAIL:  Key (url)=(https://www.sec.gov/Archives/edgar/data/1580149/000152013826000299/0001520138-26-000299-index.htm) already exists.
+
+
+The above exception was the direct cause of the following exception:
+
+
+Traceback (most recent call last):
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2127, in _exec_insertmany_context
+    dialect.do_execute(
+    │       └ <function DefaultDialect.do_execute at 0x00000132A11AA520>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.PGDialect_asyncpg object at 0x00000132A271DFD0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    │      │       │          └ ('S-1 — BIOVIE INC.', 'BIOVIE INC. filed IPO registration (S-1) on 2026-07-31.', 'https://www.sec.gov/Archives/edgar/data/158...
+    │      │       └ 'INSERT INTO rss_articles (title, summary, url, published_at, source_name, tickers, raw_json, cleaned_text, sentiment_label, ...
+    │      └ <function AsyncAdapt_asyncpg_cursor.execute at 0x00000132A269F380>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A5641060>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 585, in execute
+    self._adapt_connection.await_(
+    │    └ <member '_adapt_connection' of 'AsyncAdapt_asyncpg_cursor' objects>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A5641060>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           │       │             └ <coroutine object AsyncAdapt_asyncpg_cursor._prepare_and_execute at 0x00000132A38D3760>
+           │       └ <attribute 'parent' of 'greenlet.greenlet' objects>
+           └ <_AsyncIoGreenlet object at 0x00000132A55666C0 (otid=0x000001329EDEE470) dead>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+                  └ <coroutine object AsyncAdapt_asyncpg_connection._rollback_and_discard at 0x00000132A38E28E0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 563, in _prepare_and_execute
+    self._handle_exception(error)
+    │    └ <function AsyncAdapt_asyncpg_cursor._handle_exception at 0x00000132A269F1A0>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A5641060>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 513, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+    │    │                                   └ UniqueViolationError('duplicate key value violates unique constraint "uq_rss_articles_url"')
+    │    └ <member '_adapt_connection' of 'AsyncAdapt_asyncpg_cursor' objects>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A5641060>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+          │                     └ UniqueViolationError('duplicate key value violates unique constraint "uq_rss_articles_url"')
+          └ IntegrityError('<class \'asyncpg.exceptions.UniqueViolationError\'>: duplicate key value violates unique constraint "uq_rss_a...
+
+sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.IntegrityError: <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "uq_rss_articles_url"
+DETAIL:  Key (url)=(https://www.sec.gov/Archives/edgar/data/1580149/000152013826000299/0001520138-26-000299-index.htm) already exists.
+
+
+The above exception was the direct cause of the following exception:
+
+
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 350, in <module>
+    main()
+    └ <function main at 0x00000132A3899C60>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 337, in main
+    asyncio.run(_run_pipeline(dashboard_proc_ref))
+    │       │   │             └ [<Popen: returncode: None args: ['C:\\Users\\talak\\Downloads\\Stock Sentimen...>]
+    │       │   └ <function _run_pipeline at 0x00000132A3899B20>
+    │       └ <function run at 0x000001328F0667A0>
+    └ <module 'asyncio' from 'C:\\Users\\talak\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 196, in run
+    return runner.run(main)
+           │      │   └ <coroutine object _run_pipeline at 0x00000132A38B1A80>
+           │      └ <function Runner.run at 0x000001328F0E6200>
+           └ <asyncio.runners.Runner object at 0x000001328F2BCAD0>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 119, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<_run_pipeline() running at C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x000001328F0E3D80>
+           │    └ <ProactorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x000001328F2BCAD0>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x000001328F0E3CE0>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x000001328F0E5B20>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 2060, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x000001328F067600>
+    └ <Handle Task.task_wakeup()>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup()>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup()>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup()>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 219, in _run_pipeline
+    scheduler = await start_scheduler()
+                      └ <function start_scheduler at 0x00000132A38999E0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\scheduler.py", line 456, in start_scheduler
+    await _job_rss()
+          └ <function _job_rss at 0x00000132A02D3740>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\scheduler.py", line 54, in _job_rss
+    await _get_rss().run()
+          └ <function _get_rss at 0x000001328F38B7E0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 357, in run
+    await self._process_feed(source_name, feed_url)
+          │    │             │            └ 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=S-1&dateb=&owner=include&count=40&output=atom'
+          │    │             └ 'sec_s1'
+          │    └ <function RSSIngestor._process_feed at 0x00000132A298C680>
+          └ <sentiment_analysis.ingestion.rss_ingestor.RSSIngestor object at 0x00000132A38D1A90>
+
+> File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 403, in _process_feed
+    async with get_async_session() as session:
+               │                      └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x00000132A561E150>
+               └ <function get_async_session at 0x00000132A2822FC0>
+
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 221, in __aexit__
+    await anext(self.gen)
+                │    └ <async_generator object get_async_session at 0x00000132A28BD1C0>
+                └ <contextlib._AsyncGeneratorContextManager object at 0x00000132A561D550>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\storage\database.py", line 64, in get_async_session
+    await session.commit()
+          │       └ <function AsyncSession.commit at 0x00000132A158BEC0>
+          └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x00000132A561E150>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py", line 999, in commit
+    await greenlet_spawn(self.sync_session.commit)
+          │              │    │            └ <function Session.commit at 0x00000132A14BBB00>
+          │              │    └ <sqlalchemy.orm.session.Session object at 0x00000132A38E6A80>
+          │              └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x00000132A561E150>
+          └ <function greenlet_spawn at 0x00000132A0C19580>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 203, in greenlet_spawn
+    result = context.switch(value)
+             │       │      └ None
+             │       └ <method 'switch' of 'greenlet.greenlet' objects>
+             └ <_AsyncIoGreenlet object at 0x00000132A55666C0 (otid=0x000001329EDEE470) dead>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2034, in commit
+    trans.commit(_to_root=True)
+    │     └ <function SessionTransaction.commit at 0x00000132A14BAAC0>
+    └ <sqlalchemy.orm.session.SessionTransaction object at 0x00000132A38CCC90>
+  File "<string>", line 2, in commit
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                │  │      │      └ {'_to_root': True}
+                │  │      └ ()
+                │  └ <sqlalchemy.orm.session.SessionTransaction object at 0x00000132A38CCC90>
+                └ <function SessionTransaction.commit at 0x00000132A14BAA20>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 1315, in commit
+    self._prepare_impl()
+    │    └ <function SessionTransaction._prepare_impl at 0x00000132A14BA8E0>
+    └ <sqlalchemy.orm.session.SessionTransaction object at 0x00000132A38CCC90>
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                │  │      │      └ {}
+                │  │      └ ()
+                │  └ <sqlalchemy.orm.session.SessionTransaction object at 0x00000132A38CCC90>
+                └ <function SessionTransaction._prepare_impl at 0x00000132A14BA840>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 1290, in _prepare_impl
+    self.session.flush()
+    │    │       └ <function Session.flush at 0x00000132A14C6A20>
+    │    └ <sqlalchemy.orm.session.Session object at 0x00000132A38E6A80>
+    └ <sqlalchemy.orm.session.SessionTransaction object at 0x00000132A38CCC90>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4352, in flush
+    self._flush(objects)
+    │    │      └ None
+    │    └ <function Session._flush at 0x00000132A14C6C00>
+    └ <sqlalchemy.orm.session.Session object at 0x00000132A38E6A80>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4487, in _flush
+    with util.safe_reraise():
+         │    └ <class 'sqlalchemy.util.langhelpers.safe_reraise'>
+         └ <module 'sqlalchemy.util' from 'C:\\Users\\talak\\Downloads\\Stock Sentiment\\venv\\Lib\\site-packages\\sqlalchemy\\util\\__i...
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+          │         │              └ <traceback object at 0x00000132A71744C0>
+          │         └ <method 'with_traceback' of 'BaseException' objects>
+          └ IntegrityError('(sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class \'asyncpg.exceptions.UniqueViolationError\'>: ...
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4448, in _flush
+    flush_context.execute()
+    │             └ <function UOWTransaction.execute at 0x00000132A145A200>
+    └ <sqlalchemy.orm.unitofwork.UOWTransaction object at 0x00000132A37BFB70>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 465, in execute
+    rec.execute(self)
+    │   │       └ <sqlalchemy.orm.unitofwork.UOWTransaction object at 0x00000132A37BFB70>
+    │   └ <function SaveUpdateAll.execute at 0x00000132A145AD40>
+    └ SaveUpdateAll(Mapper[RSSArticle(rss_articles)])
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 641, in execute
+    util.preloaded.orm_persistence.save_obj(
+    │    │         │               └ <function save_obj at 0x00000132A147D9E0>
+    │    │         └ <module 'sqlalchemy.orm.persistence' from 'C:\\Users\\talak\\Downloads\\Stock Sentiment\\venv\\Lib\\site-packages\\sqlalchemy...
+    │    └ <module 'sqlalchemy.util.preloaded' from 'C:\\Users\\talak\\Downloads\\Stock Sentiment\\venv\\Lib\\site-packages\\sqlalchemy\...
+    └ <module 'sqlalchemy.util' from 'C:\\Users\\talak\\Downloads\\Stock Sentiment\\venv\\Lib\\site-packages\\sqlalchemy\\util\\__i...
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 94, in save_obj
+    _emit_insert_statements(
+    └ <function _emit_insert_statements at 0x00000132A14B0180>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1144, in _emit_insert_statements
+    result = connection.execute(
+             │          └ <function Connection.execute at 0x00000132A10F6AC0>
+             └ <sqlalchemy.engine.base.Connection object at 0x00000132A37C7DD0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+           └ <bound method ClauseElement._execute_on_connection of <sqlalchemy.sql.dml.Insert object at 0x00000132A56295B0>>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           │          └ <function Connection._execute_clauseelement at 0x00000132A10F6DE0>
+           └ <sqlalchemy.engine.base.Connection object at 0x00000132A37C7DD0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+          │    └ <function Connection._execute_context at 0x00000132A10F6FC0>
+          └ <sqlalchemy.engine.base.Connection object at 0x00000132A37C7DD0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_insertmany_context(dialect, context)
+           │    │                        │        └ <sqlalchemy.dialects.postgresql.asyncpg.PGExecutionContext_asyncpg object at 0x00000132A3901D50>
+           │    │                        └ <sqlalchemy.dialects.postgresql.asyncpg.PGDialect_asyncpg object at 0x00000132A271DFD0>
+           │    └ <function Connection._exec_insertmany_context at 0x00000132A10F7100>
+           └ <sqlalchemy.engine.base.Connection object at 0x00000132A37C7DD0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2135, in _exec_insertmany_context
+    self._handle_dbapi_exception(
+    │    └ <function Connection._handle_dbapi_exception at 0x00000132A10F72E0>
+    └ <sqlalchemy.engine.base.Connection object at 0x00000132A37C7DD0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+          │                    │              │                 └ IntegrityError('<class \'asyncpg.exceptions.UniqueViolationError\'>: duplicate key value violates unique constraint "uq_rss_a...
+          │                    │              └ (<class 'sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.IntegrityError'>, IntegrityError('<class \'asyncpg.e...
+          │                    └ <method 'with_traceback' of 'BaseException' objects>
+          └ IntegrityError('(sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class \'asyncpg.exceptions.UniqueViolationError\'>: ...
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2127, in _exec_insertmany_context
+    dialect.do_execute(
+    │       └ <function DefaultDialect.do_execute at 0x00000132A11AA520>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.PGDialect_asyncpg object at 0x00000132A271DFD0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    │      │       │          └ ('S-1 — BIOVIE INC.', 'BIOVIE INC. filed IPO registration (S-1) on 2026-07-31.', 'https://www.sec.gov/Archives/edgar/data/158...
+    │      │       └ 'INSERT INTO rss_articles (title, summary, url, published_at, source_name, tickers, raw_json, cleaned_text, sentiment_label, ...
+    │      └ <function AsyncAdapt_asyncpg_cursor.execute at 0x00000132A269F380>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A5641060>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 585, in execute
+    self._adapt_connection.await_(
+    │    └ <member '_adapt_connection' of 'AsyncAdapt_asyncpg_cursor' objects>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A5641060>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           │       │             └ <coroutine object AsyncAdapt_asyncpg_cursor._prepare_and_execute at 0x00000132A38D3760>
+           │       └ <attribute 'parent' of 'greenlet.greenlet' objects>
+           └ <_AsyncIoGreenlet object at 0x00000132A55666C0 (otid=0x000001329EDEE470) dead>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+                  └ <coroutine object AsyncAdapt_asyncpg_connection._rollback_and_discard at 0x00000132A38E28E0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 563, in _prepare_and_execute
+    self._handle_exception(error)
+    │    └ <function AsyncAdapt_asyncpg_cursor._handle_exception at 0x00000132A269F1A0>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A5641060>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 513, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+    │    │                                   └ UniqueViolationError('duplicate key value violates unique constraint "uq_rss_articles_url"')
+    │    └ <member '_adapt_connection' of 'AsyncAdapt_asyncpg_cursor' objects>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A5641060>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+          │                     └ UniqueViolationError('duplicate key value violates unique constraint "uq_rss_articles_url"')
+          └ IntegrityError('<class \'asyncpg.exceptions.UniqueViolationError\'>: duplicate key value violates unique constraint "uq_rss_a...
+
+sqlalchemy.exc.IntegrityError: (sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "uq_rss_articles_url"
+DETAIL:  Key (url)=(https://www.sec.gov/Archives/edgar/data/1580149/000152013826000299/0001520138-26-000299-index.htm) already exists.
+[SQL: INSERT INTO rss_articles (title, summary, url, published_at, source_name, tickers, raw_json, cleaned_text, sentiment_label, sentiment_score, sentiment_confidence, sentiment_analyzed_at, primary_ticker) VALUES ($1::VARCHAR, $2::VARCHAR, $3::VARCHAR, $4::TIMESTAMP WITH TIME ZONE, $5::VARCHAR, $6::VARCHAR[], $7::JSONB, $8::VARCHAR, $9::VARCHAR, $10::FLOAT, $11::FLOAT, $12::TIMESTAMP WITH TIME ZONE, $13::VARCHAR) RETURNING rss_articles.id, rss_articles.ingested_at]
+[parameters: ('S-1 — BIOVIE INC.', 'BIOVIE INC. filed IPO registration (S-1) on 2026-07-31.', 'https://www.sec.gov/Archives/edgar/data/1580149/000152013826000299/0001520138-26-000299-index.htm', datetime.datetime(2026, 7, 31, 21, 29, 17, tzinfo=datetime.timezone.utc), 'sec_s1', [], '{"title": "S-1 \\u2014 BIOVIE INC.", "summary": "BIOVIE INC. filed IPO registration (S-1) on 2026-07-31.", "url": "https://www.sec.gov/Archives/edgar/data/1580149/000152013826000299/0001520138-26-000299-index.htm", "published": "", "source": "sec_s1", "tags": ["S-1/A"]}', None, None, None, None, None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-08-01 05:12:08 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:sec_sc13g] Fetching https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=SC+13G&dateb=&owner=include&count=40&output=atom
+2026-08-01 05:12:09 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:sec_sc13g] Stored 0/0 new articles.
+2026-08-01 05:12:09 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:fda] Fetching https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml
+2026-08-01 05:12:09 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:fda] Stored 0/20 new articles.
+2026-08-01 05:12:09 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:fed_reserve] Fetching https://www.federalreserve.gov/feeds/press_all.xml
+2026-08-01 05:12:09 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.58: Federal Reserve issues FOMC statement
+2026-08-01 05:12:09 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:fed_reserve] Stored 0/20 new articles.
+2026-08-01 05:12:09 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:fed_reserve_monetary] Fetching https://www.federalreserve.gov/feeds/press_monetary.xml
+2026-08-01 05:12:09 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.58: Federal Reserve issues FOMC statement
+2026-08-01 05:12:09 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.58: Federal Reserve issues FOMC statement
+2026-08-01 05:12:09 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.58: Federal Reserve issues FOMC statement
+2026-08-01 05:12:09 | INFO     | sentiment_analysis.ingestion.rss_ingestor:117 — Skipped non-English article — lang=en conf=0.58: Federal Reserve issues FOMC statement
+2026-08-01 05:12:09 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:fed_reserve_monetary] Stored 0/15 new articles.
+2026-08-01 05:12:09 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:ftc_news] Fetching https://www.ftc.gov/feeds/press-release.xml
+2026-08-01 05:12:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:ftc_news] Stored 0/10 new articles.
+2026-08-01 05:12:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:techcrunch] Fetching https://techcrunch.com/feed/
+2026-08-01 05:12:10 | ERROR    | sentiment_analysis.ingestion.rss_ingestor:496 — [rss:techcrunch] Unexpected error: (sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "uq_rss_articles_url"
+DETAIL:  Key (url)=(https://techcrunch.com/2026/07/31/openai-reportedly-finds-evidence-that-more-of-its-agents-ran-amok/) already exists.
+[SQL: INSERT INTO rss_articles (title, summary, url, published_at, source_name, tickers, raw_json, cleaned_text, sentiment_label, sentiment_score, sentiment_confidence, sentiment_analyzed_at, primary_ticker) VALUES ($1::VARCHAR, $2::VARCHAR, $3::VARCHAR, $4::TIMESTAMP WITH TIME ZONE, $5::VARCHAR, $6::VARCHAR[], $7::JSONB, $8::VARCHAR, $9::VARCHAR, $10::FLOAT, $11::FLOAT, $12::TIMESTAMP WITH TIME ZONE, $13::VARCHAR) RETURNING rss_articles.id, rss_articles.ingested_at]
+[parameters: ('OpenAI reportedly finds evidence that more of its agents ran amok', 'OpenAI has reportedly found evidence of additional agent misbehavior as it looks into the incident that occurred with Hugging Face.', 'https://techcrunch.com/2026/07/31/openai-reportedly-finds-evidence-that-more-of-its-agents-ran-amok/', datetime.datetime(2026, 7, 31, 22, 47, 26, tzinfo=datetime.timezone.utc), 'techcrunch', [], '{"title": "OpenAI reportedly finds evidence that more of its agents ran amok", "summary": "OpenAI has reportedly found evidence of additional agent m ... (163 characters truncated) ... -its-agents-ran-amok/", "published": "Fri, 31 Jul 2026 22:47:26 +0000", "source": "techcrunch", "tags": ["AI", "Hugging Face", "In Brief", "OpenAI"]}', None, None, None, None, None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+Traceback (most recent call last):
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 550, in _prepare_and_execute
+    self._rows = deque(await prepared_stmt.fetch(*parameters))
+    │    │       │           │             │      └ ('OpenAI reportedly finds evidence that more of its agents ran amok', 'OpenAI has reportedly found evidence of additional age...
+    │    │       │           │             └ <function PreparedStatement.fetch at 0x00000132A27C3920>
+    │    │       │           └ <asyncpg.prepared_stmt.PreparedStatement object at 0x00000132A393DD00>
+    │    │       └ <class 'collections.deque'>
+    │    └ <member '_rows' of 'AsyncAdapt_asyncpg_cursor' objects>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A55FE500>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\asyncpg\prepared_stmt.py", line 177, in fetch
+    data = await self.__bind_execute(args, 0, timeout)
+                 │                   │        └ None
+                 │                   └ ('OpenAI reportedly finds evidence that more of its agents ran amok', 'OpenAI has reportedly found evidence of additional age...
+                 └ <asyncpg.prepared_stmt.PreparedStatement object at 0x00000132A393DD00>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\asyncpg\prepared_stmt.py", line 268, in __bind_execute
+    data, status, _ = await self.__do_execute(
+                            └ <asyncpg.prepared_stmt.PreparedStatement object at 0x00000132A393DD00>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\asyncpg\prepared_stmt.py", line 257, in __do_execute
+    return await executor(protocol)
+                 │        └ <asyncpg.protocol.protocol.Protocol object at 0x00000132A02162B0>
+                 └ <function PreparedStatement.__bind_execute.<locals>.<lambda> at 0x00000132A77D8040>
+  File "asyncpg/protocol/protocol.pyx", line 205, in bind_execute
+    return await waiter
+
+asyncpg.exceptions.UniqueViolationError: duplicate key value violates unique constraint "uq_rss_articles_url"
+DETAIL:  Key (url)=(https://techcrunch.com/2026/07/31/openai-reportedly-finds-evidence-that-more-of-its-agents-ran-amok/) already exists.
+
+
+The above exception was the direct cause of the following exception:
+
+
+Traceback (most recent call last):
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2127, in _exec_insertmany_context
+    dialect.do_execute(
+    │       └ <function DefaultDialect.do_execute at 0x00000132A11AA520>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.PGDialect_asyncpg object at 0x00000132A271DFD0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    │      │       │          └ ('OpenAI reportedly finds evidence that more of its agents ran amok', 'OpenAI has reportedly found evidence of additional age...
+    │      │       └ 'INSERT INTO rss_articles (title, summary, url, published_at, source_name, tickers, raw_json, cleaned_text, sentiment_label, ...
+    │      └ <function AsyncAdapt_asyncpg_cursor.execute at 0x00000132A269F380>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A55FE500>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 585, in execute
+    self._adapt_connection.await_(
+    │    └ <member '_adapt_connection' of 'AsyncAdapt_asyncpg_cursor' objects>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A55FE500>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           │       │             └ <coroutine object AsyncAdapt_asyncpg_cursor._prepare_and_execute at 0x00000132A38D38B0>
+           │       └ <attribute 'parent' of 'greenlet.greenlet' objects>
+           └ <_AsyncIoGreenlet object at 0x00000132A7176440 (otid=0x000001329EDEE470) dead>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+                  └ <coroutine object AsyncAdapt_asyncpg_connection._rollback_and_discard at 0x00000132A38E3440>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 563, in _prepare_and_execute
+    self._handle_exception(error)
+    │    └ <function AsyncAdapt_asyncpg_cursor._handle_exception at 0x00000132A269F1A0>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A55FE500>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 513, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+    │    │                                   └ UniqueViolationError('duplicate key value violates unique constraint "uq_rss_articles_url"')
+    │    └ <member '_adapt_connection' of 'AsyncAdapt_asyncpg_cursor' objects>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A55FE500>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+          │                     └ UniqueViolationError('duplicate key value violates unique constraint "uq_rss_articles_url"')
+          └ IntegrityError('<class \'asyncpg.exceptions.UniqueViolationError\'>: duplicate key value violates unique constraint "uq_rss_a...
+
+sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.IntegrityError: <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "uq_rss_articles_url"
+DETAIL:  Key (url)=(https://techcrunch.com/2026/07/31/openai-reportedly-finds-evidence-that-more-of-its-agents-ran-amok/) already exists.
+
+
+The above exception was the direct cause of the following exception:
+
+
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 350, in <module>
+    main()
+    └ <function main at 0x00000132A3899C60>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 337, in main
+    asyncio.run(_run_pipeline(dashboard_proc_ref))
+    │       │   │             └ [<Popen: returncode: None args: ['C:\\Users\\talak\\Downloads\\Stock Sentimen...>]
+    │       │   └ <function _run_pipeline at 0x00000132A3899B20>
+    │       └ <function run at 0x000001328F0667A0>
+    └ <module 'asyncio' from 'C:\\Users\\talak\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 196, in run
+    return runner.run(main)
+           │      │   └ <coroutine object _run_pipeline at 0x00000132A38B1A80>
+           │      └ <function Runner.run at 0x000001328F0E6200>
+           └ <asyncio.runners.Runner object at 0x000001328F2BCAD0>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 119, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<_run_pipeline() running at C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x000001328F0E3D80>
+           │    └ <ProactorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x000001328F2BCAD0>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x000001328F0E3CE0>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x000001328F0E5B20>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 2060, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x000001328F067600>
+    └ <Handle Task.task_wakeup()>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup()>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup()>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup()>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 219, in _run_pipeline
+    scheduler = await start_scheduler()
+                      └ <function start_scheduler at 0x00000132A38999E0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\scheduler.py", line 456, in start_scheduler
+    await _job_rss()
+          └ <function _job_rss at 0x00000132A02D3740>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\scheduler.py", line 54, in _job_rss
+    await _get_rss().run()
+          └ <function _get_rss at 0x000001328F38B7E0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 357, in run
+    await self._process_feed(source_name, feed_url)
+          │    │             │            └ 'https://techcrunch.com/feed/'
+          │    │             └ 'techcrunch'
+          │    └ <function RSSIngestor._process_feed at 0x00000132A298C680>
+          └ <sentiment_analysis.ingestion.rss_ingestor.RSSIngestor object at 0x00000132A38D1A90>
+
+> File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 403, in _process_feed
+    async with get_async_session() as session:
+               │                      └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x00000132A7205A30>
+               └ <function get_async_session at 0x00000132A2822FC0>
+
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 221, in __aexit__
+    await anext(self.gen)
+                │    └ <async_generator object get_async_session at 0x00000132A38C09E0>
+                └ <contextlib._AsyncGeneratorContextManager object at 0x00000132A56081A0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\storage\database.py", line 64, in get_async_session
+    await session.commit()
+          │       └ <function AsyncSession.commit at 0x00000132A158BEC0>
+          └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x00000132A7205A30>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py", line 999, in commit
+    await greenlet_spawn(self.sync_session.commit)
+          │              │    │            └ <function Session.commit at 0x00000132A14BBB00>
+          │              │    └ <sqlalchemy.orm.session.Session object at 0x00000132A38E5F40>
+          │              └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x00000132A7205A30>
+          └ <function greenlet_spawn at 0x00000132A0C19580>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 203, in greenlet_spawn
+    result = context.switch(value)
+             │       │      └ None
+             │       └ <method 'switch' of 'greenlet.greenlet' objects>
+             └ <_AsyncIoGreenlet object at 0x00000132A7176440 (otid=0x000001329EDEE470) dead>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2034, in commit
+    trans.commit(_to_root=True)
+    │     └ <function SessionTransaction.commit at 0x00000132A14BAAC0>
+    └ <sqlalchemy.orm.session.SessionTransaction object at 0x00000132A38CE6D0>
+  File "<string>", line 2, in commit
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                │  │      │      └ {'_to_root': True}
+                │  │      └ ()
+                │  └ <sqlalchemy.orm.session.SessionTransaction object at 0x00000132A38CE6D0>
+                └ <function SessionTransaction.commit at 0x00000132A14BAA20>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 1315, in commit
+    self._prepare_impl()
+    │    └ <function SessionTransaction._prepare_impl at 0x00000132A14BA8E0>
+    └ <sqlalchemy.orm.session.SessionTransaction object at 0x00000132A38CE6D0>
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                │  │      │      └ {}
+                │  │      └ ()
+                │  └ <sqlalchemy.orm.session.SessionTransaction object at 0x00000132A38CE6D0>
+                └ <function SessionTransaction._prepare_impl at 0x00000132A14BA840>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 1290, in _prepare_impl
+    self.session.flush()
+    │    │       └ <function Session.flush at 0x00000132A14C6A20>
+    │    └ <sqlalchemy.orm.session.Session object at 0x00000132A38E5F40>
+    └ <sqlalchemy.orm.session.SessionTransaction object at 0x00000132A38CE6D0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4352, in flush
+    self._flush(objects)
+    │    │      └ None
+    │    └ <function Session._flush at 0x00000132A14C6C00>
+    └ <sqlalchemy.orm.session.Session object at 0x00000132A38E5F40>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4487, in _flush
+    with util.safe_reraise():
+         │    └ <class 'sqlalchemy.util.langhelpers.safe_reraise'>
+         └ <module 'sqlalchemy.util' from 'C:\\Users\\talak\\Downloads\\Stock Sentiment\\venv\\Lib\\site-packages\\sqlalchemy\\util\\__i...
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+          │         │              └ <traceback object at 0x00000132A7175240>
+          │         └ <method 'with_traceback' of 'BaseException' objects>
+          └ IntegrityError('(sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class \'asyncpg.exceptions.UniqueViolationError\'>: ...
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4448, in _flush
+    flush_context.execute()
+    │             └ <function UOWTransaction.execute at 0x00000132A145A200>
+    └ <sqlalchemy.orm.unitofwork.UOWTransaction object at 0x00000132A7211F40>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 465, in execute
+    rec.execute(self)
+    │   │       └ <sqlalchemy.orm.unitofwork.UOWTransaction object at 0x00000132A7211F40>
+    │   └ <function SaveUpdateAll.execute at 0x00000132A145AD40>
+    └ SaveUpdateAll(Mapper[RSSArticle(rss_articles)])
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 641, in execute
+    util.preloaded.orm_persistence.save_obj(
+    │    │         │               └ <function save_obj at 0x00000132A147D9E0>
+    │    │         └ <module 'sqlalchemy.orm.persistence' from 'C:\\Users\\talak\\Downloads\\Stock Sentiment\\venv\\Lib\\site-packages\\sqlalchemy...
+    │    └ <module 'sqlalchemy.util.preloaded' from 'C:\\Users\\talak\\Downloads\\Stock Sentiment\\venv\\Lib\\site-packages\\sqlalchemy\...
+    └ <module 'sqlalchemy.util' from 'C:\\Users\\talak\\Downloads\\Stock Sentiment\\venv\\Lib\\site-packages\\sqlalchemy\\util\\__i...
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 94, in save_obj
+    _emit_insert_statements(
+    └ <function _emit_insert_statements at 0x00000132A14B0180>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1144, in _emit_insert_statements
+    result = connection.execute(
+             │          └ <function Connection.execute at 0x00000132A10F6AC0>
+             └ <sqlalchemy.engine.base.Connection object at 0x00000132A55C5850>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+           └ <bound method ClauseElement._execute_on_connection of <sqlalchemy.sql.dml.Insert object at 0x00000132A77C1760>>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           │          └ <function Connection._execute_clauseelement at 0x00000132A10F6DE0>
+           └ <sqlalchemy.engine.base.Connection object at 0x00000132A55C5850>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+          │    └ <function Connection._execute_context at 0x00000132A10F6FC0>
+          └ <sqlalchemy.engine.base.Connection object at 0x00000132A55C5850>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_insertmany_context(dialect, context)
+           │    │                        │        └ <sqlalchemy.dialects.postgresql.asyncpg.PGExecutionContext_asyncpg object at 0x00000132A3902B50>
+           │    │                        └ <sqlalchemy.dialects.postgresql.asyncpg.PGDialect_asyncpg object at 0x00000132A271DFD0>
+           │    └ <function Connection._exec_insertmany_context at 0x00000132A10F7100>
+           └ <sqlalchemy.engine.base.Connection object at 0x00000132A55C5850>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2135, in _exec_insertmany_context
+    self._handle_dbapi_exception(
+    │    └ <function Connection._handle_dbapi_exception at 0x00000132A10F72E0>
+    └ <sqlalchemy.engine.base.Connection object at 0x00000132A55C5850>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+          │                    │              │                 └ IntegrityError('<class \'asyncpg.exceptions.UniqueViolationError\'>: duplicate key value violates unique constraint "uq_rss_a...
+          │                    │              └ (<class 'sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.IntegrityError'>, IntegrityError('<class \'asyncpg.e...
+          │                    └ <method 'with_traceback' of 'BaseException' objects>
+          └ IntegrityError('(sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class \'asyncpg.exceptions.UniqueViolationError\'>: ...
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2127, in _exec_insertmany_context
+    dialect.do_execute(
+    │       └ <function DefaultDialect.do_execute at 0x00000132A11AA520>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.PGDialect_asyncpg object at 0x00000132A271DFD0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    │      │       │          └ ('OpenAI reportedly finds evidence that more of its agents ran amok', 'OpenAI has reportedly found evidence of additional age...
+    │      │       └ 'INSERT INTO rss_articles (title, summary, url, published_at, source_name, tickers, raw_json, cleaned_text, sentiment_label, ...
+    │      └ <function AsyncAdapt_asyncpg_cursor.execute at 0x00000132A269F380>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A55FE500>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 585, in execute
+    self._adapt_connection.await_(
+    │    └ <member '_adapt_connection' of 'AsyncAdapt_asyncpg_cursor' objects>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A55FE500>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           │       │             └ <coroutine object AsyncAdapt_asyncpg_cursor._prepare_and_execute at 0x00000132A38D38B0>
+           │       └ <attribute 'parent' of 'greenlet.greenlet' objects>
+           └ <_AsyncIoGreenlet object at 0x00000132A7176440 (otid=0x000001329EDEE470) dead>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+                  └ <coroutine object AsyncAdapt_asyncpg_connection._rollback_and_discard at 0x00000132A38E3440>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 563, in _prepare_and_execute
+    self._handle_exception(error)
+    │    └ <function AsyncAdapt_asyncpg_cursor._handle_exception at 0x00000132A269F1A0>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A55FE500>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 513, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+    │    │                                   └ UniqueViolationError('duplicate key value violates unique constraint "uq_rss_articles_url"')
+    │    └ <member '_adapt_connection' of 'AsyncAdapt_asyncpg_cursor' objects>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A55FE500>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+          │                     └ UniqueViolationError('duplicate key value violates unique constraint "uq_rss_articles_url"')
+          └ IntegrityError('<class \'asyncpg.exceptions.UniqueViolationError\'>: duplicate key value violates unique constraint "uq_rss_a...
+
+sqlalchemy.exc.IntegrityError: (sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "uq_rss_articles_url"
+DETAIL:  Key (url)=(https://techcrunch.com/2026/07/31/openai-reportedly-finds-evidence-that-more-of-its-agents-ran-amok/) already exists.
+[SQL: INSERT INTO rss_articles (title, summary, url, published_at, source_name, tickers, raw_json, cleaned_text, sentiment_label, sentiment_score, sentiment_confidence, sentiment_analyzed_at, primary_ticker) VALUES ($1::VARCHAR, $2::VARCHAR, $3::VARCHAR, $4::TIMESTAMP WITH TIME ZONE, $5::VARCHAR, $6::VARCHAR[], $7::JSONB, $8::VARCHAR, $9::VARCHAR, $10::FLOAT, $11::FLOAT, $12::TIMESTAMP WITH TIME ZONE, $13::VARCHAR) RETURNING rss_articles.id, rss_articles.ingested_at]
+[parameters: ('OpenAI reportedly finds evidence that more of its agents ran amok', 'OpenAI has reportedly found evidence of additional agent misbehavior as it looks into the incident that occurred with Hugging Face.', 'https://techcrunch.com/2026/07/31/openai-reportedly-finds-evidence-that-more-of-its-agents-ran-amok/', datetime.datetime(2026, 7, 31, 22, 47, 26, tzinfo=datetime.timezone.utc), 'techcrunch', [], '{"title": "OpenAI reportedly finds evidence that more of its agents ran amok", "summary": "OpenAI has reportedly found evidence of additional agent m ... (163 characters truncated) ... -its-agents-ran-amok/", "published": "Fri, 31 Jul 2026 22:47:26 +0000", "source": "techcrunch", "tags": ["AI", "Hugging Face", "In Brief", "OpenAI"]}', None, None, None, None, None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-08-01 05:12:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:arstechnica] Fetching https://feeds.arstechnica.com/arstechnica/index
+2026-08-01 05:12:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:arstechnica] Stored 7/20 new articles.
+2026-08-01 05:12:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:venturebeat] Fetching https://venturebeat.com/feed/
+2026-08-01 05:12:10 | ERROR    | sentiment_analysis.ingestion.rss_ingestor:496 — [rss:venturebeat] Unexpected error: (sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "uq_rss_articles_url"
+DETAIL:  Key (url)=(https://venturebeat.com/orchestration/structured-ai-data-pipelines-score-10-9-points-below-free-form-code-dataflow-harness-closes-the-gap) already exists.
+[SQL: INSERT INTO rss_articles (title, summary, url, published_at, source_name, tickers, raw_json, cleaned_text, sentiment_label, sentiment_score, sentiment_confidence, sentiment_analyzed_at, primary_ticker) VALUES ($1::VARCHAR, $2::VARCHAR, $3::VARCHAR, $4::TIMESTAMP WITH TIME ZONE, $5::VARCHAR, $6::VARCHAR[], $7::JSONB, $8::VARCHAR, $9::VARCHAR, $10::FLOAT, $11::FLOAT, $12::TIMESTAMP WITH TIME ZONE, $13::VARCHAR) RETURNING rss_articles.id, rss_articles.ingested_at]
+[parameters: ('Structured AI data pipelines score 10.9 points below free-form code — DataFlow-Harness closes the gap', '<p>If you ask an AI coding agent to write a standalone Python script to parse a single JSON file, it will likely give you a perfect answer in seconds ... (11417 characters truncated) ... boundaries, while engineers remain responsible for the semantics, policies, and consequential decisions that require domain accountability.&quot;</p>', 'https://venturebeat.com/orchestration/structured-ai-data-pipelines-score-10-9-points-below-free-form-code-dataflow-harness-closes-the-gap', datetime.datetime(2026, 7, 31, 21, 19, 9, tzinfo=datetime.timezone.utc), 'venturebeat', ['APA'], '{"title": "Structured AI data pipelines score 10.9 points below free-form code \\u2014 DataFlow-Harness closes the gap", "summary": "<p>If you ask an ... (11881 characters truncated) ... ow-free-form-code-dataflow-harness-closes-the-gap", "published": "Fri, 31 Jul 2026 21:19:09 GMT", "source": "venturebeat", "tags": ["Orchestration"]}', None, None, None, None, None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+Traceback (most recent call last):
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 550, in _prepare_and_execute
+    self._rows = deque(await prepared_stmt.fetch(*parameters))
+    │    │       │           │             │      └ ('Structured AI data pipelines score 10.9 points below free-form code — DataFlow-Harness closes the gap', '<p>If you ask an A...
+    │    │       │           │             └ <function PreparedStatement.fetch at 0x00000132A27C3920>
+    │    │       │           └ <asyncpg.prepared_stmt.PreparedStatement object at 0x00000132A562E390>
+    │    │       └ <class 'collections.deque'>
+    │    └ <member '_rows' of 'AsyncAdapt_asyncpg_cursor' objects>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A29397E0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\asyncpg\prepared_stmt.py", line 177, in fetch
+    data = await self.__bind_execute(args, 0, timeout)
+                 │                   │        └ None
+                 │                   └ ('Structured AI data pipelines score 10.9 points below free-form code — DataFlow-Harness closes the gap', '<p>If you ask an A...
+                 └ <asyncpg.prepared_stmt.PreparedStatement object at 0x00000132A562E390>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\asyncpg\prepared_stmt.py", line 268, in __bind_execute
+    data, status, _ = await self.__do_execute(
+                            └ <asyncpg.prepared_stmt.PreparedStatement object at 0x00000132A562E390>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\asyncpg\prepared_stmt.py", line 257, in __do_execute
+    return await executor(protocol)
+                 │        └ <asyncpg.protocol.protocol.Protocol object at 0x00000132A3745FF0>
+                 └ <function PreparedStatement.__bind_execute.<locals>.<lambda> at 0x00000132A77DB380>
+  File "asyncpg/protocol/protocol.pyx", line 205, in bind_execute
+    return await waiter
+
+asyncpg.exceptions.UniqueViolationError: duplicate key value violates unique constraint "uq_rss_articles_url"
+DETAIL:  Key (url)=(https://venturebeat.com/orchestration/structured-ai-data-pipelines-score-10-9-points-below-free-form-code-dataflow-harness-closes-the-gap) already exists.
+
+
+The above exception was the direct cause of the following exception:
+
+
+Traceback (most recent call last):
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    │    │       └ <function DefaultDialect.do_execute at 0x00000132A11AA520>
+    │    └ <sqlalchemy.dialects.postgresql.asyncpg.PGDialect_asyncpg object at 0x00000132A271DFD0>
+    └ <sqlalchemy.engine.base.Connection object at 0x00000132A55C4B90>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    │      │       │          └ ('Structured AI data pipelines score 10.9 points below free-form code — DataFlow-Harness closes the gap', '<p>If you ask an A...
+    │      │       └ 'INSERT INTO rss_articles (title, summary, url, published_at, source_name, tickers, raw_json, cleaned_text, sentiment_label, ...
+    │      └ <function AsyncAdapt_asyncpg_cursor.execute at 0x00000132A269F380>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A29397E0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 585, in execute
+    self._adapt_connection.await_(
+    │    └ <member '_adapt_connection' of 'AsyncAdapt_asyncpg_cursor' objects>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A29397E0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           │       │             └ <coroutine object AsyncAdapt_asyncpg_cursor._prepare_and_execute at 0x00000132A38D3760>
+           │       └ <attribute 'parent' of 'greenlet.greenlet' objects>
+           └ <_AsyncIoGreenlet object at 0x00000132A717AAC0 (otid=0x000001329EDEE470) dead>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+                  └ <coroutine object AsyncAdapt_asyncpg_connection._rollback_and_discard at 0x00000132A38E1A40>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 563, in _prepare_and_execute
+    self._handle_exception(error)
+    │    └ <function AsyncAdapt_asyncpg_cursor._handle_exception at 0x00000132A269F1A0>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A29397E0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 513, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+    │    │                                   └ UniqueViolationError('duplicate key value violates unique constraint "uq_rss_articles_url"')
+    │    └ <member '_adapt_connection' of 'AsyncAdapt_asyncpg_cursor' objects>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A29397E0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+          │                     └ UniqueViolationError('duplicate key value violates unique constraint "uq_rss_articles_url"')
+          └ IntegrityError('<class \'asyncpg.exceptions.UniqueViolationError\'>: duplicate key value violates unique constraint "uq_rss_a...
+
+sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.IntegrityError: <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "uq_rss_articles_url"
+DETAIL:  Key (url)=(https://venturebeat.com/orchestration/structured-ai-data-pipelines-score-10-9-points-below-free-form-code-dataflow-harness-closes-the-gap) already exists.
+
+
+The above exception was the direct cause of the following exception:
+
+
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 350, in <module>
+    main()
+    └ <function main at 0x00000132A3899C60>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 337, in main
+    asyncio.run(_run_pipeline(dashboard_proc_ref))
+    │       │   │             └ [<Popen: returncode: None args: ['C:\\Users\\talak\\Downloads\\Stock Sentimen...>]
+    │       │   └ <function _run_pipeline at 0x00000132A3899B20>
+    │       └ <function run at 0x000001328F0667A0>
+    └ <module 'asyncio' from 'C:\\Users\\talak\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 196, in run
+    return runner.run(main)
+           │      │   └ <coroutine object _run_pipeline at 0x00000132A38B1A80>
+           │      └ <function Runner.run at 0x000001328F0E6200>
+           └ <asyncio.runners.Runner object at 0x000001328F2BCAD0>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 119, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<_run_pipeline() running at C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x000001328F0E3D80>
+           │    └ <ProactorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x000001328F2BCAD0>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x000001328F0E3CE0>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x000001328F0E5B20>
+    └ <ProactorEventLoop running=True closed=False debug=False>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 2060, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x000001328F067600>
+    └ <Handle Task.task_wakeup()>
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup()>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup()>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup()>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\main.py", line 219, in _run_pipeline
+    scheduler = await start_scheduler()
+                      └ <function start_scheduler at 0x00000132A38999E0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\scheduler.py", line 456, in start_scheduler
+    await _job_rss()
+          └ <function _job_rss at 0x00000132A02D3740>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\scheduler.py", line 54, in _job_rss
+    await _get_rss().run()
+          └ <function _get_rss at 0x000001328F38B7E0>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 357, in run
+    await self._process_feed(source_name, feed_url)
+          │    │             │            └ 'https://venturebeat.com/feed/'
+          │    │             └ 'venturebeat'
+          │    └ <function RSSIngestor._process_feed at 0x00000132A298C680>
+          └ <sentiment_analysis.ingestion.rss_ingestor.RSSIngestor object at 0x00000132A38D1A90>
+
+> File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\ingestion\rss_ingestor.py", line 403, in _process_feed
+    async with get_async_session() as session:
+               │                      └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x00000132A5641010>
+               └ <function get_async_session at 0x00000132A2822FC0>
+
+  File "C:\Users\talak\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 221, in __aexit__
+    await anext(self.gen)
+                │    └ <async_generator object get_async_session at 0x00000132A395C200>
+                └ <contextlib._AsyncGeneratorContextManager object at 0x00000132A55B1D30>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\sentiment_analysis\storage\database.py", line 64, in get_async_session
+    await session.commit()
+          │       └ <function AsyncSession.commit at 0x00000132A158BEC0>
+          └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x00000132A5641010>
+
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py", line 999, in commit
+    await greenlet_spawn(self.sync_session.commit)
+          │              │    │            └ <function Session.commit at 0x00000132A14BBB00>
+          │              │    └ <sqlalchemy.orm.session.Session object at 0x00000132A38E6A80>
+          │              └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x00000132A5641010>
+          └ <function greenlet_spawn at 0x00000132A0C19580>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 203, in greenlet_spawn
+    result = context.switch(value)
+             │       │      └ None
+             │       └ <method 'switch' of 'greenlet.greenlet' objects>
+             └ <_AsyncIoGreenlet object at 0x00000132A717AAC0 (otid=0x000001329EDEE470) dead>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2034, in commit
+    trans.commit(_to_root=True)
+    │     └ <function SessionTransaction.commit at 0x00000132A14BAAC0>
+    └ <sqlalchemy.orm.session.SessionTransaction object at 0x00000132A769D110>
+  File "<string>", line 2, in commit
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                │  │      │      └ {'_to_root': True}
+                │  │      └ ()
+                │  └ <sqlalchemy.orm.session.SessionTransaction object at 0x00000132A769D110>
+                └ <function SessionTransaction.commit at 0x00000132A14BAA20>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 1315, in commit
+    self._prepare_impl()
+    │    └ <function SessionTransaction._prepare_impl at 0x00000132A14BA8E0>
+    └ <sqlalchemy.orm.session.SessionTransaction object at 0x00000132A769D110>
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                │  │      │      └ {}
+                │  │      └ ()
+                │  └ <sqlalchemy.orm.session.SessionTransaction object at 0x00000132A769D110>
+                └ <function SessionTransaction._prepare_impl at 0x00000132A14BA840>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 1290, in _prepare_impl
+    self.session.flush()
+    │    │       └ <function Session.flush at 0x00000132A14C6A20>
+    │    └ <sqlalchemy.orm.session.Session object at 0x00000132A38E6A80>
+    └ <sqlalchemy.orm.session.SessionTransaction object at 0x00000132A769D110>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4352, in flush
+    self._flush(objects)
+    │    │      └ None
+    │    └ <function Session._flush at 0x00000132A14C6C00>
+    └ <sqlalchemy.orm.session.Session object at 0x00000132A38E6A80>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4487, in _flush
+    with util.safe_reraise():
+         │    └ <class 'sqlalchemy.util.langhelpers.safe_reraise'>
+         └ <module 'sqlalchemy.util' from 'C:\\Users\\talak\\Downloads\\Stock Sentiment\\venv\\Lib\\site-packages\\sqlalchemy\\util\\__i...
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+          │         │              └ <traceback object at 0x00000132A72253C0>
+          │         └ <method 'with_traceback' of 'BaseException' objects>
+          └ IntegrityError('(sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class \'asyncpg.exceptions.UniqueViolationError\'>: ...
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4448, in _flush
+    flush_context.execute()
+    │             └ <function UOWTransaction.execute at 0x00000132A145A200>
+    └ <sqlalchemy.orm.unitofwork.UOWTransaction object at 0x00000132A72133E0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 465, in execute
+    rec.execute(self)
+    │   │       └ <sqlalchemy.orm.unitofwork.UOWTransaction object at 0x00000132A72133E0>
+    │   └ <function SaveUpdateAll.execute at 0x00000132A145AD40>
+    └ SaveUpdateAll(Mapper[RSSArticle(rss_articles)])
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 641, in execute
+    util.preloaded.orm_persistence.save_obj(
+    │    │         │               └ <function save_obj at 0x00000132A147D9E0>
+    │    │         └ <module 'sqlalchemy.orm.persistence' from 'C:\\Users\\talak\\Downloads\\Stock Sentiment\\venv\\Lib\\site-packages\\sqlalchemy...
+    │    └ <module 'sqlalchemy.util.preloaded' from 'C:\\Users\\talak\\Downloads\\Stock Sentiment\\venv\\Lib\\site-packages\\sqlalchemy\...
+    └ <module 'sqlalchemy.util' from 'C:\\Users\\talak\\Downloads\\Stock Sentiment\\venv\\Lib\\site-packages\\sqlalchemy\\util\\__i...
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 94, in save_obj
+    _emit_insert_statements(
+    └ <function _emit_insert_statements at 0x00000132A14B0180>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1234, in _emit_insert_statements
+    result = connection.execute(
+             │          └ <function Connection.execute at 0x00000132A10F6AC0>
+             └ <sqlalchemy.engine.base.Connection object at 0x00000132A55C4B90>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+           └ <bound method ClauseElement._execute_on_connection of <sqlalchemy.sql.dml.Insert object at 0x00000132A3757800>>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           │          └ <function Connection._execute_clauseelement at 0x00000132A10F6DE0>
+           └ <sqlalchemy.engine.base.Connection object at 0x00000132A55C4B90>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+          │    └ <function Connection._execute_context at 0x00000132A10F6FC0>
+          └ <sqlalchemy.engine.base.Connection object at 0x00000132A55C4B90>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           │    └ <function Connection._exec_single_context at 0x00000132A10F7060>
+           └ <sqlalchemy.engine.base.Connection object at 0x00000132A55C4B90>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    │    └ <function Connection._handle_dbapi_exception at 0x00000132A10F72E0>
+    └ <sqlalchemy.engine.base.Connection object at 0x00000132A55C4B90>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+          │                    │              │                 └ IntegrityError('<class \'asyncpg.exceptions.UniqueViolationError\'>: duplicate key value violates unique constraint "uq_rss_a...
+          │                    │              └ (<class 'sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.IntegrityError'>, IntegrityError('<class \'asyncpg.e...
+          │                    └ <method 'with_traceback' of 'BaseException' objects>
+          └ IntegrityError('(sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class \'asyncpg.exceptions.UniqueViolationError\'>: ...
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    │    │       └ <function DefaultDialect.do_execute at 0x00000132A11AA520>
+    │    └ <sqlalchemy.dialects.postgresql.asyncpg.PGDialect_asyncpg object at 0x00000132A271DFD0>
+    └ <sqlalchemy.engine.base.Connection object at 0x00000132A55C4B90>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    │      │       │          └ ('Structured AI data pipelines score 10.9 points below free-form code — DataFlow-Harness closes the gap', '<p>If you ask an A...
+    │      │       └ 'INSERT INTO rss_articles (title, summary, url, published_at, source_name, tickers, raw_json, cleaned_text, sentiment_label, ...
+    │      └ <function AsyncAdapt_asyncpg_cursor.execute at 0x00000132A269F380>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A29397E0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 585, in execute
+    self._adapt_connection.await_(
+    │    └ <member '_adapt_connection' of 'AsyncAdapt_asyncpg_cursor' objects>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A29397E0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           │       │             └ <coroutine object AsyncAdapt_asyncpg_cursor._prepare_and_execute at 0x00000132A38D3760>
+           │       └ <attribute 'parent' of 'greenlet.greenlet' objects>
+           └ <_AsyncIoGreenlet object at 0x00000132A717AAC0 (otid=0x000001329EDEE470) dead>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+                  └ <coroutine object AsyncAdapt_asyncpg_connection._rollback_and_discard at 0x00000132A38E1A40>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 563, in _prepare_and_execute
+    self._handle_exception(error)
+    │    └ <function AsyncAdapt_asyncpg_cursor._handle_exception at 0x00000132A269F1A0>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A29397E0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 513, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+    │    │                                   └ UniqueViolationError('duplicate key value violates unique constraint "uq_rss_articles_url"')
+    │    └ <member '_adapt_connection' of 'AsyncAdapt_asyncpg_cursor' objects>
+    └ <sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_cursor object at 0x00000132A29397E0>
+  File "C:\Users\talak\Downloads\Stock Sentiment\venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+          │                     └ UniqueViolationError('duplicate key value violates unique constraint "uq_rss_articles_url"')
+          └ IntegrityError('<class \'asyncpg.exceptions.UniqueViolationError\'>: duplicate key value violates unique constraint "uq_rss_a...
+
+sqlalchemy.exc.IntegrityError: (sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "uq_rss_articles_url"
+DETAIL:  Key (url)=(https://venturebeat.com/orchestration/structured-ai-data-pipelines-score-10-9-points-below-free-form-code-dataflow-harness-closes-the-gap) already exists.
+[SQL: INSERT INTO rss_articles (title, summary, url, published_at, source_name, tickers, raw_json, cleaned_text, sentiment_label, sentiment_score, sentiment_confidence, sentiment_analyzed_at, primary_ticker) VALUES ($1::VARCHAR, $2::VARCHAR, $3::VARCHAR, $4::TIMESTAMP WITH TIME ZONE, $5::VARCHAR, $6::VARCHAR[], $7::JSONB, $8::VARCHAR, $9::VARCHAR, $10::FLOAT, $11::FLOAT, $12::TIMESTAMP WITH TIME ZONE, $13::VARCHAR) RETURNING rss_articles.id, rss_articles.ingested_at]
+[parameters: ('Structured AI data pipelines score 10.9 points below free-form code — DataFlow-Harness closes the gap', '<p>If you ask an AI coding agent to write a standalone Python script to parse a single JSON file, it will likely give you a perfect answer in seconds ... (11417 characters truncated) ... boundaries, while engineers remain responsible for the semantics, policies, and consequential decisions that require domain accountability.&quot;</p>', 'https://venturebeat.com/orchestration/structured-ai-data-pipelines-score-10-9-points-below-free-form-code-dataflow-harness-closes-the-gap', datetime.datetime(2026, 7, 31, 21, 19, 9, tzinfo=datetime.timezone.utc), 'venturebeat', ['APA'], '{"title": "Structured AI data pipelines score 10.9 points below free-form code \\u2014 DataFlow-Harness closes the gap", "summary": "<p>If you ask an ... (11881 characters truncated) ... ow-free-form-code-dataflow-harness-closes-the-gap", "published": "Fri, 31 Jul 2026 21:19:09 GMT", "source": "venturebeat", "tags": ["Orchestration"]}', None, None, None, None, None, None)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-08-01 05:12:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:zdnet] Fetching https://www.zdnet.com/news/rss.xml
+2026-08-01 05:12:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:zdnet] Stored 0/20 new articles.
+2026-08-01 05:12:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:fierce_biotech] Fetching https://www.fiercebiotech.com/rss/xml
+2026-08-01 05:12:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:fierce_biotech] Stored 0/25 new articles.
+2026-08-01 05:12:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:375 — [rss:stat_news] Fetching https://www.statnews.com/feed/
+2026-08-01 05:12:10 | INFO     | sentiment_analysis.ingestion.rss_ingestor:489 — [rss:stat_news] Stored 0/20 new articles.
+2026-08-01 05:12:14 | DEBUG    | sentiment_analysis.ingestion.scheduler:188 — [alerts] Evaluating 1 active alerts.
+2026-08-01 05:12:14 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=111: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=111&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:12:14 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=121: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=121&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:12:14 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=131: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=131&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:12:14 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=141: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=141&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:12:14 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=161: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=161&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:12:14 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=171: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=171&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:12:14 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:323 — [finviz] Base view v=111 returned no data — aborting bulk fetch.
+2026-08-01 05:12:14 | INFO     | sentiment_analysis.ingestion.scheduler:77 — [finviz] Bulk fetch: 0 tickers updated
+2026-08-01 05:12:18 | INFO     | sentiment_analysis.entity_resolution.ner:53 — [ner] spaCy model loaded: en_core_web_sm
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 5026fb0b-6f60-415e-a6e4-0dc80cd2d1ad: 0 tickers, 1 unresolved
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Alienware 15 vs. LOQ Essential 15: I compared both budget gaming laptops - it was close
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'AI' → Country (skipped — not ticker-eligible)
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'JSON' → Person (skipped — not ticker-eligible)
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'Claude Code' → Person (skipped — not ticker-eligible)
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article b57b2441-3f80-4915-947c-e5711c2c506d: 2 tickers, 10 unresolved
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Structured AI data pipelines score 10.9 points below free-form code — DataFlow-Harness closes the gap
+
+Candidates
+  RAG = 5
+  DAG = 0
+
+Winner
+  NULL
+
+Reason
+  No sufficiently relevant company detected (best: RAG=5)
+----------------------------------------
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 97c11377-e043-45a5-b887-224d8e862efb: 0 tickers, 1 unresolved
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Would you get tattooed just to interview at a 7-days-a-week AI startup?
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'AI' → Country (skipped — not ticker-eligible)
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 2aa4322d-6826-416a-9d2e-b35be573156d: 1 tickers, 0 unresolved
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Google Earth risked ruin with retracted AI tool for making fake satellite pics
+
+Candidates
+  GOOGL = 90
+
+Winner
+  GOOGL
+
+Confidence
+  90
+----------------------------------------
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'Claude' → Person (skipped — not ticker-eligible)
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Claude published malicious code to the Internet and attacked 3 real companies
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'DMCA' → Other (skipped — not ticker-eligible)
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'Perplexity AI' → Other (skipped — not ticker-eligible)
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 1ce2345d-3e64-45d2-af9f-1bb7be0a481c: 1 tickers, 0 unresolved
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Reddit keeps its strange DMCA fight over Google search results alive
+
+Candidates
+  GOOGL = 65
+
+Winner
+  NULL
+
+Reason
+  No sufficiently relevant company detected (best: GOOGL=65)
+----------------------------------------
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'Android' → Technology (skipped — not ticker-eligible)
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'Cuba' → Country (skipped — not ticker-eligible)
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'Iran' → Country (skipped — not ticker-eligible)
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'devs' → Person (skipped — not ticker-eligible)
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 91f77e3f-40a9-4d97-950e-5fa76b0f9468: 1 tickers, 0 unresolved
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Google plans to exempt sanctioned nations from Android developer verification
+
+Candidates
+  GOOGL = 65
+
+Winner
+  NULL
+
+Reason
+  No sufficiently relevant company detected (best: GOOGL=65)
+----------------------------------------
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Doctors took a look at man's painful shoulder—they found the joint was missing
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:18 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Not just Neanderthals: Ghost lineage in Africa left its mark on our DNA
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'India' → Country (skipped — not ticker-eligible)
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+India is starting to pay for apps, not just download them
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 05526551-e0c5-4738-b393-ab33246423e2: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Silicon Valley loves young founders. Until it doesn’t.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'Rivian' → Other (skipped — not ticker-eligible)
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 14ea6659-bdfa-467a-8842-8c935cfdae3a: 1 tickers, 0 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Rivian spinoff Also to start delivering e-bikes after months of delays
+
+Candidates
+  AMZN = 35
+
+Winner
+  NULL
+
+Reason
+  No sufficiently relevant company detected (best: AMZN=35)
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'OpenAI' → Person (skipped — not ticker-eligible)
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 30953c6c-f540-40e9-a4a3-982e3bd98fef: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+OpenAI reportedly finds evidence that more of its agents ran amok
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 53c4bfdb-092c-486b-b2ff-dd704b7af7aa: 0 tickers, 3 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+S-1 — GridAI Technologies Corp.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'Creatd' → Person (skipped — not ticker-eligible)
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 0474dcb0-c7e4-4ad2-9766-6944d83c15d9: 0 tickers, 2 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+S-1 — Creatd, Inc.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 10a28004-ae74-46a0-b6db-5a2181b8e25e: 0 tickers, 2 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+S-1 — SharonAI Holdings Inc.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article c5d111c4-2e24-475a-addf-ebe04447e8ec: 0 tickers, 3 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+S-1 — TCGX Acquisition Corp.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 6e9991ea-cb7c-42fa-b334-24b883ae776a: 0 tickers, 3 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+S-1 — Agassi Sports Entertainment Corp.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article e686aa7b-f8fb-4dfb-9dac-4af9f1c398e6: 0 tickers, 3 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+S-1 — Flash Sports & Media Holdings, Inc.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article b136c853-729d-491a-9f47-a2e0cc4278c9: 0 tickers, 3 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+S-1 — BIOVIE INC.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 32cace98-d846-45b6-862a-4dcfc7c83289: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — CubeSmart
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 156b6ad6-322c-4759-adae-3c4f85926fff: 0 tickers, 3 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — CubeSmart, L.P.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 109268fe-de11-4afb-8903-8852507ba661: 0 tickers, 2 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — First Western Financial Inc
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article ba44dfbd-adfb-48ed-aed0-44d6926e7479: 1 tickers, 0 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — Extra Space Storage Inc.
+
+Candidates
+  EXR = 110
+
+Winner
+  EXR
+
+Confidence
+  110
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 2b7d0d3e-3792-4cd7-ba3a-414d7b25dc91: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — Bank of New York Mellon Corp
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — AUTONATION, INC.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 6b57f394-31f1-4455-8ba3-041e83e7efff: 0 tickers, 2 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — MSA Safety Inc
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'Elme Communities' → Person (skipped — not ticker-eligible)
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — Elme Communities
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 906731fe-6d3a-4d74-adda-7e18c3c96151: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — TETRA TECH INC
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 68483b32-81b0-4f8d-a237-113507739c91: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — nVent Electric plc
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 5e68c914-518d-428c-a808-042aec76c788: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — Meritage Homes CORP
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 8e3a3c65-c00d-4974-b670-3c2c3a78a52b: 0 tickers, 3 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — TEXAS NEW MEXICO POWER CO
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article d6312457-c548-4308-9cdc-455dea45040e: 1 tickers, 0 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — TRUIST FINANCIAL CORP
+
+Candidates
+  TFC = 110
+
+Winner
+  TFC
+
+Confidence
+  110
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article e1b0f001-65fa-4fc6-82a9-f84be90d7c93: 0 tickers, 2 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — ASBURY AUTOMOTIVE GROUP INC
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 0a19b2dc-821a-4730-a2bc-f8d7dc600f2f: 0 tickers, 2 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — Blue Star Foods Corp.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article d4be1efa-4ded-4cf2-8a6b-837b2bf224b8: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — Dime Commercial Bancshares, Inc. /NY/
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article f8d3884a-0df7-425a-8f1c-6e43f8da52d5: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — HPS Net Lease Income REIT
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article cf985036-ad93-47d2-a150-cfe679d669c2: 0 tickers, 2 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — BLUE OWL CAPITAL INC.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 2cd889f5-cc9c-48df-a7b0-4ad2b161c6dc: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — Amerant Bancorp Inc.
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article cba5af08-47b4-4705-bf07-3f91a771b9d4: 1 tickers, 0 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+10-Q — Corteva, Inc.
+
+Candidates
+  CTVA = 110
+
+Winner
+  CTVA
+
+Confidence
+  110
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article cf19f196-0672-4c93-945c-f2a439912148: 0 tickers, 2 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — URANIUM ENERGY CORP (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article ea9fcdb7-8d63-4a2f-abe2-b6c3b8fb8c7b: 0 tickers, 2 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — URANIUM ENERGY CORP (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article c1cd9f43-20c9-4dc4-95c1-c547d60a0cd0: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — BUSQUET ANNE (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 065654c4-9f2b-47c1-b7eb-87c655a593b7: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — CareCloud, Inc. (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 78244ab9-f852-4023-9658-07c05fe862e3: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — CareCloud, Inc. (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'Lawrence Steven' → Person (skipped — not ticker-eligible)
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:106 — [entity_resolution] 'Sharnak Lawrence Steven' → Person (skipped — not ticker-eligible)
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — Sharnak Lawrence Steven (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article d97a6898-0e9b-412a-a42f-e4e2bcebc81b: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — CareCloud, Inc. (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article 9ffe915d-d494-44af-b925-661f2c51cc62: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — KORN BILL (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.entity_resolution.pipeline:160 — [entity_resolution] article ca415f25-b659-47a8-b361-22bfc5f00079: 0 tickers, 1 unresolved
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — CareCloud, Inc. (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | DEBUG    | sentiment_analysis.nlp.pipeline:82 — [primary_scorer]
+----------------------------------------
+Title:
+Form 4 — MUNTER CAMERON (Insider Trading)
+
+Candidates
+
+Winner
+  NULL
+
+Reason
+  No candidates extracted
+----------------------------------------
+2026-08-01 05:12:19 | INFO     | sentiment_analysis.nlp.pipeline:207 — [nlp] Batch complete — processed 50/50 articles
+2026-08-01 05:12:19 | INFO     | sentiment_analysis.sentiment.pipeline:112 — [sentiment] Analyzing 37 SEC articles via SEC Analyzer.
+2026-08-01 05:12:19 | INFO     | sentiment_analysis.sentiment.pipeline:135 — [sentiment] SEC breakdown: 10 Form4, 0 8-K, 20 10-Q, 7 S-1, 0 SC13G scored.
+2026-08-01 05:12:19 | INFO     | sentiment_analysis.sentiment.pipeline:146 — [sentiment] Analyzing 13 articles via FinBERT.
+2026-08-01 05:12:29 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:153 — [finbert] Loading model 'peyterho/finbert-macro-sentiment'...
+2026-08-01 05:12:30 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:165 — [finbert] No GPU detected — using CPU
+2026-08-01 05:12:30 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:177 — [finbert] Model loaded successfully in 1.4s  | labels=['positive', 'negative', 'neutral']
+2026-08-01 05:12:31 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:187 — [finbert] Warm-up complete.
+2026-08-01 05:12:33 | INFO     | sentiment_analysis.sentiment.finbert_analyzer:131 — [finbert] Scored 13 articles in 2.1s
+2026-08-01 05:12:33 | INFO     | sentiment_analysis.sentiment.pipeline:210 — [sentiment] Stored 50 results.
+2026-08-01 05:12:34 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=111: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=111&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:12:34 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=121: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=121&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:12:34 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=131: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=131&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:12:34 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=141: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=141&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:12:34 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=161: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=161&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:12:34 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:549 — [finviz] v=171: fetch failed — 401 Client Error: Unauthorized for url: https://elite.finviz.com/export?v=171&auth=cabcad5b-84b4-401a-a2dd-c438739e952a
+2026-08-01 05:12:34 | WARNING  | sentiment_analysis.ingestion.finviz_ingestor:323 — [finviz] Base view v=111 returned no data — aborting bulk fetch.
+2026-08-01 05:12:34 | INFO     | sentiment_analysis.ingestion.scheduler:77 — [finviz] Bulk fetch: 0 tickers updated
+2026-08-01 05:12:34 | DEBUG    | sentiment_analysis.ingestion.scheduler:188 — [alerts] Evaluating 1 active alerts.
+2026-08-01 05:12:34 | INFO     | __main__:221 — Ingestion pipeline running.  Press Ctrl+C to stop.
+2026-08-01 05:12:57 | INFO     | __main__:238 — Pipeline stopped cleanly.
+2026-08-01 05:12:57 | INFO     | __main__:346 — Dashboard process terminated.
