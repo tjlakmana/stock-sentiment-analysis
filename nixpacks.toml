@@ -22,4 +22,4 @@
 #   findable at runtime for both the main process and any subprocess it spawns.
 
 [phases.setup]
-nixPkgs = ['stdenv.cc.cc.lib']
+nixPkgs = ['stdenv.cc.cc.lib', 'python311']
